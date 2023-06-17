@@ -17,18 +17,8 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [errors, setErrors] = useState<Record<string, string>>({ email: '', password: '' })
+  const [errors, setErrors] = useState<Record<string, string>>({ email: '', password: '' }) // @todo: write this and `validateForm` logic as a separate dynamic hook
   const router = useRouter()
-
-  const validateForm = (e: any) => {
-    Credentials.parseAsync({ email, password }).then(() => {
-      setErrors({ ...errors, [e.target.name]: '' })
-    }).catch(error => {
-      const formattedErrors = error.format()
-      setErrors({ ...errors, [e.target.name]: formattedErrors[e.target.name]?._errors[0] || '' })
-    })
-  }
-  const isFormValid = Boolean(!errors.email && !errors.password && email && password)
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(event => {
@@ -69,6 +59,17 @@ export default function Login() {
 
     if (error) toast.error(error.message)
   }, setLoading)
+
+  const validateForm = (e: any) => {
+    Credentials.parseAsync({ email, password }).then(() => {
+      setErrors({ ...errors, [e.target.name]: '' })
+    }).catch(error => {
+      const formattedErrors = error.format()
+      setErrors({ ...errors, [e.target.name]: formattedErrors[e.target.name]?._errors[0] || '' })
+    })
+  }
+  
+  const isFormValid = Boolean(!errors.email && !errors.password && email && password)
 
   return (
     <div className="bg-cover bg-no-repeat bg-[url('/light-login.jpg')] dark:bg-[url('/dark-login.jpg')]">
