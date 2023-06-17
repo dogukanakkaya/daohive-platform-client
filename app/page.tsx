@@ -1,8 +1,15 @@
 'use client'
-import Image from 'next/image'
+import Sidebar from './components/Sidebar'
+import Header from './components/Header'
 
 export default function Home() {
   return (
-    <div className="m-5">SPACE</div>
+    <div className="flex">
+      <Sidebar />
+      <div className="w-full">
+        <Header />
+        <div className="m-5">TODO</div>
+      </div>
+    </div>
   )
 }

@@ -8,9 +8,7 @@ export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
 
   const supabase = createMiddlewareClient({ req, res })
-  const { data, error } = await supabase.auth.getSession()
-
-  console.log(data)
+  const { data } = await supabase.auth.getSession()
 
   if (data.session && UNAUTHENTICATED_ROUTES.includes(req.nextUrl.pathname)) {
     return NextResponse.redirect(new URL(AUTHENTICATED_ROUTES[0], req.url))
