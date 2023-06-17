@@ -15,7 +15,7 @@ interface Props {
 
 export default function Button({ children, variant = Variant.Primary, isEnabled = true, ...rest }: Props & HTMLAttributes<HTMLButtonElement>) {
   const { className, ...restAttributes } = rest
-  const _className = clsx('button', variant, !isEnabled && 'opacity-50 pointer-events-none', className)
+  const _className = clsx('button', variant, !isEnabled && 'opacity-60 pointer-events-none cursor-not-allowed', className)
 
   return (
     <button className={_className} {...restAttributes}>{children}</button>

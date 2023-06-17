@@ -7,6 +7,8 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { toast } from 'react-toastify'
 import LoadingOverlay from '@/app/components/LoadingOverlay'
 import { withLoading } from '@/utils'
+import { Credentials } from './schema'
+import { ZodError } from 'zod'
 
 const supabase = createClientComponentClient()
 
@@ -15,7 +17,18 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({ email: '', password: '' })
   const router = useRouter()
+
+  const validateForm = (e: any) => {
+    Credentials.parseAsync({ email, password }).then(() => {
+      setErrors({ ...errors, [e.target.name]: '' })
+    }).catch(error => {
+      const formattedErrors = error.format()
+      setErrors({ ...errors, [e.target.name]: formattedErrors[e.target.name]?._errors[0] || '' })
+    })
+  }
+  const isFormValid = Boolean(!errors.email && !errors.password && email && password)
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(event => {
@@ -111,20 +124,22 @@ export default function Login() {
             <div className="p-5">
               <div className="mb-4">
                 <label className="form-label"><i className="bi bi-envelope"></i> E-Mail</label>
-                <input value={email} onChange={e => setEmail(e.target.value)} className="form-input" type="email" name="email" placeholder="info@daohive.io" required autoFocus autoComplete="email" />
+                <input value={email} onChange={e => setEmail(e.target.value)} onBlur={validateForm} className="form-input" type="email" name="email" placeholder="info@daohive.io" required autoFocus autoComplete="email" />
+                <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.email}</small>
               </div>
               <div className="mb-4">
                 <label className="form-label"><i className="bi bi-key"></i> Password</label>
                 <div className="relative">
-                  <input value={password} onChange={e => setPassword(e.target.value)} className="form-input" type={showPassword ? 'text' : 'password'} name="password" placeholder="********" required autoComplete="current-password" />
+                  <input value={password} onChange={e => setPassword(e.target.value)} onBlur={validateForm} className="form-input" type={showPassword ? 'text' : 'password'} name="password" placeholder="********" required autoComplete="current-password" />
                   <span className="w-20 text-sm flex-center gap-2 absolute z-40 right-0 top-0 block p-2 h-full cursor-pointer hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500" onClick={() => setShowPassword(!showPassword)}>{showPassword ? 'Hide' : 'Show'} <i className={`bi bi-${showPassword ? 'eye-slash' : 'eye'}`}></i></span>
                 </div>
+                <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.password}</small>
               </div>
               <div className="flex justify-between items-center">
                 <a href="#" className="text-blue-400 hover:text-blue-500">Forgot password?</a>
                 <div className="flex items-center gap-2">
-                  <Button onClick={handleSignUp} variant={Variant.Secondary}><i className="bi bi-person-add"></i> Sign Up</Button>
-                  <Button onClick={handleSignIn}>Sign in <i className="bi bi-box-arrow-in-right"></i></Button>
+                  <Button onClick={handleSignUp} isEnabled={isFormValid} variant={Variant.Secondary}><i className="bi bi-person-add"></i> Sign Up</Button>
+                  <Button onClick={handleSignIn} isEnabled={isFormValid}>Sign in <i className="bi bi-box-arrow-in-right"></i></Button>
                 </div>
               </div>
             </div>
