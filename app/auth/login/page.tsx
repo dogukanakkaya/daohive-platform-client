@@ -1,9 +1,12 @@
 'use client'
 import Image from 'next/image'
 import Button, { Variant } from '@/app/components/Button'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { toast } from 'react-toastify'
+import LoadingOverlay from '@/app/components/LoadingOverlay'
+import { withLoading } from '@/utils'
 
 const supabase = createClientComponentClient()
 
@@ -11,21 +14,32 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
 
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(event => {
+      if (event === 'SIGNED_IN') {
+        setLoading(false)
+        router.push('/')
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
   const signInWithGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
+    setLoading(true)
+    await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${location.origin}/auth/callback`
       }
     })
-
-    if (!error) router.refresh()
   }
 
-  const handleSignUp = async () => {
-    const { data } = await supabase.auth.signUp({
+  const handleSignUp = withLoading(async () => {
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -33,23 +47,21 @@ export default function Login() {
       }
     })
 
-    // if (data.session) router.refresh()
-    console.log(JSON.stringify(data))
-  }
+    if (error) toast.error(error.message) // @todo: handle confirmation mail warning ?
+    else if (data.user?.identities?.length === 0) await handleSignIn() // if there is no identites means user already signed up, try to sign in
+  }, setLoading)
 
-  const handleSignIn = async () => {
-    const { data } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    })
+  const handleSignIn = withLoading(async () => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
 
-    if (data.session) router.push('/')
-  }
+    if (error) toast.error(error.message)
+  }, setLoading)
 
   return (
     <div className="bg-cover bg-no-repeat bg-[url('/light-login.jpg')] dark:bg-[url('/dark-login.jpg')]">
       <main className="flex-center h-[calc(100vh-theme('spacing.40'))] flex-col">
-        <div className="flex-center w-11/12 sm:w-3/5 xl:w-4/12">
+        <div className="relative flex-center w-11/12 sm:w-3/5 xl:w-4/12">
+          {loading && <LoadingOverlay />}
           <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg w-full">
             <div className="p-5 flex flex-col items-center justify-center">
               <Image

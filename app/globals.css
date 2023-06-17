@@ -24,6 +24,10 @@ body {
   .sidebar-link {
     @apply flex items-center gap-4 uppercase p-4 text-gray-600 dark:text-gray-300 font-medium hover:bg-gray-200 dark:hover:bg-gray-800 transition rounded;
   }
+
+  .overlay {
+    @apply absolute inset-0 bg-gray-300 bg-opacity-50 dark:bg-gray-700 dark:bg-opacity-50 z-40 flex-center;
+  }
 }
 
 @layer utilities {
