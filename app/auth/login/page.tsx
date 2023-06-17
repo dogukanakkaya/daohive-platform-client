@@ -13,34 +13,37 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
 
-  async function signInWithGoogle() {
-    const { data, error } = await supabase.auth.signInWithOAuth({
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${location.origin}/auth/callback`
       }
     })
+
+    if (!error) router.refresh()
   }
 
   const handleSignUp = async () => {
-    const r = await supabase.auth.signUp({
+    const { data } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: `${location.origin}/auth/callback`
       }
     })
-    console.log(r.data.user)
 
-    router.refresh()
+    // if (data.session) router.refresh()
+    console.log(JSON.stringify(data))
   }
 
   const handleSignIn = async () => {
-    await supabase.auth.signInWithPassword({
+    const { data } = await supabase.auth.signInWithPassword({
       email,
       password
     })
-    router.refresh()
+
+    if (data.session) router.push('/')
   }
 
   return (
@@ -94,26 +97,24 @@ export default function Login() {
               </div>
             </div>
             <div className="p-5">
-              <form className="w-full" method="POST">
-                <div className="mb-4">
-                  <label className="form-label"><i className="bi bi-envelope"></i> E-Mail</label>
-                  <input value={email} onChange={e => setEmail(e.target.value)} className="form-input" type="email" name="email" placeholder="info@daohive.io" required autoFocus autoComplete="email" />
+              <div className="mb-4">
+                <label className="form-label"><i className="bi bi-envelope"></i> E-Mail</label>
+                <input value={email} onChange={e => setEmail(e.target.value)} className="form-input" type="email" name="email" placeholder="info@daohive.io" required autoFocus autoComplete="email" />
+              </div>
+              <div className="mb-4">
+                <label className="form-label"><i className="bi bi-key"></i> Password</label>
+                <div className="relative">
+                  <input value={password} onChange={e => setPassword(e.target.value)} className="form-input" type={showPassword ? 'text' : 'password'} name="password" placeholder="********" required autoComplete="current-password" />
+                  <span className="w-20 text-sm flex-center gap-2 absolute z-40 right-0 top-0 block p-2 h-full cursor-pointer hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500" onClick={() => setShowPassword(!showPassword)}>{showPassword ? 'Hide' : 'Show'} <i className={`bi bi-${showPassword ? 'eye-slash' : 'eye'}`}></i></span>
                 </div>
-                <div className="mb-4">
-                  <label className="form-label"><i className="bi bi-key"></i> Password</label>
-                  <div className="relative">
-                    <input value={password} onChange={e => setPassword(e.target.value)} className="form-input" type={showPassword ? 'text' : 'password'} name="password" placeholder="********" required autoComplete="current-password" />
-                    <span className="w-20 text-sm flex-center gap-2 absolute z-40 right-0 top-0 block p-2 h-full cursor-pointer hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500" onClick={() => setShowPassword(!showPassword)}>{showPassword ? 'Hide' : 'Show'} <i className={`bi bi-${showPassword ? 'eye-slash' : 'eye'}`}></i></span>
-                  </div>
+              </div>
+              <div className="flex justify-between items-center">
+                <a href="#" className="text-blue-400 hover:text-blue-500">Forgot password?</a>
+                <div className="flex items-center gap-2">
+                  <Button onClick={handleSignUp} variant={Variant.Secondary}><i className="bi bi-person-add"></i> Sign Up</Button>
+                  <Button onClick={handleSignIn}>Sign in <i className="bi bi-box-arrow-in-right"></i></Button>
                 </div>
-                <div className="flex justify-between items-center">
-                  <a href="#" className="text-blue-400 hover:text-blue-500">Forgot password?</a>
-                  <div className="flex items-center gap-2">
-                    <Button onClick={handleSignUp} variant={Variant.Secondary}><i className="bi bi-person-add"></i> Sign Up</Button>
-                    <Button onClick={handleSignIn}>Sign in <i className="bi bi-box-arrow-in-right"></i></Button>
-                  </div>
-                </div>
-              </form>
+              </div>
             </div>
           </div>
         </div>
