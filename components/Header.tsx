@@ -26,7 +26,7 @@ export default async function Header() {
           <Image src={user?.user_metadata.picture} width={48} height={48} className="rounded-full transition group-hover/picture:ring-2 ring-primary ring-offset-2 ring-offset-white dark:ring-offset-gray-900" alt="Avatar" />
           <h3>{user?.user_metadata.name || user?.email} <i className="bi bi-chevron-down text-sm"></i></h3>
         </div>
-        <ul className="absolute right-0 top-16 w-full rounded-xl shadow bg-white dark:bg-gray-900 hidden group-focus-within/profile:block">
+        <ul className="absolute right-0 top-16 z-10 w-full rounded-xl shadow bg-white dark:bg-gray-900 hidden group-focus-within/profile:block">
           <li>
             <Link href="/profile" className="profile-link rounded-t-xl"><i className="bi bi-person-gear"></i> Profile</Link>
           </li>

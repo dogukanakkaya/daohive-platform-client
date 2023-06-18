@@ -20,10 +20,10 @@ export default function Sidebar() {
           <h2 className="uppercase text-gray-800 dark:text-gray-400 ml-4 my-4 text-sm">Menu</h2>
           <ul className="flex flex-col">
             <li>
-              <Link href="#" className="sidebar-link"><i className="bi bi-grid"></i> Dashboard</Link>
+              <Link href="/" className="sidebar-link"><i className="bi bi-grid"></i> Dashboard</Link>
             </li>
             <li>
-              <Link href="#" className="sidebar-link"><i className="bi bi-newspaper"></i> Contracts</Link>
+              <Link href="/contracts" className="sidebar-link"><i className="bi bi-newspaper"></i> Contracts</Link>
             </li>
             <li>
               <Link href="#" className="sidebar-link"><i className="bi bi-people"></i> Voters</Link>
