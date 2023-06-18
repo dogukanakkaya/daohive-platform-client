@@ -1,5 +1,6 @@
-import { headers } from 'next/headers'
+'use client'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 interface Props {
   items: {
@@ -9,8 +10,7 @@ interface Props {
 }
 
 export default function Breadcrumb({ items }: Props) {
-  const _headers = headers()
-  const path = _headers.get('x-invoke-path')
+  const path = usePathname()
 
   return (
     <nav className="inline-block bg-gray-50 text-gray-700 border border-gray-200 py-3 px-5 rounded-lg dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">

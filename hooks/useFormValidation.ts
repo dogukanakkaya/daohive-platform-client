@@ -5,7 +5,7 @@ type FormErrors = Record<string, string>;
 
 export default function useFormValidation<T = Record<string, unknown>>(initialState: T, schema: z.Schema) {
   const [state, setState] = useState<T>(initialState)
-  const [errors, setErrors] = useState<FormErrors>({})
+  const [errors, setErrors] = useState<FormErrors>({ _: '_' })
 
   const validateForm = async (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     try {

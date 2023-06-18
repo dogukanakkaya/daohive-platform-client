@@ -1,16 +1,9 @@
+import { Contract } from '@/app/(dashboard)/contracts/types'
 import Image from 'next/image'
 import Link from 'next/link'
 
 interface Props {
-  contract: {
-    name: string
-    description: string
-    slug: string
-    address: string
-    totalProposals: number
-    totalVoters: number
-    activeProposals: number
-  }
+  contract: Contract
 }
 
 export default function ContractCard({ contract }: Props) {

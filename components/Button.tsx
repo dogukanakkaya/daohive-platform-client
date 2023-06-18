@@ -18,6 +18,6 @@ export default function Button({ children, variant = Variant.Primary, isEnabled 
   const _className = clsx('button', variant, !isEnabled && 'opacity-60 pointer-events-none cursor-not-allowed', className)
 
   return (
-    <button className={_className} {...restAttributes}>{children}</button>
+    <div className={!isEnabled ? 'cursor-not-allowed' : ''}><button className={_className} {...restAttributes}>{children}</button></div>
   )
 }
