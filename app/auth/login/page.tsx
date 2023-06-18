@@ -8,17 +8,16 @@ import { toast } from 'react-toastify'
 import LoadingOverlay from '@/app/components/LoadingOverlay'
 import { withLoading } from '@/utils'
 import { Credentials } from './schema'
-import { ZodError } from 'zod'
+import { useFormValidation } from '@/hooks'
 
 const supabase = createClientComponentClient()
 
 export default function Login() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [errors, setErrors] = useState<Record<string, string>>({ email: '', password: '' }) // @todo: write this and `validateForm` logic as a separate dynamic hook
   const router = useRouter()
+
+  const { state: { email, password }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ email: '', password: '' }, Credentials)
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(event => {
@@ -59,17 +58,6 @@ export default function Login() {
 
     if (error) toast.error(error.message)
   }, setLoading)
-
-  const validateForm = (e: any) => {
-    Credentials.parseAsync({ email, password }).then(() => {
-      setErrors({ ...errors, [e.target.name]: '' })
-    }).catch(error => {
-      const formattedErrors = error.format()
-      setErrors({ ...errors, [e.target.name]: formattedErrors[e.target.name]?._errors[0] || '' })
-    })
-  }
-  
-  const isFormValid = Boolean(!errors.email && !errors.password && email && password)
 
   return (
     <div className="bg-cover bg-no-repeat bg-[url('/light-login.jpg')] dark:bg-[url('/dark-login.jpg')]">
@@ -125,13 +113,13 @@ export default function Login() {
             <div className="p-5">
               <div className="mb-4">
                 <label className="form-label"><i className="bi bi-envelope"></i> E-Mail</label>
-                <input value={email} onChange={e => setEmail(e.target.value)} onBlur={validateForm} className="form-input" type="email" name="email" placeholder="info@daohive.io" required autoFocus autoComplete="email" />
+                <input value={email} onChange={handleChange} onBlur={validateForm} className="form-input" type="email" name="email" placeholder="info@daohive.io" required autoFocus autoComplete="email" />
                 <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.email}</small>
               </div>
               <div className="mb-4">
                 <label className="form-label"><i className="bi bi-key"></i> Password</label>
                 <div className="relative">
-                  <input value={password} onChange={e => setPassword(e.target.value)} onBlur={validateForm} className="form-input" type={showPassword ? 'text' : 'password'} name="password" placeholder="********" required autoComplete="current-password" />
+                  <input value={password} onChange={handleChange} onBlur={validateForm} className="form-input" type={showPassword ? 'text' : 'password'} name="password" placeholder="********" required autoComplete="current-password" />
                   <span className="w-20 text-sm flex-center gap-2 absolute z-40 right-0 top-0 block p-2 h-full cursor-pointer hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500" onClick={() => setShowPassword(!showPassword)}>{showPassword ? 'Hide' : 'Show'} <i className={`bi bi-${showPassword ? 'eye-slash' : 'eye'}`}></i></span>
                 </div>
                 <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.password}</small>
