@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 body {
-  @apply text-black bg-white dark:text-white dark:bg-black;
+  @apply text-gray-600 dark:text-gray-300 bg-white dark:bg-black;
 }
 
 @layer components {
@@ -22,7 +22,12 @@ body {
   }
 
   .sidebar-link {
-    @apply flex items-center gap-4 uppercase p-4 text-gray-600 dark:text-gray-300 font-medium hover:bg-gray-200 dark:hover:bg-gray-800 transition rounded;
+    @apply flex items-center gap-4 uppercase p-4 font-medium hover:bg-gray-200 dark:hover:bg-gray-800 transition rounded;
+  }
+
+  .profile-link {
+    @apply flex items-center gap-2 p-3 hover:bg-gray-200 dark:hover:bg-gray-800 transition;
+
   }
 
   .overlay {

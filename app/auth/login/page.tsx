@@ -10,9 +10,8 @@ import { withLoading } from '@/utils'
 import { Credentials } from './schema'
 import { useFormValidation } from '@/hooks'
 
-const supabase = createClientComponentClient()
-
 export default function Login() {
+  const supabase = createClientComponentClient()
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
@@ -60,14 +59,14 @@ export default function Login() {
   }, setLoading)
 
   return (
-    <div className="bg-cover bg-no-repeat bg-[url('/light-login.jpg')] dark:bg-[url('/dark-login.jpg')]">
+    <div className="bg-cover bg-no-repeat bg-[url('/images/light-login.jpg')] dark:bg-[url('/images/dark-login.jpg')]">
       <main className="flex-center h-[calc(100vh-theme('spacing.40'))] flex-col">
         <div className="relative flex-center w-11/12 sm:w-3/5 xl:w-4/12">
           {loading && <LoadingOverlay />}
           <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg w-full">
             <div className="p-5 flex flex-col items-center justify-center">
               <Image
-                src="/logo.png"
+                src="/images/logo.png"
                 alt="Logo"
                 className="w-[50px] h-14 dark:invert"
                 width={100}
@@ -78,7 +77,7 @@ export default function Login() {
                 <Button variant={Variant.SignInWith} className="shadow-md flex items-center gap-4 rounded">
                   <Image
                     className="relative"
-                    src="/metamask.svg"
+                    src="/images/metamask.svg"
                     alt="Sign in with GitHub"
                     width={32}
                     height={32}
@@ -89,7 +88,7 @@ export default function Login() {
                 <Button onClick={signInWithGoogle} variant={Variant.SignInWith} className="shadow-md flex items-center gap-4 rounded">
                   <Image
                     className="relative"
-                    src="/google.svg"
+                    src="/images/google.svg"
                     alt="Sign in with Google"
                     width={32}
                     height={32}
@@ -100,7 +99,7 @@ export default function Login() {
                 <Button variant={Variant.SignInWith} className="shadow-md flex items-center gap-4 rounded">
                   <Image
                     className="relative"
-                    src="/github.svg"
+                    src="/images/github.svg"
                     alt="Sign in with GitHub"
                     width={32}
                     height={32}
