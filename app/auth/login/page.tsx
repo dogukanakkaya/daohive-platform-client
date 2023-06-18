@@ -118,7 +118,7 @@ export default function Login() {
                 <label className="form-label"><i className="bi bi-key"></i> Password</label>
                 <div className="relative">
                   <input value={password} onChange={handleChange} onBlur={validateForm} className="form-input" type={showPassword ? 'text' : 'password'} name="password" placeholder="********" required autoComplete="current-password" />
-                  <span className="w-20 text-sm flex-center gap-2 absolute z-40 right-0 top-0 block p-2 h-full cursor-pointer hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500" onClick={() => setShowPassword(!showPassword)}>{showPassword ? 'Hide' : 'Show'} <i className={`bi bi-${showPassword ? 'eye-slash' : 'eye'}`}></i></span>
+                  <span className="w-20 text-sm flex-center gap-2 absolute z-10 right-0 top-0 block p-2 h-full cursor-pointer hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500" onClick={() => setShowPassword(!showPassword)}>{showPassword ? 'Hide' : 'Show'} <i className={`bi bi-${showPassword ? 'eye-slash' : 'eye'}`}></i></span>
                 </div>
                 <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.password}</small>
               </div>

@@ -8,7 +8,10 @@ export default async function Header() {
   const { data: { user } } = await supabase.auth.getUser()
 
   return (
-    <div className="border-l w-full h-16 px-4 flex items-center justify-between gap-5 shadow-lg bg-white dark:bg-gray-900 border-b dark:border-gray-700">
+    <div className="sticky z-20 top-0 md:border-l w-full h-16 px-4 flex items-center justify-between gap-5 shadow-lg bg-white dark:bg-gray-900 border-b dark:border-gray-700">
+      <div className="block md:hidden">
+        <label htmlFor="menu"><i className="bi bi-list text-4xl"></i></label>
+      </div>
       <div className="grow">
         <input className="form-input w-full" type="search" placeholder="Search..." />
       </div>
@@ -26,7 +29,7 @@ export default async function Header() {
           <Image src={user?.user_metadata.picture} width={48} height={48} className="rounded-full transition group-hover/picture:ring-2 ring-primary ring-offset-2 ring-offset-white dark:ring-offset-gray-900" alt="Avatar" />
           <h3>{user?.user_metadata.name || user?.email} <i className="bi bi-chevron-down text-sm"></i></h3>
         </div>
-        <ul className="absolute right-0 top-16 z-20 w-full rounded-xl shadow bg-white dark:bg-gray-900 hidden group-focus-within/profile:block">
+        <ul className="absolute right-0 top-16 w-full rounded-xl shadow bg-white dark:bg-gray-900 hidden group-focus-within/profile:block">
           <li>
             <Link href="/profile" className="profile-link rounded-t-xl"><i className="bi bi-person-gear"></i> Profile</Link>
           </li>
