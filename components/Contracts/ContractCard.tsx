@@ -52,7 +52,7 @@ export default function ContractCard({ contract }: Props) {
               <p className="text-sm">{contract.activeProposals}</p>
             </div>
           </div>
-          <Link href={`/contracts/${contract.slug}`} className="mt-2 text-indigo-500 flex items-center gap-2">
+          <Link href={`/contracts/${contract.id}`} className="mt-2 text-indigo-500 flex items-center gap-2">
             Show More
             <i className="bi bi-box-arrow-up-right"></i>
           </Link>

@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { toast } from 'react-toastify'
 import LoadingOverlay from '@/components/LoadingOverlay'
-import { withLoading } from '@/utils'
+import { withLoading } from '@/utils/hof'
 import { Credentials } from './schema'
 import { useFormValidation } from '@/hooks'
 

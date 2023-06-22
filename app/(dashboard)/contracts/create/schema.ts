@@ -12,6 +12,8 @@ export const Contract = z.object({
       required_error: 'Description is required'
     })
     .min(10, 'Description must contain at least 10 character(s)')
-    .max(255, 'Description must contain at most 255 character(s)'),
+    .max(255, 'Description must contain at most 255 character(s)')
+    .optional()
+    .or(z.literal('')),
   whitelist: z.array(z.string()).optional()
 })

@@ -6,7 +6,9 @@ import { useFormValidation } from '@/hooks'
 import { useState } from 'react'
 import { Contract } from './schema'
 import LoadingOverlay from '@/components/LoadingOverlay'
-import { withLoading } from '@/utils'
+import { withLoading } from '@/utils/hof'
+import { api } from '@/utils/api'
+import { useRouter } from 'next/navigation'
 
 enum WhitelistType {
   All = 'all',
@@ -20,6 +22,7 @@ export default function Create() {
   const [whitelist, setWhitelist] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
   const { state: { name, description }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ name: '', description: '' }, Contract)
+  const router = useRouter()
 
   const WHITELIST_TYPE_RENDER: Record<WhitelistType, JSX.Element> = Object.freeze({
     [WhitelistType.All]: <span className="block mt-8 text-sm font-medium"><i className="bi bi-info-circle"></i> All voters in your list will be whitelisted</span>,
@@ -46,8 +49,12 @@ export default function Create() {
   })
 
   const handleSubmit = withLoading(async () => {
-    console.log({ name, description, whitelist })
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    try {
+      await api.post<{ contractAddress: string }>('/deploy', { name, description, whitelist })
+      router.push('/contracts')
+    } catch (err) {
+      console.log(err)
+    }
   }, setLoading)
 
   return (
@@ -63,7 +70,7 @@ export default function Create() {
           <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.name}</small>
         </div>
         <div className="mb-4">
-          <label className="form-label">Contract Description <span className="text-xs text-red-500">*</span></label>
+          <label className="form-label">Contract Description</label>
           <input value={description} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="description" placeholder="Enter Contract Description" required />
           <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.description}</small>
         </div>
