@@ -1,18 +1,13 @@
+import { cookies } from 'next/headers'
 import Breadcrumb from '@/components/Breadcrumb'
 import Button, { Variant } from '@/components/Button'
 import { ContractCard } from '@/components/Contracts'
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import Link from 'next/link'
 
-export default function Contracts() {
-  const mockContract = {
-    id: 'sdadas',
-    name: 'Tesla Digital Screen',
-    description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eius, autem laboriosam natus, voluptas doloremque quae voluptatem maxime quis atque earum obcaecati repudiandae fugit ab commodi ducimus ipsam eaque veniam nulla.',
-    address: '0x26c80cc193b27d73d2c40943acec77f4da2c5bd8',
-    totalProposals: 17,
-    totalVoters: 2366,
-    activeProposals: 1
-  }
+export default async function Contracts() {
+  const supabase = createServerComponentClient({ cookies })
+  const { data: contracts } = await supabase.from('contracts').select('*')
 
   return (
     <div className="space-y-4">
@@ -29,8 +24,14 @@ export default function Contracts() {
           </Link>
         </div>
       </div>
-      <ContractCard contract={mockContract} />
-      <ContractCard contract={mockContract} />
+      {contracts?.map(contract => (
+        <ContractCard key={contract.id} contract={{
+          ...contract,
+          totalProposals: 17,
+          totalVoters: 2366,
+          activeProposals: 1
+        }} />
+      ))}
     </div>
   )
 }

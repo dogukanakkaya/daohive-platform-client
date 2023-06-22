@@ -7,7 +7,6 @@ export const api = axios.create({
     'Content-Type': 'application/json',
     Accept: 'application/json'
   }
-  // withCredentials: true
 })
 
 export const toQueryString = (query: QueryParams) => {
