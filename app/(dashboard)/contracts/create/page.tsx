@@ -9,6 +9,7 @@ import LoadingOverlay from '@/components/LoadingOverlay'
 import { withLoading } from '@/utils/hof'
 import { api } from '@/utils/api'
 import { useRouter } from 'next/navigation'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 enum WhitelistType {
   All = 'all',
@@ -18,6 +19,7 @@ enum WhitelistType {
 }
 
 export default function Create() {
+  const supabase = createClientComponentClient()
   const [whitelistType, setWhitelistType] = useState<WhitelistType>(WhitelistType.All)
   const [whitelist, setWhitelist] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
@@ -50,7 +52,12 @@ export default function Create() {
 
   const handleSubmit = withLoading(async () => {
     try {
-      await api.post<{ contractAddress: string }>('/deploy', { name, description, whitelist })
+      const { data: { session } } = await supabase.auth.getSession()
+      await api.post<{ contractAddress: string }>('/deploy', { name, description, whitelist }, {
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`
+        }
+      })
       router.push('/contracts')
     } catch (err) {
       console.log(err)
