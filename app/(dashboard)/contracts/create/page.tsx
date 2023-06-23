@@ -78,7 +78,7 @@ export default function Create() {
         </div>
         <div className="mb-4">
           <label className="form-label">Contract Description</label>
-          <input value={description} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="description" placeholder="Enter Contract Description" required />
+          <input value={description} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="description" placeholder="Enter Contract Description" />
           <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.description}</small>
         </div>
         <div className="mb-4 grid grid-cols-4 gap-4">

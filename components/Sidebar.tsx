@@ -29,7 +29,7 @@ export default function Sidebar() {
                   <Link href="/contracts" className="sidebar-link"><i className="bi bi-newspaper"></i> Contracts</Link>
                 </li>
                 <li>
-                  <Link href="#" className="sidebar-link"><i className="bi bi-people"></i> Voters</Link>
+                  <Link href="/voters" className="sidebar-link"><i className="bi bi-people"></i> Voters</Link>
                 </li>
                 <li>
                   <Link href="#" className="sidebar-link"><i className="bi bi-clipboard-check"></i> Proposals</Link>
