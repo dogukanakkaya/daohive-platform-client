@@ -15,7 +15,7 @@ export default async function Contracts() {
         <Breadcrumb items={[{ name: 'Contracts', href: '/contracts' }]} />
         <div className="flex gap-4">
           <Button variant={Variant.Secondary} className="flex items-center shadow-lg">
-            <i className="bi bi-arrow-clockwise text-lg"></i> <span className="border-l ml-2 pl-2 dark:border-gray-700">Reload</span>
+            <i className="bi bi-arrow-repeat text-lg"></i> <span className="border-l ml-2 pl-2 dark:border-gray-700">Refresh</span>
           </Button>
           <Link href="/contracts/create">
             <Button variant={Variant.Secondary} className="flex items-center">

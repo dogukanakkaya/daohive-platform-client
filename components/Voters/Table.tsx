@@ -37,6 +37,8 @@ const defaultColumn: Partial<ColumnDef<Voter>> = {
     const onBlur = async () => {
       const columnId = column.id as keyof z.infer<typeof VoterSchema>
 
+      if (value === initialValue) return
+
       try {
         await VoterSchema.pick({ [columnId]: true }).parseAsync({ [columnId]: value })
         await table.options.meta?.updateData(index, columnId, value)
@@ -53,12 +55,16 @@ const defaultColumn: Partial<ColumnDef<Voter>> = {
       }
     }
 
+    useEffect(() => {
+      setValue(initialValue)
+    }, [initialValue])
+
     return (
       <input
-        className="bg-transparent outline-none"
         value={(value ?? '').toString()}
         onChange={e => setValue(e.target.value)}
         onBlur={onBlur}
+        className="w-full bg-transparent outline-none"
       />
     )
   }
@@ -67,11 +73,11 @@ const defaultColumn: Partial<ColumnDef<Voter>> = {
 const columnHelper = createColumnHelper<Voter>()
 const columns = [
   columnHelper.accessor('address', {
-    cell: info => (
-      <Tooltip text="Copy Address" textAfterClick={<>Copied <i className="bi bi-check"></i></>} position="top">
-        < span onClick={() => navigator.clipboard.writeText(info.getValue())} className="cursor-pointer font-medium text-gray-900 whitespace-nowrap dark:text-white" > {info.getValue()}</span >
-      </Tooltip >
-    )
+    cell: info => typeof defaultColumn.cell === 'function' ? (
+      <span className="w-full font-medium text-gray-900 whitespace-nowrap dark:text-white">
+        {defaultColumn.cell(info)}
+      </span>
+    ) : null
   }),
   columnHelper.accessor('name', {}),
   columnHelper.accessor('email', {})
@@ -84,13 +90,15 @@ export default function Table({ data: voters }: Props) {
   const [remove, setRemove] = useState(0)
   const [data, setData] = useState(voters)
 
+  useEffect(() => {
+    setData(voters)
+  }, [voters])
+
   const table = useReactTable({
     data,
     columns,
     defaultColumn,
-    state: {
-      globalFilter
-    },
+    state: { globalFilter },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -119,7 +127,6 @@ export default function Table({ data: voters }: Props) {
 
   return (
     <>
-      {JSON.stringify(data)}
       <div className="flex justify-between">
         <div className="flex items-center gap-2" onClick={() => router.refresh()}>
           Show
@@ -159,19 +166,26 @@ export default function Table({ data: voters }: Props) {
                     {flexRender(header.column.columnDef.header, header.getContext())}
                   </th>
                 ))}
-                <th scope="col" className="px-6 py-3">
-                  Actions
-                </th>
               </tr>
             ))}
           </thead>
           <tbody>
             {table.getRowModel().rows.map(row => (
               <tr key={row.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <td className="w-4 p-4">
-                  <div className="flex items-center">
-                    <input id={`checkbox-table-${row.id}`} type="checkbox" className="w-4 h-4 form-input" />
-                    <label htmlFor={`checkbox-table-${row.id}`} className="sr-only">checkbox</label>
+                <td className="w-6 p-4">
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center">
+                      <input id={`checkbox-table-${row.id}`} type="checkbox" className="w-4 h-4 form-input" />
+                      <label htmlFor={`checkbox-table-${row.id}`} className="sr-only">checkbox</label>
+                    </div>
+                    <Tooltip text="Copy Address" textAfterClick={<>Copied <i className="bi bi-check"></i></>} position="top">
+                      <span onClick={() => navigator.clipboard.writeText(data[row.index].address)} className="cursor-pointer">
+                        <i className="bi bi-clipboard"></i>
+                      </span>
+                    </Tooltip>
+                    <span onClick={() => handleRemove(row)} className="text-red-500 cursor-pointer">
+                      {remove === data[row.index].id ? <i className="bi bi-check-lg"></i> : <i className="bi bi-trash3"></i>}
+                    </span>
                   </div>
                 </td>
                 {row.getVisibleCells().map(cell => (
@@ -179,11 +193,6 @@ export default function Table({ data: voters }: Props) {
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
-                <td className="flex items-center px-6 py-4 space-x-3">
-                  <span className="text-red-500 cursor-pointer hover:underline w-20" onClick={() => handleRemove(row)}>
-                    {remove === data[row.index].id ? <>Confirm <i className="bi bi-check-lg"></i></> : 'Remove'}
-                  </span>
-                </td>
               </tr>
             ))}
           </tbody>

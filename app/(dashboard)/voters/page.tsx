@@ -5,6 +5,7 @@ import { Table } from '@/components/Voters'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import Link from 'next/link'
 import InfoCard from '@/components/InfoCard'
+import Refresh from '@/components/Refresh'
 
 export default async function Voters() {
   const supabase = createServerComponentClient({ cookies })
@@ -15,9 +16,7 @@ export default async function Voters() {
       <div className="flex items-center justify-between">
         <Breadcrumb items={[{ name: 'Voters', href: '/voters' }]} />
         <div className="flex gap-4">
-          <Button variant={Variant.Secondary} className="flex items-center shadow-lg">
-            <i className="bi bi-arrow-clockwise text-lg"></i> <span className="border-l ml-2 pl-2 dark:border-gray-700">Reload</span>
-          </Button>
+          <Refresh />
           <Link href="/voters/create">
             <Button variant={Variant.Secondary} className="flex items-center">
               <i className="bi bi-person-plus text-lg"></i> <span className="border-l ml-2 pl-2 dark:border-gray-700">Add New</span>
@@ -26,7 +25,6 @@ export default async function Voters() {
         </div>
       </div>
       <InfoCard messages={[
-        'You can click on the address to copy it.',
         'You can click on and type to edit name and email fields.'
       ]} />
       {voters && <Table data={voters} />}

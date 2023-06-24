@@ -42,7 +42,7 @@ export default function Create() {
         </div>
         <div className="mb-4">
           <label className="form-label">Voter Name</label>
-          <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter Voter Name" autoFocus />
+          <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter Voter Name" />
           <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.name}</small>
         </div>
         <div className="mb-4">
