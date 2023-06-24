@@ -1,6 +1,8 @@
 'use client'
 import { Voter } from '@/app/(dashboard)/voters/types'
 import {
+  ColumnDef,
+  RowData,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
@@ -9,19 +11,64 @@ import {
   useReactTable
 } from '@tanstack/react-table'
 import Tooltip from '../Tooltip'
-import { useDeferredValue, useState } from 'react'
+import { useDeferredValue, useEffect, useState } from 'react'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { Voter as VoterSchema } from '@/app/(dashboard)/voters/create/schema'
+import { toast } from 'react-toastify'
+import { z } from 'zod'
+
+declare module '@tanstack/react-table' {
+  interface TableMeta<TData extends RowData> {
+    updateData: (rowIndex: number, columnId: string, value: unknown) => Promise<void>
+  }
+}
 
 interface Props {
   data: Voter[]
+}
+
+const defaultColumn: Partial<ColumnDef<Voter>> = {
+  cell: function Cell({ getValue, row: { index }, column, table }) {
+    const initialValue = getValue()
+    const [value, setValue] = useState(initialValue)
+
+    const onBlur = async () => {
+      const columnId = column.id as keyof z.infer<typeof VoterSchema>
+
+      try {
+        await VoterSchema.pick({ [columnId]: true }).parseAsync({ [columnId]: value })
+        await table.options.meta?.updateData(index, columnId, value)
+        toast.success('Successfully updated')
+      } catch (err: any) {
+        if (err instanceof z.ZodError) {
+          const formattedErrors = err.format() as z.inferFormattedError<typeof VoterSchema>
+          toast.error(formattedErrors[columnId]?._errors[0])
+        } else {
+          toast.error(err.message)
+        }
+
+        setValue(initialValue)
+      }
+    }
+
+    return (
+      <input
+        className="bg-transparent outline-none"
+        value={value as string}
+        onChange={e => setValue(e.target.value)}
+        onBlur={onBlur}
+      />
+    )
+  }
 }
 
 const columnHelper = createColumnHelper<Voter>()
 const columns = [
   columnHelper.accessor('address', {
     cell: info => (
-      <Tooltip text="Copy" textAfterClick={<>Copied <i className="bi bi-check"></i></>} position="top">
-        <span onClick={() => navigator.clipboard.writeText(info.getValue())} className="cursor-pointer font-medium text-gray-900 whitespace-nowrap dark:text-white">{info.getValue()}</span>
-      </Tooltip>
+      <Tooltip text="Copy Address" textAfterClick={<>Copied <i className="bi bi - check"></i></>} position="top">
+        < span onClick={() => navigator.clipboard.writeText(info.getValue())} className="cursor-pointer font-medium text-gray-900 whitespace-nowrap dark:text-white" > {info.getValue()}</span >
+      </Tooltip >
     )
   }),
   columnHelper.accessor('name', {}),
@@ -29,18 +76,26 @@ const columns = [
 ]
 
 export default function Table({ data }: Props) {
+  const supabase = createClientComponentClient()
   const [search, setSearch] = useState('')
   const globalFilter = useDeferredValue(search)
 
   const table = useReactTable({
     data,
     columns,
+    defaultColumn,
     state: {
       globalFilter
     },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel()
+    getPaginationRowModel: getPaginationRowModel(),
+    meta: {
+      updateData: async (rowIndex: number, columnId: string, value: unknown) => {
+        const { error } = await supabase.from('voters').update({ [columnId]: value }).eq('id', data[rowIndex].id)
+        if (error) throw Error(error.message)
+      }
+    }
   })
 
   return (

@@ -33,7 +33,7 @@ export default function Create() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <Breadcrumb items={[{ name: 'Contracts', href: '/contracts' }, { name: 'Create', href: '/contracts/create' }]} />
+        <Breadcrumb items={[{ name: 'Voters', href: '/voters' }, { name: 'Create', href: '/voters/create' }]} />
       </div>
       <div className="relative bg-gray-200 dark:bg-gray-900 p-5 rounded-xl shadow">
         {loading && <LoadingOverlay />}

@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 export default async function Contracts() {
   const supabase = createServerComponentClient({ cookies })
-  const { data: contracts } = await supabase.from('contracts').select('*')
+  const { data: contracts } = await supabase.from('contracts').select('*').order('created_at', { ascending: false })
 
   return (
     <div className="space-y-4">

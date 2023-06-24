@@ -7,12 +7,12 @@ import Link from 'next/link'
 
 export default async function Voters() {
   const supabase = createServerComponentClient({ cookies })
-  const { data: voters } = await supabase.from('voters').select('*')
+  const { data: voters } = await supabase.from('voters').select('*').order('created_at', { ascending: false })
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <Breadcrumb items={[{ name: 'Contracts', href: '/contracts' }]} />
+        <Breadcrumb items={[{ name: 'Voters', href: '/voters' }]} />
         <div className="flex gap-4">
           <Button variant={Variant.Secondary} className="flex items-center shadow-lg">
             <i className="bi bi-arrow-clockwise text-lg"></i> <span className="border-l ml-2 pl-2 dark:border-gray-700">Reload</span>
