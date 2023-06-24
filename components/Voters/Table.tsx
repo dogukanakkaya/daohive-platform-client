@@ -9,6 +9,7 @@ import {
   useReactTable
 } from '@tanstack/react-table'
 import Tooltip from '../Tooltip'
+import { useDeferredValue, useState } from 'react'
 
 interface Props {
   data: Voter[]
@@ -28,9 +29,15 @@ const columns = [
 ]
 
 export default function Table({ data }: Props) {
+  const [search, setSearch] = useState('')
+  const globalFilter = useDeferredValue(search)
+
   const table = useReactTable({
     data,
     columns,
+    state: {
+      globalFilter
+    },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel()
@@ -38,6 +45,29 @@ export default function Table({ data }: Props) {
 
   return (
     <>
+      <div className="flex justify-between">
+        <div className="flex items-center gap-2">
+          Show
+          <select
+            className="form-input"
+            value={table.getState().pagination.pageSize}
+            onChange={e => {
+              table.setPageSize(Number(e.target.value))
+            }}
+          >
+            {[10, 20, 30, 40, 50].map(pageSize => (
+              <option key={pageSize} value={pageSize}>
+                {pageSize}
+              </option>
+            ))}
+          </select>
+          records
+        </div>
+        <div>
+          <label htmlFor="search" className="sr-only">Search</label>
+          <input value={globalFilter} onChange={e => setSearch(e.target.value)} className="form-input" type="search" placeholder="Search..." />
+        </div>
+      </div>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -119,32 +149,17 @@ export default function Table({ data }: Props) {
           </b>
         </span>
         | Go to page:
-        <div className="flex gap-2">
-          <input
-            type="number"
-            min={1}
-            max={table.getPageCount()}
-            defaultValue={table.getState().pagination.pageIndex + 1}
-            onChange={e => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0
-              table.setPageIndex(page)
-            }}
-            className="form-input w-20"
-          />
-          <select
-            className="form-input"
-            value={table.getState().pagination.pageSize}
-            onChange={e => {
-              table.setPageSize(Number(e.target.value))
-            }}
-          >
-            {[10, 20, 30, 40, 50].map(pageSize => (
-              <option key={pageSize} value={pageSize}>
-                Show {pageSize}
-              </option>
-            ))}
-          </select>
-        </div>
+        <input
+          type="number"
+          min={1}
+          max={table.getPageCount()}
+          defaultValue={table.getState().pagination.pageIndex + 1}
+          onChange={e => {
+            const page = e.target.value ? Number(e.target.value) - 1 : 0
+            table.setPageIndex(page)
+          }}
+          className="form-input w-20"
+        />
       </div>
     </>
   )

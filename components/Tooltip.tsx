@@ -20,7 +20,7 @@ export default function Tooltip({ children, text, textAfterClick, revertTimeout 
     }
   }
 
-  const tooltipClass = clsx('absolute z-20 whitespace-nowrap rounded bg-black py-1 px-2 text-xs font-semibold text-white opacity-0 group-hover:opacity-100', {
+  const tooltipClass = clsx('tooltip', {
     'bottom-full mb-2 left-1/2 -translate-x-1/2': position === 'top',
     'left-full ml-2 top-1/2 -translate-y-1/2': position === 'right',
     'top-full mt-2 left-1/2 -translate-x-1/2': position === 'bottom',
