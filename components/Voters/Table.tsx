@@ -66,7 +66,7 @@ const columnHelper = createColumnHelper<Voter>()
 const columns = [
   columnHelper.accessor('address', {
     cell: info => (
-      <Tooltip text="Copy Address" textAfterClick={<>Copied <i className="bi bi - check"></i></>} position="top">
+      <Tooltip text="Copy Address" textAfterClick={<>Copied <i className="bi bi-check"></i></>} position="top">
         < span onClick={() => navigator.clipboard.writeText(info.getValue())} className="cursor-pointer font-medium text-gray-900 whitespace-nowrap dark:text-white" > {info.getValue()}</span >
       </Tooltip >
     )

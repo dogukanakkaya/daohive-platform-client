@@ -10,6 +10,7 @@ import { withLoading } from '@/utils/hof'
 import { api } from '@/utils/api'
 import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import InfoCard from '@/components/InfoCard'
 
 enum WhitelistType {
   All = 'all',
@@ -69,6 +70,9 @@ export default function Create() {
       <div className="flex items-center justify-between">
         <Breadcrumb items={[{ name: 'Contracts', href: '/contracts' }, { name: 'Create', href: '/contracts/create' }]} />
       </div>
+      <InfoCard messages={[
+        'Be aware, to change contract name, description or whitelist you will need to pay transaction fees since these values will be stored in the blockchain.'
+      ]} />
       <div className="relative bg-gray-200 dark:bg-gray-900 p-5 rounded-xl shadow">
         {loading && <LoadingOverlay />}
         <div className="mb-4">

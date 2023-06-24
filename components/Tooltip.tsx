@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 interface Props {
   children: React.ReactNode
-  text: string
+  text: string | React.ReactNode
   textAfterClick?: string | React.ReactNode
   revertTimeout?: number
   position?: 'top' | 'bottom' | 'left' | 'right'

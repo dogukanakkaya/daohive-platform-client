@@ -4,6 +4,7 @@ import Button, { Variant } from '@/components/Button'
 import { Table } from '@/components/Voters'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import Link from 'next/link'
+import InfoCard from '@/components/InfoCard'
 
 export default async function Voters() {
   const supabase = createServerComponentClient({ cookies })
@@ -24,6 +25,10 @@ export default async function Voters() {
           </Link>
         </div>
       </div>
+      <InfoCard messages={[
+        'You can click on the address to copy it.',
+        'You can click on and type to edit name and email fields.'
+      ]} />
       {voters && <Table data={voters} />}
     </div>
   )
