@@ -2,6 +2,7 @@
 import { Voter } from '@/app/(dashboard)/voters/types'
 import {
   ColumnDef,
+  Row,
   RowData,
   createColumnHelper,
   flexRender,
@@ -16,6 +17,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Voter as VoterSchema } from '@/app/(dashboard)/voters/create/schema'
 import { toast } from 'react-toastify'
 import { z } from 'zod'
+import { useRouter } from 'next/navigation'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -54,7 +56,7 @@ const defaultColumn: Partial<ColumnDef<Voter>> = {
     return (
       <input
         className="bg-transparent outline-none"
-        value={value as string}
+        value={(value ?? '').toString()}
         onChange={e => setValue(e.target.value)}
         onBlur={onBlur}
       />
@@ -75,10 +77,12 @@ const columns = [
   columnHelper.accessor('email', {})
 ]
 
-export default function Table({ data }: Props) {
+export default function Table({ data: voters }: Props) {
   const supabase = createClientComponentClient()
   const [search, setSearch] = useState('')
   const globalFilter = useDeferredValue(search)
+  const [remove, setRemove] = useState(0)
+  const [data, setData] = useState(voters)
 
   const table = useReactTable({
     data,
@@ -98,10 +102,26 @@ export default function Table({ data }: Props) {
     }
   })
 
+  const handleRemove = async (row: Row<Voter>) => {
+    const id = data[row.index].id
+
+    if (remove === id) {
+      const { error } = await supabase.from('voters').delete().eq('id', id)
+      if (error) toast.error(error.message)
+      setData(data.filter(voter => voter.id !== id))
+      setRemove(0)
+    } else {
+      setRemove(id)
+    }
+  }
+
+  const router = useRouter()
+
   return (
     <>
+      {JSON.stringify(data)}
       <div className="flex justify-between">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2" onClick={() => router.refresh()}>
           Show
           <select
             className="form-input"
@@ -140,7 +160,7 @@ export default function Table({ data }: Props) {
                   </th>
                 ))}
                 <th scope="col" className="px-6 py-3">
-                  Action
+                  Actions
                 </th>
               </tr>
             ))}
@@ -160,8 +180,9 @@ export default function Table({ data }: Props) {
                   </td>
                 ))}
                 <td className="flex items-center px-6 py-4 space-x-3">
-                  <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                  <a href="#" className="font-medium text-red-600 dark:text-red-500 hover:underline">Remove</a>
+                  <span className="text-red-500 cursor-pointer hover:underline w-20" onClick={() => handleRemove(row)}>
+                    {remove === data[row.index].id ? <>Confirm <i className="bi bi-check-lg"></i></> : 'Remove'}
+                  </span>
                 </td>
               </tr>
             ))}

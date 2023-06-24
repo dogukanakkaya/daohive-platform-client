@@ -18,13 +18,11 @@ export default function Create() {
 
   const handleSubmit = withLoading(async () => {
     try {
-      const { error } = await supabase.from('voters').insert([{ address, name, email }])
+      // @todo: later change empties to be saved as null, check other places too
+      const { error } = await supabase.from('voters').insert([{ address, name, email: email || null }])
 
-      if (error) {
-        toast.error(error.message)
-      } else {
-        router.push('/voters')
-      }
+      if (error) toast.error(error.message)
+      else router.refresh(); router.replace('/voters')
     } catch (err) {
       console.log(err)
     }

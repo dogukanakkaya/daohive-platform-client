@@ -59,7 +59,7 @@ export default function Create() {
           Authorization: `Bearer ${session?.access_token}`
         }
       })
-      router.push('/contracts')
+      router.refresh(); router.replace('/contracts')
     } catch (err) {
       console.log(err)
     }
