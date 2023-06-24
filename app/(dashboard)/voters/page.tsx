@@ -4,7 +4,6 @@ import Button, { Variant } from '@/components/Button'
 import { Table } from '@/components/Voters'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import Link from 'next/link'
-import Tooltip from '@/components/Tooltip'
 
 export default async function Voters() {
   const supabase = createServerComponentClient({ cookies })
