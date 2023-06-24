@@ -6,6 +6,7 @@ import {
   getCoreRowModel,
   useReactTable
 } from '@tanstack/react-table'
+import Tooltip from '../Tooltip'
 
 interface Props {
   data: Voter[]
@@ -14,8 +15,11 @@ interface Props {
 const columnHelper = createColumnHelper<Voter>()
 const columns = [
   columnHelper.accessor('address', {
-    // @todo: add a tooltip-like thing
-    cell: info => <span onClick={() => navigator.clipboard.writeText(info.getValue())} className="cursor-pointer font-medium text-gray-900 whitespace-nowrap dark:text-white">{info.getValue()}</span>
+    cell: info => (
+      <Tooltip text="Copy" textAfterClick={<>Copied <i className="bi bi-check"></i></>} position="top">
+        <span onClick={() => navigator.clipboard.writeText(info.getValue())} className="cursor-pointer font-medium text-gray-900 whitespace-nowrap dark:text-white">{info.getValue()}</span>
+      </Tooltip>
+    )
   }),
   columnHelper.accessor('name', {}),
   columnHelper.accessor('email', {})

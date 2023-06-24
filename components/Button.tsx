@@ -1,4 +1,3 @@
-import type { ReactNode, HTMLAttributes } from 'react'
 import { clsx } from 'clsx'
 
 export enum Variant {
@@ -8,12 +7,12 @@ export enum Variant {
 }
 
 interface Props {
-  children: ReactNode
+  children: React.ReactNode
   variant?: Variant
   isEnabled?: boolean
 }
 
-export default function Button({ children, variant = Variant.Primary, isEnabled = true, ...rest }: Props & HTMLAttributes<HTMLButtonElement>) {
+export default function Button({ children, variant = Variant.Primary, isEnabled = true, ...rest }: Props & React.HTMLAttributes<HTMLButtonElement>) {
   const { className, ...restAttributes } = rest
   const _className = clsx('button', variant, !isEnabled && 'opacity-60 pointer-events-none cursor-not-allowed', className)
 
