@@ -4,10 +4,15 @@ import Button, { Variant } from '@/components/Button'
 import { ContractCard } from '@/components/Contracts'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import Link from 'next/link'
+import { ContractSelect } from './types'
+
+export const CONTRACT_SELECT = 'id,name,description,address,deployment_status'
 
 export default async function Contracts() {
   const supabase = createServerComponentClient({ cookies })
-  const { data: contracts } = await supabase.from('contracts').select('*').order('created_at', { ascending: false })
+
+  const { data: contracts } = await supabase.from('contracts').select(CONTRACT_SELECT).order('created_at', { ascending: false })
+    .returns<ContractSelect[]>()
 
   return (
     <div className="space-y-4">

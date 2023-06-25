@@ -1,9 +1,10 @@
+import { ContractSelect } from '@/app/(dashboard)/contracts/page'
 import { Contract } from '@/app/(dashboard)/contracts/types'
 import Image from 'next/image'
 import Link from 'next/link'
 
 interface Props {
-  contract: Contract
+  contract: ContractSelect & { totalProposals: number, totalVoters: number, activeProposals: number } // @todo temporary until we have these values in database
 }
 
 export default function ContractCard({ contract }: Props) {
@@ -37,7 +38,7 @@ export default function ContractCard({ contract }: Props) {
           <div className="flex flex-wrap">
             <div className="w-1/2 lg:w-1/4 mb-2 lg:mb-0">
               <h2>Contract Address</h2>
-              <p className="text-sm">{contract.address.slice(0, 6)}...{contract.address.slice(contract.address.length - 4)}</p>
+              <p className="text-sm">{contract.address?.slice(0, 6)}...{contract.address?.slice(contract.address.length - 4)}</p>
             </div>
             <div className="w-1/2 lg:w-1/4 mb-2 lg:mb-0">
               <h2>Total Proposals</h2>

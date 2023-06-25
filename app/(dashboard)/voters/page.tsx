@@ -6,10 +6,20 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import Link from 'next/link'
 import InfoCard from '@/components/InfoCard'
 import Refresh from '@/components/Refresh'
+import GroupCard from '@/components/Voters/GroupCard'
+import GroupDialog from '@/components/Voters/GroupDialog'
+import { VoterGroupSelect, VoterSelect } from './types'
+
+export const VOTER_SELECT = 'id,address,name,email'
+export const VOTER_GROUP_SELECT = 'id,name'
 
 export default async function Voters() {
   const supabase = createServerComponentClient({ cookies })
-  const { data: voters } = await supabase.from('voters').select('*').order('created_at', { ascending: false })
+
+  const { data: voters } = await supabase.from('voters').select(VOTER_SELECT).order('created_at', { ascending: false })
+    .returns<VoterSelect[]>()
+  const { data: voterGroups } = await supabase.from('voter_groups').select(VOTER_GROUP_SELECT).order('created_at', { ascending: false })
+    .returns<VoterGroupSelect[]>()
 
   return (
     <div className="space-y-4">
@@ -28,6 +38,13 @@ export default async function Voters() {
         'You can click on and type to edit name and email fields.'
       ]} />
       {voters && <Table data={voters} />}
+      <div className="border-t dark:border-gray-700">
+        <h2 className="text-xl font-semibold my-4">Whitelist Groups</h2>
+        <div className="flex items-center flex-wrap gap-4">
+          {voterGroups?.map(group => <GroupCard key={group.id} group={group} />)}
+        </div>
+        <GroupDialog open={true} />
+      </div>
     </div>
   )
 }

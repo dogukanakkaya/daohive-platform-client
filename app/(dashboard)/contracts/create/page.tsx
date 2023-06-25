@@ -4,7 +4,7 @@ import Button from '@/components/Button'
 import TagInput from '@/components/TagInput'
 import { useFormValidation } from '@/hooks'
 import { useState } from 'react'
-import { Contract } from './schema'
+import { Contract } from '@/utils/zod/contract'
 import LoadingOverlay from '@/components/LoadingOverlay'
 import { withLoading } from '@/utils/hof'
 import { api } from '@/utils/api'
@@ -77,7 +77,7 @@ export default function Create() {
         {loading && <LoadingOverlay />}
         <div className="mb-4">
           <label className="form-label">Contract Name <span className="text-xs text-red-500">*</span></label>
-          <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter Contract Name" required autoFocus />
+          <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter Contract Name" autoFocus />
           <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.name}</small>
         </div>
         <div className="mb-4">

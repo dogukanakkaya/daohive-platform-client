@@ -3,7 +3,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import Button from '@/components/Button'
 import { useFormValidation } from '@/hooks'
 import { useState } from 'react'
-import { Voter } from './schema'
+import { Voter } from '@/utils/zod/voter'
 import LoadingOverlay from '@/components/LoadingOverlay'
 import { withLoading } from '@/utils/hof'
 import { useRouter } from 'next/navigation'
@@ -37,7 +37,7 @@ export default function Create() {
         {loading && <LoadingOverlay />}
         <div className="mb-4">
           <label className="form-label">Voter Address <span className="text-xs text-red-500">*</span></label>
-          <input value={address} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="address" placeholder="Enter Voter Address" required autoFocus />
+          <input value={address} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="address" placeholder="Enter Voter Address" autoFocus />
           <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.address}</small>
         </div>
         <div className="mb-4">

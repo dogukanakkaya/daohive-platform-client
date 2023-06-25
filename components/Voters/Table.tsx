@@ -1,5 +1,5 @@
 'use client'
-import { Voter } from '@/app/(dashboard)/voters/types'
+import type { VoterSelect } from '@/app/(dashboard)/voters/types'
 import {
   ColumnDef,
   Row,
@@ -14,7 +14,7 @@ import {
 import Tooltip from '../Tooltip'
 import { useDeferredValue, useEffect, useState } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { Voter as VoterSchema } from '@/app/(dashboard)/voters/create/schema'
+import { Voter as VoterSchema } from '@/utils/zod/voter'
 import { toast } from 'react-toastify'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
@@ -24,12 +24,11 @@ declare module '@tanstack/react-table' {
     updateData: (rowIndex: number, columnId: string, value: unknown) => Promise<void>
   }
 }
-
 interface Props {
-  data: Voter[]
+  data: VoterSelect[]
 }
 
-const defaultColumn: Partial<ColumnDef<Voter>> = {
+const defaultColumn: Partial<ColumnDef<VoterSelect>> = {
   cell: function Cell({ getValue, row: { index }, column, table }) {
     const initialValue = getValue()
     const [value, setValue] = useState(initialValue)
@@ -70,7 +69,7 @@ const defaultColumn: Partial<ColumnDef<Voter>> = {
   }
 }
 
-const columnHelper = createColumnHelper<Voter>()
+const columnHelper = createColumnHelper<VoterSelect>()
 const columns = [
   columnHelper.accessor('address', {
     cell: info => typeof defaultColumn.cell === 'function' ? (
@@ -110,7 +109,7 @@ export default function Table({ data: voters }: Props) {
     }
   })
 
-  const handleRemove = async (row: Row<Voter>) => {
+  const handleRemove = async (row: Row<VoterSelect>) => {
     const id = data[row.index].id
 
     if (remove === id) {

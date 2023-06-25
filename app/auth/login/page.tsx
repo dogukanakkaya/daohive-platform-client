@@ -7,7 +7,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { toast } from 'react-toastify'
 import LoadingOverlay from '@/components/LoadingOverlay'
 import { withLoading } from '@/utils/hof'
-import { Credentials } from './schema'
+import { Credentials } from '@/utils/zod/auth'
 import { useFormValidation } from '@/hooks'
 
 export default function Login() {
@@ -111,13 +111,13 @@ export default function Login() {
             <div className="p-5">
               <div className="mb-4">
                 <label className="form-label"><i className="bi bi-envelope"></i> E-Mail</label>
-                <input value={email} onChange={handleChange} onBlur={validateForm} className="form-input" type="email" name="email" placeholder="info@daohive.io" required autoFocus autoComplete="email" />
+                <input value={email} onChange={handleChange} onBlur={validateForm} className="form-input" type="email" name="email" placeholder="info@daohive.io" autoFocus autoComplete="email" />
                 <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.email}</small>
               </div>
               <div className="mb-4">
                 <label className="form-label"><i className="bi bi-key"></i> Password</label>
                 <div className="relative">
-                  <input value={password} onChange={handleChange} onBlur={validateForm} className="form-input" type={showPassword ? 'text' : 'password'} name="password" placeholder="********" required autoComplete="current-password" />
+                  <input value={password} onChange={handleChange} onBlur={validateForm} className="form-input" type={showPassword ? 'text' : 'password'} name="password" placeholder="********" autoComplete="current-password" />
                   <span className="w-20 text-sm flex-center gap-2 absolute z-10 right-0 top-0 block p-2 h-full cursor-pointer hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500" onClick={() => setShowPassword(!showPassword)}>{showPassword ? 'Hide' : 'Show'} <i className={`bi bi-${showPassword ? 'eye-slash' : 'eye'}`}></i></span>
                 </div>
                 <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.password}</small>
