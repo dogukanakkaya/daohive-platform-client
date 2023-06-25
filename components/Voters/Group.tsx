@@ -61,7 +61,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
           <select value={initialWhitelist} onChange={handleChange} className="form-input" multiple name="initialWhitelist">
             {voters.map(voter => <option key={voter.id} value={voter.id}>{voter.name}</option>)}
           </select>
-          <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.whitelist}</small>
+          <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.initialWhitelist}</small>
         </div>
         <div className="flex items-center justify-end gap-2">
           <Button onClick={() => setIsDialogOpen(false)} variant={Variant.Secondary}>Cancel</Button>
