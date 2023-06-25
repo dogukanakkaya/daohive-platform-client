@@ -3,9 +3,11 @@ import { z } from 'zod'
 
 type FormErrors = Record<string, string>;
 
+const INITIAL_ERROR_STATE = Object.freeze({ _: '_' })
+
 export default function useFormValidation<T = Record<string, unknown>>(initialState: T, schema: z.Schema) {
   const [state, setState] = useState<T>(initialState)
-  const [errors, setErrors] = useState<FormErrors>({ _: '_' })
+  const [errors, setErrors] = useState<FormErrors>(INITIAL_ERROR_STATE)
 
   const validateForm = async (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     try {
@@ -21,7 +23,12 @@ export default function useFormValidation<T = Record<string, unknown>>(initialSt
     setState({ ...state, [e.target.name]: e.target.value })
   }
 
+  const reset = () => {
+    setState(initialState)
+    setErrors(INITIAL_ERROR_STATE)
+  }
+
   const isFormValid = Object.values(errors).every((error) => !error)
 
-  return { state, errors, isFormValid, validateForm, handleChange }
+  return { state, errors, isFormValid, validateForm, handleChange, reset }
 }

@@ -18,6 +18,7 @@ import { Voter as VoterSchema } from '@/utils/zod/voter'
 import { toast } from 'react-toastify'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
+import useServerState from '@/hooks/useServerState'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -87,11 +88,7 @@ export default function Table({ data: voters }: Props) {
   const [search, setSearch] = useState('')
   const globalFilter = useDeferredValue(search)
   const [remove, setRemove] = useState(0)
-  const [data, setData] = useState(voters)
-
-  useEffect(() => {
-    setData(voters)
-  }, [voters])
+  const [data, setData] = useServerState(voters)
 
   const table = useReactTable({
     data,
@@ -115,7 +112,10 @@ export default function Table({ data: voters }: Props) {
     if (remove === id) {
       const { error } = await supabase.from('voters').delete().eq('id', id)
       if (error) toast.error(error.message)
-      setData(data.filter(voter => voter.id !== id))
+      else {
+        toast.success('Voter deleted successfully')
+        setData(data.filter(voter => voter.id !== id))
+      }
       setRemove(0)
     } else {
       setRemove(id)
@@ -182,9 +182,11 @@ export default function Table({ data: voters }: Props) {
                         <i className="bi bi-clipboard"></i>
                       </span>
                     </Tooltip>
-                    <span onClick={() => handleRemove(row)} className="text-red-500 cursor-pointer">
-                      {remove === data[row.index].id ? <i className="bi bi-check-lg"></i> : <i className="bi bi-trash3"></i>}
-                    </span>
+                    <Tooltip text="Delete" position="top">
+                      <span onClick={() => handleRemove(row)} className="text-red-500 hover:text-red-500 cursor-pointer">
+                        {remove === data[row.index].id ? <i className="bi bi-check-lg"></i> : <i className="bi bi-trash3"></i>}
+                      </span>
+                    </Tooltip>
                   </div>
                 </td>
                 {row.getVisibleCells().map(cell => (
