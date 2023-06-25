@@ -2,6 +2,7 @@ import './globals.css'
 import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer, Zoom } from 'react-toastify'
 import { Inter } from 'next/font/google'
+import { TOAST_AUTO_CLOSE } from '@/config'
 
 const inter = Inter({ weight: ['400', '500', '700'], subsets: ['latin'] })
 
@@ -16,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className}>
         {children}
         <ToastContainer
-          autoClose={4000}
+          autoClose={TOAST_AUTO_CLOSE}
           hideProgressBar
           pauseOnFocusLoss={false}
           theme="colored"

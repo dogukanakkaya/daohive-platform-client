@@ -1,3 +1,4 @@
+import { TOAST_AUTO_CLOSE } from '@/config'
 import { Dispatch, SetStateAction } from 'react'
 import { Icons, toast } from 'react-toastify'
 
@@ -19,8 +20,8 @@ export const withLoadingToastr = <T extends (...args: any[]) => Promise<any>>(fn
 
   try {
     await fn(...args)
-    toast.update(toastId, { type: 'success', render: 'Action completed successfully.', icon: Icons.success, autoClose: 4000, isLoading: false })
+    toast.update(toastId, { type: 'success', render: 'Action completed successfully.', icon: Icons.success, autoClose: TOAST_AUTO_CLOSE, isLoading: false })
   } catch (error: any) {
-    toast.update(toastId, { type: 'error', render: error.message, icon: Icons.error, autoClose: 4000, isLoading: false })
+    toast.update(toastId, { type: 'error', render: error.message, icon: Icons.error, autoClose: TOAST_AUTO_CLOSE, isLoading: false })
   }
 }

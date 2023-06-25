@@ -19,6 +19,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const { state: { name, initialWhitelist }, errors, handleChange, validateForm, isFormValid, reset } = useFormValidation({ name: '', initialWhitelist: [] }, VoterGroup)
   const [data, setData] = useEffectState(voterGroups)
+  const [remove, setRemove] = useState(0)
 
   const handleSubmit = withLoadingToastr(async () => {
     const { data: voterGroup } = await supabase.from('voter_groups').insert({ name }).select('id')
@@ -36,10 +37,11 @@ export default function Group({ data: voterGroups, voters }: Props) {
     setData([...data, { id: voterGroup[0].id, name }])
   })
 
-  const handleRemove = withLoadingToastr(async (id: number) => {
+  const handleRemove = (id: number) => remove === id ? withLoadingToastr(async () => {
     await supabase.from('voter_groups').delete().eq('id', id).throwOnError()
     setData(data.filter(voter => voter.id !== id))
-  })
+    setRemove(0)
+  })() : setRemove(id)
 
   return (
     <div className="border-t-4 dark:border-gray-700">
@@ -48,7 +50,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
         <Button onClick={() => setIsDialogOpen(true)} variant={Variant.Secondary} className="!py-1 !px-2"><i className="bi bi-plus text-lg"></i></Button>
       </div>
       <div className="flex items-center flex-wrap gap-4">
-        {data.map(group => <GroupCard handleRemove={handleRemove} key={group.id} group={group} />)}
+        {data.map(group => <GroupCard remove={remove} handleRemove={handleRemove} key={group.id} group={group} />)}
       </div>
       <Dialog title="Create new whitelist group" isOpen={isDialogOpen}>
         <div className="mb-4">

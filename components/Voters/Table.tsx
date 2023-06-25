@@ -19,6 +19,7 @@ import { toast } from 'react-toastify'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 import { useEffectState } from '@/hooks'
+import { withLoadingToastr } from '@/utils/hof'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -102,21 +103,11 @@ export default function Table({ data: voters }: Props) {
     }
   })
 
-  const handleRemove = async (row: Row<VoterSelect>) => {
-    const id = data[row.index].id
-
-    if (remove === id) {
-      const { error } = await supabase.from('voters').delete().eq('id', id)
-      if (error) toast.error(error.message)
-      else {
-        toast.success('Voter deleted successfully')
-        setData(data.filter(voter => voter.id !== id))
-      }
-      setRemove(0)
-    } else {
-      setRemove(id)
-    }
-  }
+  const handleRemove = (id: number) => remove === id ? withLoadingToastr(async () => {
+    await supabase.from('voters').delete().eq('id', id).throwOnError()
+    setData(data.filter(voter => voter.id !== id))
+    setRemove(0)
+  })() : setRemove(id)
 
   const router = useRouter()
 
@@ -179,7 +170,7 @@ export default function Table({ data: voters }: Props) {
                       </span>
                     </Tooltip>
                     <Tooltip text="Delete" position="top">
-                      <span onClick={() => handleRemove(row)} className="text-red-500 hover:text-red-500 cursor-pointer">
+                      <span onClick={() => handleRemove(data[row.index].id)} className="text-red-500 hover:text-red-500 cursor-pointer">
                         {remove === data[row.index].id ? <i className="bi bi-check-lg"></i> : <i className="bi bi-trash3"></i>}
                       </span>
                     </Tooltip>
