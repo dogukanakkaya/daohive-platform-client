@@ -169,7 +169,7 @@ export default function Table({ data: voters }: Props) {
                         <i className="bi bi-clipboard"></i>
                       </span>
                     </Tooltip>
-                    <Tooltip text="Delete" position="top">
+                    <Tooltip text={remove === data[row.index].id ? 'Confirm' : 'Delete'} position="top">
                       <span onClick={() => handleRemove(data[row.index].id)} className="text-red-500 hover:text-red-500 cursor-pointer">
                         {remove === data[row.index].id ? <i className="bi bi-check-lg"></i> : <i className="bi bi-trash3"></i>}
                       </span>

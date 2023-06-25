@@ -1,4 +1,5 @@
 'use client'
+import { useEffectState } from '@/hooks'
 import clsx from 'clsx'
 import { useState } from 'react'
 
@@ -11,7 +12,7 @@ interface Props {
 }
 
 export default function Tooltip({ children, text, textAfterClick, revertTimeout = 1000, position = 'bottom' }: Props) {
-  const [tooltipText, setTooltipText] = useState<string | React.ReactNode>(text)
+  const [tooltipText, setTooltipText] = useEffectState<string | React.ReactNode>(text)
 
   const handleClick = () => {
     if (textAfterClick) {

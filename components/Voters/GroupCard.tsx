@@ -21,7 +21,7 @@ export default function GroupCard({ group, remove, handleRemove }: Props) {
             <i className="bi bi-pencil-square"></i>
           </span>
         </Tooltip>
-        <Tooltip text="Delete" position="top">
+        <Tooltip text={remove === group.id ? 'Confirm' : 'Delete'} position="top">
           <span onClick={() => handleRemove(group.id)} className="text-red-500 hover:text-red-600 cursor-pointer">
             {remove === group.id ? <i className="bi bi-check-lg"></i> : <i className="bi bi-trash3"></i>}
           </span>
