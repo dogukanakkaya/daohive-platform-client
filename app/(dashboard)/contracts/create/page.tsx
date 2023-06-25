@@ -41,7 +41,7 @@ export default function Create() {
     [WhitelistType.Contract]: (
       <>
         <label className="form-label">Contract <span className="text-xs text-red-500">*</span></label>
-        <select onChange={e => setWhitelistType(e.target.value as WhitelistType)} className="form-input" name="whitelistType" id="">
+        <select className="form-input" name="whitelistType">
           <option value="">Select Contract</option>
           <option value="">Contract 1</option>
           <option value="">Contract 2</option>
@@ -85,7 +85,7 @@ export default function Create() {
         <div className="mb-4 grid grid-cols-4 gap-4">
           <div className="col-span-1">
             <label className="form-label">Whitelist</label>
-            <select onChange={e => setWhitelistType(e.target.value as WhitelistType)} defaultValue={WhitelistType.All} className="form-input" name="whitelistType" id="">
+            <select onChange={e => setWhitelistType(e.target.value as WhitelistType)} defaultValue={WhitelistType.All} className="form-input" name="whitelistType">
               <option value={WhitelistType.All}>All voters</option>
               <option value={WhitelistType.Manual}>Enter manually</option>
               {/* <option value={WhitelistType.Voters}>Select from your voters</option> */}

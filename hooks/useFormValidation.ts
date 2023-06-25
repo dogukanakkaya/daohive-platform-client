@@ -20,7 +20,15 @@ export default function useFormValidation<T = Record<string, unknown>>(initialSt
   }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setState({ ...state, [e.target.name]: e.target.value })
+    const { name, value, multiple } = e.target
+    let _value: unknown = value
+
+    if (multiple) {
+      const el = e.target as HTMLSelectElement
+      _value = Array.from(el.selectedOptions).map(o => o.value)
+    }
+
+    setState(prevState => ({ ...prevState, [name]: _value }))
   }
 
   const reset = () => {

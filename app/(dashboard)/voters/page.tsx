@@ -37,7 +37,7 @@ export default async function Voters() {
         'You can click on and type to edit name and email fields.'
       ]} />
       {voters && <Table data={voters} />}
-      {voterGroups && <Group data={voterGroups} />}
+      {voters && voterGroups && <Group data={voterGroups} voters={voters} />}
     </div>
   )
 }
