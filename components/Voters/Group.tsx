@@ -4,7 +4,7 @@ import { VoterGroupSelect } from '@/app/(dashboard)/voters/types'
 import GroupCard from './GroupCard'
 import { useState } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { useFormValidation, useServerState } from '@/hooks'
+import { useFormValidation, useEffectState } from '@/hooks'
 import { VoterGroup } from '@/utils/zod/voter-group'
 import Dialog from '../Dialog'
 import { withLoadingToastr } from '@/utils/hof'
@@ -17,7 +17,7 @@ export default function Group({ data: voterGroups }: Props) {
   const supabase = createClientComponentClient()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const { state: { name }, errors, handleChange, validateForm, isFormValid, reset } = useFormValidation({ name: '' }, VoterGroup)
-  const [data, setData] = useServerState(voterGroups)
+  const [data, setData] = useEffectState(voterGroups)
 
   const handleSubmit = withLoadingToastr(async () => {
     const { data: voterGroup } = await supabase.from('voter_groups').insert({ name }).select('id')

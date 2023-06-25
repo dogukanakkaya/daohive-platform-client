@@ -18,7 +18,7 @@ import { Voter as VoterSchema } from '@/utils/zod/voter'
 import { toast } from 'react-toastify'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
-import { useServerState } from '@/hooks'
+import { useEffectState } from '@/hooks'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -32,7 +32,7 @@ interface Props {
 const defaultColumn: Partial<ColumnDef<VoterSelect>> = {
   cell: function Cell({ getValue, row: { index }, column, table }) {
     const initialValue = getValue()
-    const [value, setValue] = useServerState(initialValue)
+    const [value, setValue] = useEffectState(initialValue)
 
     const onBlur = async () => {
       const columnId = column.id as keyof z.infer<typeof VoterSchema>
@@ -84,7 +84,7 @@ export default function Table({ data: voters }: Props) {
   const [search, setSearch] = useState('')
   const globalFilter = useDeferredValue(search)
   const [remove, setRemove] = useState(0)
-  const [data, setData] = useServerState(voters)
+  const [data, setData] = useEffectState(voters)
 
   const table = useReactTable({
     data,
