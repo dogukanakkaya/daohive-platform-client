@@ -6,7 +6,7 @@ interface Props {
   children: React.ReactNode;
   title: string;
   size?: Size;
-  open: boolean;
+  isOpen: boolean;
 }
 
 export enum Size {
@@ -15,7 +15,7 @@ export enum Size {
   Large = 'max-w-2xl',
 }
 
-export default function Dialog({ children, title, size = Size.Medium, open, ...rest }: Props & React.HTMLAttributes<HTMLDialogElement>) {
+export default function Dialog({ children, title, size = Size.Medium, isOpen, ...rest }: Props & React.HTMLAttributes<HTMLDialogElement>) {
   const dialogRef = useRef<HTMLDialogElement>(null)
 
   const { className, ...restAttributes } = rest
@@ -36,12 +36,12 @@ export default function Dialog({ children, title, size = Size.Medium, open, ...r
   }
 
   useEffect(() => {
-    if (dialogRef.current?.open && !open) {
+    if (dialogRef.current?.open && !isOpen) {
       dialogRef.current?.close()
-    } else if (!dialogRef.current?.open && open) {
+    } else if (!dialogRef.current?.open && isOpen) {
       dialogRef.current?.showModal()
     }
-  }, [open])
+  }, [isOpen])
 
   return (
     <dialog ref={dialogRef} onClick={handleClick} className={_className} {...restAttributes}>

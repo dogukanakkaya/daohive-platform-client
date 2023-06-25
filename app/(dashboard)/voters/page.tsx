@@ -6,9 +6,8 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import Link from 'next/link'
 import InfoCard from '@/components/InfoCard'
 import Refresh from '@/components/Refresh'
-import GroupCard from '@/components/Voters/GroupCard'
-import GroupDialog from '@/components/Voters/GroupDialog'
 import { VoterGroupSelect, VoterSelect } from './types'
+import Group from '@/components/Voters/Group'
 
 export const VOTER_SELECT = 'id,address,name,email'
 export const VOTER_GROUP_SELECT = 'id,name'
@@ -38,13 +37,7 @@ export default async function Voters() {
         'You can click on and type to edit name and email fields.'
       ]} />
       {voters && <Table data={voters} />}
-      <div className="border-t dark:border-gray-700">
-        <h2 className="text-xl font-semibold my-4">Whitelist Groups</h2>
-        <div className="flex items-center flex-wrap gap-4">
-          {voterGroups?.map(group => <GroupCard key={group.id} group={group} />)}
-        </div>
-        <GroupDialog open={true} />
-      </div>
+      {voterGroups && <Group data={voterGroups} />}
     </div>
   )
 }
