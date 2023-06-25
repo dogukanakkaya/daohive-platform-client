@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from 'react'
+import { Icons, toast } from 'react-toastify'
 
 export const withLoading = <T extends (...args: any[]) => Promise<any>>(fn: T, setLoading: Dispatch<SetStateAction<boolean>>) => async (...args: Parameters<T>) => {
   setLoading(true)
@@ -10,5 +11,16 @@ export const withLoading = <T extends (...args: any[]) => Promise<any>>(fn: T, s
   } catch (error) {
     setLoading(false)
     throw error
+  }
+}
+
+export const withLoadingToastr = <T extends (...args: any[]) => Promise<any>>(fn: T) => async (...args: Parameters<T>) => {
+  const toastId = toast.loading('Action in progress, please wait....', { type: 'default' })
+
+  try {
+    await fn(...args)
+    toast.update(toastId, { type: 'success', render: 'Action completed successfully.', icon: Icons.success, autoClose: 4000, isLoading: false })
+  } catch (error: any) {
+    toast.update(toastId, { type: 'error', render: error.message, icon: Icons.error, autoClose: 4000, isLoading: false })
   }
 }

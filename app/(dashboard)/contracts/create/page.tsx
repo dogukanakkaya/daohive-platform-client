@@ -6,7 +6,7 @@ import { useFormValidation } from '@/hooks'
 import { useState } from 'react'
 import { Contract } from '@/utils/zod/contract'
 import LoadingOverlay from '@/components/LoadingOverlay'
-import { withLoading } from '@/utils/hof'
+import { withLoading, withLoadingToastr } from '@/utils/hof'
 import { api } from '@/utils/api'
 import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
@@ -51,19 +51,16 @@ export default function Create() {
     )
   })
 
-  const handleSubmit = withLoading(async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      await api.post<{ contractAddress: string }>('/deploy', { name, description, whitelist }, {
-        headers: {
-          Authorization: `Bearer ${session?.access_token}`
-        }
-      })
-      router.refresh(); router.replace('/contracts')
-    } catch (err) {
-      console.log(err)
-    }
-  }, setLoading)
+  const handleSubmit = withLoading(withLoadingToastr(async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    await api.post<{ contractAddress: string }>('/deploy', { name, description, whitelist }, {
+      headers: {
+        Authorization: `Bearer ${session?.access_token}`
+      }
+    })
+
+    router.refresh(); router.replace('/contracts')
+  }), setLoading)
 
   return (
     <div className="space-y-4">

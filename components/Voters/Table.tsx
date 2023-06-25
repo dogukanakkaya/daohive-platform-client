@@ -12,13 +12,13 @@ import {
   useReactTable
 } from '@tanstack/react-table'
 import Tooltip from '../Tooltip'
-import { useDeferredValue, useEffect, useState } from 'react'
+import { useDeferredValue, useState } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Voter as VoterSchema } from '@/utils/zod/voter'
 import { toast } from 'react-toastify'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
-import useServerState from '@/hooks/useServerState'
+import { useServerState } from '@/hooks'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -32,7 +32,7 @@ interface Props {
 const defaultColumn: Partial<ColumnDef<VoterSelect>> = {
   cell: function Cell({ getValue, row: { index }, column, table }) {
     const initialValue = getValue()
-    const [value, setValue] = useState(initialValue)
+    const [value, setValue] = useServerState(initialValue)
 
     const onBlur = async () => {
       const columnId = column.id as keyof z.infer<typeof VoterSchema>
@@ -54,10 +54,6 @@ const defaultColumn: Partial<ColumnDef<VoterSelect>> = {
         setValue(initialValue)
       }
     }
-
-    useEffect(() => {
-      setValue(initialValue)
-    }, [initialValue])
 
     return (
       <input

@@ -2,31 +2,21 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import Button from '@/components/Button'
 import { useFormValidation } from '@/hooks'
-import { useState } from 'react'
 import { Voter } from '@/utils/zod/voter'
-import LoadingOverlay from '@/components/LoadingOverlay'
-import { withLoading } from '@/utils/hof'
+import { withLoadingToastr } from '@/utils/hof'
 import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { toast } from 'react-toastify'
 
 export default function Create() {
   const supabase = createClientComponentClient()
-  const [loading, setLoading] = useState(false)
   const { state: { address, name, email }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ address: '', name: '', email: '' }, Voter)
   const router = useRouter()
 
-  const handleSubmit = withLoading(async () => {
-    try {
-      // @todo: later change empties to be saved as null, check other places too
-      const { error } = await supabase.from('voters').insert([{ address, name, email: email || null }])
-
-      if (error) toast.error(error.message)
-      else router.refresh(); router.replace('/voters')
-    } catch (err) {
-      console.log(err)
-    }
-  }, setLoading)
+  const handleSubmit = withLoadingToastr(async () => {
+    // @todo: later change empties to be saved as null, check other places too
+    await supabase.from('voters').insert([{ address, name, email: email || null }]).throwOnError()
+    router.refresh(); router.replace('/voters')
+  })
 
   return (
     <div className="space-y-4">
@@ -34,7 +24,6 @@ export default function Create() {
         <Breadcrumb items={[{ name: 'Voters', href: '/voters' }, { name: 'Create', href: '/voters/create' }]} />
       </div>
       <div className="relative bg-gray-200 dark:bg-gray-900 p-5 rounded-xl shadow">
-        {loading && <LoadingOverlay />}
         <div className="mb-4">
           <label className="form-label">Voter Address <span className="text-xs text-red-500">*</span></label>
           <input value={address} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="address" placeholder="Enter Voter Address" autoFocus />

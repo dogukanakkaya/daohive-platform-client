@@ -2,13 +2,12 @@
 import Button, { Variant } from '../Button'
 import { VoterGroupSelect } from '@/app/(dashboard)/voters/types'
 import GroupCard from './GroupCard'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { useFormValidation } from '@/hooks'
+import { useFormValidation, useServerState } from '@/hooks'
 import { VoterGroup } from '@/utils/zod/voter-group'
-import { toast } from 'react-toastify'
 import Dialog from '../Dialog'
-import useServerState from '@/hooks/useServerState'
+import { withLoadingToastr } from '@/utils/hof'
 
 interface Props {
   data: VoterGroupSelect[]
@@ -20,26 +19,22 @@ export default function Group({ data: voterGroups }: Props) {
   const { state: { name }, errors, handleChange, validateForm, isFormValid, reset } = useFormValidation({ name: '' }, VoterGroup)
   const [data, setData] = useServerState(voterGroups)
 
-  const handleSubmit = async () => {
-    const { data: voterGroup, error } = await supabase.from('voter_groups').insert({ name }).select('id')
-      .returns<Pick<VoterGroupSelect, 'id'>[]>()
-    if (error) toast.error(error.message)
-    else {
-      toast.success('Group created successfully')
-      setIsDialogOpen(false)
-      reset()
-      setData([...data, { id: voterGroup[0].id, name }])
-    }
-  }
+  const handleSubmit = withLoadingToastr(async () => {
+    const { data: voterGroup } = await supabase.from('voter_groups').insert({ name }).select('id')
+      .returns<Pick<VoterGroupSelect, 'id'>[]>().throwOnError()
 
-  const handleRemove = async (id: number) => {
-    const { error } = await supabase.from('voter_groups').delete().eq('id', id)
-    if (error) toast.error(error.message)
-    else {
-      toast.success('Group deleted successfully')
-      setData(data.filter(voter => voter.id !== id))
-    }
-  }
+    // @todo: find something about this typing problem or maybe promisify supabase `.throwOnError` will always return non-nullable
+    if (!voterGroup) return
+
+    setIsDialogOpen(false)
+    reset()
+    setData([...data, { id: voterGroup[0].id, name }])
+  })
+
+  const handleRemove = withLoadingToastr(async (id: number) => {
+    await supabase.from('voter_groups').delete().eq('id', id).throwOnError()
+    setData(data.filter(voter => voter.id !== id))
+  })
 
   return (
     <div className="border-t-4 dark:border-gray-700">
