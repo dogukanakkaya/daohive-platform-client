@@ -37,6 +37,7 @@ export function voterGroupQuery(supabaseClient?: SupabaseClient<Database>) {
     return voterGroup
   }
 
+  // @todo: transaction & rollback
   const updateVoterGroup = async (id: number, { name, whitelist }: VoterGroupPayload) => {
     await supabase.from('voter_groups').update({ name }).eq('id', id).throwOnError()
 

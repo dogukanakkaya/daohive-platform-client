@@ -47,8 +47,9 @@ export default function Login() {
       }
     })
 
-    if (error) toast.error(error.message) // @todo: handle confirmation mail warning ?
+    if (error) toast.error(error.message)
     else if (data.user?.identities?.length === 0) await handleSignIn() // if there is no identites means user already signed up, try to sign in
+    else toast.success('Please check your inbox and verify your email address.', { autoClose: false })
   }, setLoading)
 
   const handleSignIn = withLoading(async () => {

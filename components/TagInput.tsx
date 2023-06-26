@@ -27,7 +27,6 @@ export default function TagInput({ tags, setTags, ...rest }: HTMLProps<HTMLInput
       <input className={_className} onKeyDown={handleKeyDown} {...restAttributes} />
       <ul className="flex gap-2 mt-2">
         {
-          // @todo: UX - check this in mobile to see if X is clickable enough
           tags.map(t => <li key={t} className="block p-1 text-sm rounded bg-primary">
             {t} <span onClick={() => setTags(tags.filter(_t => _t !== t))} className="cursor-pointer bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-800">
               <i className="bi bi-x"></i>
