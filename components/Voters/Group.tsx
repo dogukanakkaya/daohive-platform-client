@@ -24,14 +24,14 @@ enum ActionType {
 export default function Group({ data: voterGroups, voters }: Props) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const {
-    state: { name, whitelist },
+    state: { name, voterIds },
     setState: setGroupState,
     errors,
     handleChange,
     validateForm,
     isFormValid,
     reset
-  } = useFormValidation({ name: '', whitelist: [] as string[] }, VoterGroup)
+  } = useFormValidation({ name: '', voterIds: [] as number[] }, VoterGroup)
   const [data, setData] = useEffectState(voterGroups)
   const [action, setAction] = useState<{ id: number, type: ActionType }>({ id: 0, type: ActionType.Create })
 
@@ -44,20 +44,23 @@ export default function Group({ data: voterGroups, voters }: Props) {
   }
 
   const handleEdit = async (id: number) => {
-    const { name, whitelist } = await voterGroupQuery().getVoterGroup(id)
-    setGroupState({ name, whitelist })
+    const { name, voter_group_voters } = await voterGroupQuery().getVoterGroup(id, `
+      id,name,
+      voter_group_voters (voter_id)
+    `)
 
+    setGroupState({ name, voterIds: voter_group_voters.map(v => v.voter_id) })
     setAction({ id, type: ActionType.Edit })
     setIsDialogOpen(true)
   }
 
   const handleSubmit = withLoadingToastr(async () => {
     if (action.id) {
-      await voterGroupQuery().updateVoterGroup(action.id, { name, whitelist })
+      await voterGroupQuery().updateVoterGroup(action.id, { name, voterIds })
 
       setData(data.map(voterGroup => voterGroup.id === action.id ? { ...voterGroup, name } : voterGroup))
     } else {
-      const voterGroup = await voterGroupQuery().createVoterGroup({ name, whitelist })
+      const voterGroup = await voterGroupQuery().createVoterGroup({ name, voterIds })
 
       setData([...data, { ...voterGroup, name }])
     }
@@ -88,7 +91,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
           group={group}
         />)}
       </div>
-      <Dialog title={action.id ? 'Create new whitelist group' : `Edit "${name}" group`} isOpen={isDialogOpen}>
+      <Dialog title={action.id ? `Edit "${name}" group` : 'Create new whitelist group'} isOpen={isDialogOpen}>
         <div className="mb-4">
           <label className="form-label">Group Name <span className="text-xs text-red-500">*</span></label>
           <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter Group Name" autoFocus />
@@ -96,10 +99,10 @@ export default function Group({ data: voterGroups, voters }: Props) {
         </div>
         <div className="mb-4">
           <label className="form-label">Voters <span className="text-xs font-light">(Hold <b className="font-medium">CTRL</b> or <b className="font-medium">CMD</b> and click to select multiple)</span></label>
-          <select value={whitelist} onChange={handleChange} className="form-input" multiple name="whitelist">
+          <select value={voterIds as unknown as string[]} onChange={handleChange} className="form-input" multiple name="voterIds">
             {voters.map(voter => <option key={voter.id} value={voter.id}>{voter.name}</option>)}
           </select>
-          <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.whitelist}</small>
+          <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.voterIds}</small>
         </div>
         <div className="flex items-center justify-end gap-2">
           <Button onClick={() => setIsDialogOpen(false)} variant={Variant.Secondary}>Cancel</Button>

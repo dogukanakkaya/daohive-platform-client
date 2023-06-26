@@ -5,16 +5,15 @@ import { useFormValidation } from '@/hooks'
 import { Voter } from '@/utils/zod/voter'
 import { withLoadingToastr } from '@/utils/hof'
 import { useRouter } from 'next/navigation'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { voterQuery } from '@/queries/voter'
 
 export default function Create() {
-  const supabase = createClientComponentClient()
   const { state: { address, name, email }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ address: '', name: '', email: '' }, Voter)
   const router = useRouter()
 
   const handleSubmit = withLoadingToastr(async () => {
     // @todo: later change empties to be saved as null, check other places too
-    await supabase.from('voters').insert([{ address, name, email: email || null }]).throwOnError()
+    await voterQuery().createVoter({ address, name: name || null, email: email || null })
     router.refresh(); router.replace('/voters')
   })
 

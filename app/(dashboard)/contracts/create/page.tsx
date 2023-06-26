@@ -30,17 +30,13 @@ export default function Create() {
   }, [])
 
   const handleSubmit = withLoading(withLoadingToastr(async () => {
-    const { data: voterAddresses, error } = await supabase.from('voter_groups').select(`
+    const { voter_group_voters } = await voterGroupQuery().getVoterGroup(voterGroup as unknown as number, `
       voter_group_voters (
-        voters (
-          address
-        )
+        voters (address)
       )
-    `).eq('id', voterGroup).throwOnError().single()
+    `)
 
-    if (error) throw error
-
-    const whitelist = voterAddresses.voter_group_voters.map(({ voters }) => voters?.address)
+    const whitelist = voter_group_voters.map(({ voters }) => voters?.address)
 
     const { data: { session } } = await supabase.auth.getSession()
     await api.post<{ contractAddress: string }>('/deploy', { name, description, whitelist }, {
