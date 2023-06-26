@@ -5,7 +5,7 @@ export function voterQuery(supabaseClient?: SupabaseClient<Database>) {
   const supabase = supabaseClient ?? createClientComponentClient<Database>()
 
   const getVoters = () => {
-    return supabase.from('voters').select('id,address,name,email').order('created_at', { ascending: false })
+    return supabase.from('voters').select('id,address,name,email').order('created_at', { ascending: false }).throwOnError()
   }
 
   return { getVoters }

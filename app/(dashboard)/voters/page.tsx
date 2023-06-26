@@ -31,7 +31,9 @@ export default async function Voters() {
         </div>
       </div>
       <InfoCard messages={[
-        'You can click on and type to edit name and email fields.'
+        'You can click on and type to edit name and email fields.',
+        'If you delete a voter, it will be removed from all groups and contract. Also won\'t be able to vote for future proposals.',
+        'If you edit the address of a voter it will also be updated in the contracts.'
       ]} />
       {voters && <Table data={voters} />}
       {voters && voterGroups && <Group data={voterGroups} voters={voters} />}

@@ -6,7 +6,7 @@ export function voterGroupQuery(supabaseClient?: SupabaseClient<Database>) {
   const supabase = supabaseClient ?? createClientComponentClient<Database>()
 
   const getVoterGroups = () => {
-    return supabase.from('voter_groups').select('id,name').order('created_at', { ascending: false })
+    return supabase.from('voter_groups').select('id,name').order('created_at', { ascending: false }).throwOnError()
   }
 
   const getVoterGroup = async (id: number) => {

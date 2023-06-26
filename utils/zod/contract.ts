@@ -15,5 +15,5 @@ export const Contract = z.object({
     .max(255, 'Description must contain at most 255 character(s)')
     .optional()
     .or(z.literal('')),
-  whitelist: z.array(z.string()).optional()
+  voterGroup: z.string().optional().or(z.literal(''))
 })

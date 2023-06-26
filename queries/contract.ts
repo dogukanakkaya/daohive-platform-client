@@ -5,7 +5,7 @@ export function contractQuery(supabaseClient?: SupabaseClient<Database>) {
   const supabase = supabaseClient ?? createClientComponentClient<Database>()
 
   const getContracts = () => {
-    return supabase.from('contracts').select('id,name,description,address,deployment_status').order('created_at', { ascending: false })
+    return supabase.from('contracts').select('id,name,description,address,deployment_status').order('created_at', { ascending: false }).throwOnError()
   }
 
   return { getContracts }

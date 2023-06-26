@@ -1,9 +1,8 @@
 'use client'
 import Breadcrumb from '@/components/Breadcrumb'
 import Button from '@/components/Button'
-import TagInput from '@/components/TagInput'
 import { useFormValidation } from '@/hooks'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Contract } from '@/utils/zod/contract'
 import LoadingOverlay from '@/components/LoadingOverlay'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
@@ -11,47 +10,38 @@ import { api } from '@/utils/api'
 import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import InfoCard from '@/components/InfoCard'
-
-enum WhitelistType {
-  All = 'all',
-  Manual = 'manual',
-  Voters = 'voters',
-  Contract = 'contract'
-}
+import { voterGroupQuery } from '@/queries/voter-group'
+import { VoterGroupsResponse } from '@/types/voter-group'
+import { Database } from '@/types/supabase'
 
 export default function Create() {
-  const supabase = createClientComponentClient()
-  const [whitelistType, setWhitelistType] = useState<WhitelistType>(WhitelistType.All)
-  const [whitelist, setWhitelist] = useState<string[]>([])
+  const supabase = createClientComponentClient<Database>()
+  const [voterGroups, setVoterGroups] = useState<VoterGroupsResponse>([])
   const [loading, setLoading] = useState(false)
-  const { state: { name, description }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ name: '', description: '' }, Contract)
+  const { state: { name, description, voterGroup }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ name: '', description: '', voterGroup: '0' }, Contract)
   const router = useRouter()
 
-  const WHITELIST_TYPE_RENDER: Record<WhitelistType, JSX.Element> = Object.freeze({
-    [WhitelistType.All]: <span className="block mt-8 text-sm font-medium"><i className="bi bi-info-circle"></i> All voters in your list will be whitelisted</span>,
-    [WhitelistType.Manual]: (
-      <>
-        <label className="form-label">
-          Addresses <span className="text-xs dark:text-gray-200">(Later you can relate your addresses with names from <span className="font-medium">Voters</span> menu to remember their belonging)</span>
-        </label>
-        <TagInput tags={whitelist} setTags={setWhitelist} type="text" name="whitelist" placeholder="Type and then press enter, comma or tab" />
-      </>
-    ),
-    [WhitelistType.Voters]: <></>,
-    [WhitelistType.Contract]: (
-      <>
-        <label className="form-label">Contract <span className="text-xs text-red-500">*</span></label>
-        <select className="form-input" name="whitelistType">
-          <option value="">Select Contract</option>
-          <option value="">Contract 1</option>
-          <option value="">Contract 2</option>
-          <option value="">Contract 3</option>
-        </select>
-      </>
-    )
-  })
+  useEffect(() => {
+    !async function () {
+      const { data, error } = await voterGroupQuery().getVoterGroups()
+      if (error) return
+      setVoterGroups(data)
+    }()
+  }, [])
 
   const handleSubmit = withLoading(withLoadingToastr(async () => {
+    const { data: voterAddresses, error } = await supabase.from('voter_groups').select(`
+      voter_group_voters (
+        voters (
+          address
+        )
+      )
+    `).eq('id', voterGroup).throwOnError().single()
+
+    if (error) throw error
+
+    const whitelist = voterAddresses.voter_group_voters.map(({ voters }) => voters?.address)
+
     const { data: { session } } = await supabase.auth.getSession()
     await api.post<{ contractAddress: string }>('/deploy', { name, description, whitelist }, {
       headers: {
@@ -82,19 +72,12 @@ export default function Create() {
           <input value={description} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="description" placeholder="Enter Contract Description" />
           <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.description}</small>
         </div>
-        <div className="mb-4 grid grid-cols-4 gap-4">
-          <div className="col-span-1">
-            <label className="form-label">Whitelist</label>
-            <select onChange={e => setWhitelistType(e.target.value as WhitelistType)} defaultValue={WhitelistType.All} className="form-input" name="whitelistType">
-              <option value={WhitelistType.All}>All voters</option>
-              <option value={WhitelistType.Manual}>Enter manually</option>
-              {/* <option value={WhitelistType.Voters}>Select from your voters</option> */}
-              <option value={WhitelistType.Contract}>Copy from a contract</option>
-            </select>
-          </div>
-          <div className="col-span-3">
-            {WHITELIST_TYPE_RENDER[whitelistType]}
-          </div>
+        <div className="mb-4">
+          <label className="form-label">Whitelist Group</label>
+          <select value={voterGroup} onChange={handleChange} className="form-input" name="voterGroup">
+            <option value="">Select group</option>
+            {voterGroups.map(voterGroup => <option key={voterGroup.id} value={voterGroup.id}>{voterGroup.name}</option>)}
+          </select>
         </div>
         <div className="flex justify-end items-center">
           <Button onClick={handleSubmit} isEnabled={isFormValid} className="flex items-center gap-2">Deploy Contract <i className="bi bi-cloud-upload text-lg"></i></Button>
