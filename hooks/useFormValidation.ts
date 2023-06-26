@@ -38,5 +38,5 @@ export default function useFormValidation<T = Record<string, unknown>>(initialSt
 
   const isFormValid = Object.values(errors).every(error => !error)
 
-  return { state, errors, isFormValid, validateForm, handleChange, reset }
+  return { state, setState, errors, isFormValid, validateForm, handleChange, reset }
 }

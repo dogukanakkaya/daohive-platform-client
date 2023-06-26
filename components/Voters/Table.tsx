@@ -71,9 +71,9 @@ const columnHelper = createColumnHelper<VoterSelect>()
 const columns = [
   columnHelper.accessor('address', {
     cell: info => typeof defaultColumn.cell === 'function' ? (
-      <span className="w-full font-medium text-gray-900 whitespace-nowrap dark:text-white">
+      <div className="font-medium text-gray-900 whitespace-nowrap dark:text-white">
         {defaultColumn.cell(info)}
-      </span>
+      </div>
     ) : null
   }),
   columnHelper.accessor('name', {}),

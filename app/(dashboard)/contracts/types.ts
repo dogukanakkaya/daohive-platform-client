@@ -1,4 +1,4 @@
-import { CONTRACT_SELECT } from './page'
+import { CONTRACT_SELECT } from '@/config'
 
 export interface Contract {
   id: string

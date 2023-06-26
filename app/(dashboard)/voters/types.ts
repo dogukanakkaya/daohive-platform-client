@@ -1,4 +1,4 @@
-import { VOTER_GROUP_SELECT, VOTER_SELECT } from './page'
+import { VOTER_GROUP_SELECT, VOTER_SELECT } from '@/config'
 
 export interface Voter {
   id: number

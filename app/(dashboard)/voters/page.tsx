@@ -8,9 +8,7 @@ import InfoCard from '@/components/InfoCard'
 import Refresh from '@/components/Refresh'
 import { VoterGroupSelect, VoterSelect } from './types'
 import Group from '@/components/Voters/Group'
-
-export const VOTER_SELECT = 'id,address,name,email'
-export const VOTER_GROUP_SELECT = 'id,name'
+import { VOTER_GROUP_SELECT, VOTER_SELECT } from '@/config'
 
 export default async function Voters() {
   const supabase = createServerComponentClient({ cookies })

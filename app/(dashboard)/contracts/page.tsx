@@ -5,8 +5,7 @@ import { ContractCard } from '@/components/Contracts'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import Link from 'next/link'
 import { ContractSelect } from './types'
-
-export const CONTRACT_SELECT = 'id,name,description,address,deployment_status'
+import { CONTRACT_SELECT } from '@/config'
 
 export default async function Contracts() {
   const supabase = createServerComponentClient({ cookies })
