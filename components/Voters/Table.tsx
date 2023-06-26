@@ -1,5 +1,4 @@
 'use client'
-import type { VoterSelect } from '@/app/(dashboard)/voters/types'
 import {
   ColumnDef,
   Row,
@@ -20,6 +19,7 @@ import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 import { useEffectState } from '@/hooks'
 import { withLoadingToastr } from '@/utils/hof'
+import { VotersResponse } from '@/types/voter'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -27,10 +27,10 @@ declare module '@tanstack/react-table' {
   }
 }
 interface Props {
-  data: VoterSelect[]
+  data: VotersResponse
 }
 
-const defaultColumn: Partial<ColumnDef<VoterSelect>> = {
+const defaultColumn: Partial<ColumnDef<VotersResponse[number]>> = {
   cell: function Cell({ getValue, row: { index }, column, table }) {
     const initialValue = getValue()
     const [value, setValue] = useEffectState(initialValue)
@@ -67,7 +67,7 @@ const defaultColumn: Partial<ColumnDef<VoterSelect>> = {
   }
 }
 
-const columnHelper = createColumnHelper<VoterSelect>()
+const columnHelper = createColumnHelper<VotersResponse[number]>()
 const columns = [
   columnHelper.accessor('address', {
     cell: info => typeof defaultColumn.cell === 'function' ? (

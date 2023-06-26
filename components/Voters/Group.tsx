@@ -1,17 +1,18 @@
 'use client'
 import Button, { Variant } from '../Button'
-import { VoterGroupSelect, VoterSelect } from '@/app/(dashboard)/voters/types'
 import GroupCard from './GroupCard'
 import { useState } from 'react'
 import { useFormValidation, useEffectState } from '@/hooks'
 import { VoterGroup } from '@/utils/zod/voter-group'
 import Dialog from '../Dialog'
 import { withLoadingToastr } from '@/utils/hof'
-import { createVoterGroup, deleteVoterGroup, getVoterGroup, updateVoterGroup } from '@/queries/voter'
+import { voterGroupQuery } from '@/queries/voter-group'
+import { VoterGroupsResponse } from '@/types/voter-group'
+import { VotersResponse } from '@/types/voter'
 
 interface Props {
-  data: VoterGroupSelect[]
-  voters: VoterSelect[]
+  data: VoterGroupsResponse
+  voters: VotersResponse
 }
 
 enum ActionType {
@@ -43,7 +44,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
   }
 
   const handleEdit = async (id: number) => {
-    const { name, whitelist } = await getVoterGroup(id)
+    const { name, whitelist } = await voterGroupQuery().getVoterGroup(id)
     setGroupState({ name, whitelist })
 
     setAction({ id, type: ActionType.Edit })
@@ -52,11 +53,11 @@ export default function Group({ data: voterGroups, voters }: Props) {
 
   const handleSubmit = withLoadingToastr(async () => {
     if (action.id) {
-      await updateVoterGroup(action.id, { name, whitelist })
+      await voterGroupQuery().updateVoterGroup(action.id, { name, whitelist })
 
       setData(data.map(voterGroup => voterGroup.id === action.id ? { ...voterGroup, name } : voterGroup))
     } else {
-      const voterGroup = await createVoterGroup({ name, whitelist })
+      const voterGroup = await voterGroupQuery().createVoterGroup({ name, whitelist })
 
       setData([...data, { ...voterGroup, name }])
     }
@@ -67,7 +68,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
   })
 
   const handleRemove = (id: number) => action.type === ActionType.Remove && action.id === id ? withLoadingToastr(async () => {
-    await deleteVoterGroup(id)
+    await voterGroupQuery().deleteVoterGroup(id)
     setData(data.filter(voter => voter.id !== id))
     setAction({ id: 0, type: ActionType.Create })
   })() : setAction({ id, type: ActionType.Remove })

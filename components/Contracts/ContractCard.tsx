@@ -1,10 +1,9 @@
-import { ContractSelect } from '@/app/(dashboard)/contracts/page'
-import { Contract } from '@/app/(dashboard)/contracts/types'
+import { ContractsResponse } from '@/types/contract'
 import Image from 'next/image'
 import Link from 'next/link'
 
 interface Props {
-  contract: ContractSelect & { totalProposals: number, totalVoters: number, activeProposals: number } // @todo temporary until we have these values in database
+  contract: ContractsResponse[number] & { totalProposals: number, totalVoters: number, activeProposals: number } // @todo temporary until we have these values in database
 }
 
 export default function ContractCard({ contract }: Props) {

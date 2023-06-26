@@ -1,10 +1,10 @@
-import { VoterGroupSelect } from '@/app/(dashboard)/voters/types'
 import Link from 'next/link'
 import React from 'react'
 import Tooltip from '../Tooltip'
+import { VoterGroupsResponse } from '@/types/voter-group'
 
 interface Props {
-  group: VoterGroupSelect
+  group: VoterGroupsResponse[number]
   remove: number
   handleRemove: (id: number) => void
   handleEdit: (id: number) => void

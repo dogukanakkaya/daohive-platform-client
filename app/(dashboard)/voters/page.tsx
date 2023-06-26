@@ -6,17 +6,16 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import Link from 'next/link'
 import InfoCard from '@/components/InfoCard'
 import Refresh from '@/components/Refresh'
-import { VoterGroupSelect, VoterSelect } from './types'
 import Group from '@/components/Voters/Group'
-import { VOTER_GROUP_SELECT, VOTER_SELECT } from '@/config'
+import { Database } from '@/types/supabase'
+import { voterGroupQuery } from '@/queries/voter-group'
+import { voterQuery } from '@/queries/voter'
 
 export default async function Voters() {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = createServerComponentClient<Database>({ cookies })
 
-  const { data: voters } = await supabase.from('voters').select(VOTER_SELECT).order('created_at', { ascending: false })
-    .returns<VoterSelect[]>()
-  const { data: voterGroups } = await supabase.from('voter_groups').select(VOTER_GROUP_SELECT).order('created_at', { ascending: false })
-    .returns<VoterGroupSelect[]>()
+  const { data: voters } = await voterQuery(supabase).getVoters()
+  const { data: voterGroups } = await voterGroupQuery(supabase).getVoterGroups()
 
   return (
     <div className="space-y-4">
