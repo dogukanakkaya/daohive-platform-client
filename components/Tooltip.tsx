@@ -1,7 +1,6 @@
 'use client'
 import { useEffectState } from '@/hooks'
 import clsx from 'clsx'
-import { useState } from 'react'
 
 interface Props {
   children: React.ReactNode

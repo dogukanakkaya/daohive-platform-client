@@ -1,4 +1,4 @@
-import { voterGroupQuery } from '@/queries/voter-group'
+import { voterGroupQuery } from '@/queries'
 import { Database } from './supabase'
 
 type QueryWrapper = ReturnType<typeof voterGroupQuery>

@@ -1,0 +1,1 @@
+export const nullifyEmpty = (value: string) => value === '' ? null : value

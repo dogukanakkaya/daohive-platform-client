@@ -1,4 +1,4 @@
-import { voterQuery } from '@/queries/voter'
+import { voterQuery } from '@/queries'
 import { Database } from './supabase'
 
 type QueryWrapper = ReturnType<typeof voterQuery>

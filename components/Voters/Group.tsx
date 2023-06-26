@@ -6,7 +6,7 @@ import { useFormValidation, useEffectState } from '@/hooks'
 import { VoterGroup } from '@/utils/zod/voter-group'
 import Dialog from '../Dialog'
 import { withLoadingToastr } from '@/utils/hof'
-import { voterGroupQuery } from '@/queries/voter-group'
+import { voterGroupQuery } from '@/queries'
 import { VoterGroupsResponse } from '@/types/voter-group'
 import { VotersResponse } from '@/types/voter'
 

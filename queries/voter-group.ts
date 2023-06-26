@@ -20,7 +20,7 @@ export function voterGroupQuery(supabaseClient?: SupabaseClient<Database>) {
   const createVoterGroup = async ({ name, voterIds }: VoterGroupPayload) => {
     const { data: voterGroup, error } = await supabase.from('voter_groups').insert({ name }).select('id').throwOnError().single()
 
-    // @todo: find something about this typing problem or maybe promisify supabase `.throwOnError` will always return non-nullable
+    // @todo: find something about this and other throws `supabase.throwOnError` will always return non-nullable
     if (error) throw error
 
     // @todo: transaction & rollback with the above insert (seems like supabase does not directly supports this but i'll check postgres functions)

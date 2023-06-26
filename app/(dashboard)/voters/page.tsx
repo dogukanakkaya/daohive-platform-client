@@ -8,8 +8,7 @@ import InfoCard from '@/components/InfoCard'
 import Refresh from '@/components/Refresh'
 import Group from '@/components/Voters/Group'
 import { Database } from '@/types/supabase'
-import { voterGroupQuery } from '@/queries/voter-group'
-import { voterQuery } from '@/queries/voter'
+import { voterQuery, voterGroupQuery } from '@/queries'
 
 export default async function Voters() {
   const supabase = createServerComponentClient<Database>({ cookies })

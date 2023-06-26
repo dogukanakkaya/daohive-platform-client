@@ -10,7 +10,7 @@ import { api } from '@/utils/api'
 import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import InfoCard from '@/components/InfoCard'
-import { voterGroupQuery } from '@/queries/voter-group'
+import { voterGroupQuery } from '@/queries'
 import { VoterGroupsResponse } from '@/types/voter-group'
 import { Database } from '@/types/supabase'
 
