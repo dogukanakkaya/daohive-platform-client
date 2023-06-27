@@ -18,7 +18,7 @@ export default async function Contracts() {
       <div className="flex sm:items-center justify-between flex-col sm:flex-row gap-4">
         <Breadcrumb items={[{ name: 'Contracts', href: '/contracts' }]} />
         <div className="flex justify-end gap-4">
-          <Refresh />
+          <Refresh key={Math.random()} />
           <Link href="/contracts/create">
             <Button variant={Variant.Secondary} className="flex items-center">
               <i className="bi bi-cloud-upload animate-bounce text-lg"></i> <span className="border-l ml-2 pl-2 dark:border-gray-700">Deploy New</span>
