@@ -8,7 +8,7 @@ export default function Refresh() {
   const router = useRouter()
 
   const handleClick = () => {
-    setRefreshing(true) // @todo: need this to be set to false again after refresh could not find a way atm
+    setRefreshing(true)
     router.refresh()
   }
 

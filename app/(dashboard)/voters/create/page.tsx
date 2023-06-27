@@ -14,7 +14,7 @@ export default function Create() {
 
   const handleSubmit = withLoadingToastr(async () => {
     await voterQuery().createVoter({ address, name: nullifyEmpty(name), email: nullifyEmpty(email) })
-    router.refresh(); router.replace('/voters')
+    router.replace('/voters')
   })
 
   return (
@@ -22,7 +22,7 @@ export default function Create() {
       <div className="flex items-center justify-between">
         <Breadcrumb items={[{ name: 'Voters', href: '/voters' }, { name: 'Create', href: '/voters/create' }]} />
       </div>
-      <div className="relative bg-gray-200 dark:bg-gray-900 p-5 rounded-xl shadow">
+      <div className="relative bg-white dark:bg-gray-900 p-5 rounded-xl shadow">
         <div className="mb-4">
           <label className="form-label">Voter Address <span className="text-xs text-red-500">*</span></label>
           <input value={address} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="address" placeholder="Enter Voter Address" autoFocus />

@@ -45,7 +45,7 @@ export default function Create() {
       }
     })
 
-    router.refresh(); router.replace('/contracts')
+    router.replace('/contracts')
   }), setLoading)
 
   return (
@@ -54,9 +54,10 @@ export default function Create() {
         <Breadcrumb items={[{ name: 'Contracts', href: '/contracts' }, { name: 'Create', href: '/contracts/create' }]} />
       </div>
       <InfoCard messages={[
-        'Be aware, to change contract name, description or whitelist you will need to pay transaction fees since these values will be stored in the blockchain.'
+        'Be aware, to update contract name, description or whitelist you will need to pay transaction fees since these values will be stored in the blockchain.',
+        'Updating the voters in a group will not update the whitelisted users in the contract. You can update the whitelist from the contract detail page.'
       ]} />
-      <div className="relative bg-gray-200 dark:bg-gray-900 p-5 rounded-xl shadow">
+      <div className="relative bg-white dark:bg-gray-900 p-5 rounded-xl shadow">
         {loading && <LoadingOverlay />}
         <div className="mb-4">
           <label className="form-label">Contract Name <span className="text-xs text-red-500">*</span></label>

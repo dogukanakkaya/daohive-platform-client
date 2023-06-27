@@ -12,7 +12,7 @@ interface Props {
 
 export default function GroupCard({ group, remove, handleRemove, handleEdit }: Props) {
   return (
-    <div className="relative w-60 h-32 shadow rounded-lg bg-gray-200 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 p-4">
+    <div className="relative w-60 h-32 shadow rounded-lg bg-white hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 p-4">
       <Link href={`/voters/groups/${group.id}`} className="w-max">
         <h3 className="mr-12 dark:hover:text-gray-100">{group.name}</h3>
       </Link>

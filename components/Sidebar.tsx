@@ -31,9 +31,6 @@ export default function Sidebar() {
                 <li>
                   <Link href="/voters" className="sidebar-link"><i className="bi bi-people"></i> Voters</Link>
                 </li>
-                <li>
-                  <Link href="#" className="sidebar-link"><i className="bi bi-clipboard-check"></i> Proposals</Link>
-                </li>
               </ul>
             </div>
             <div className="p-4">

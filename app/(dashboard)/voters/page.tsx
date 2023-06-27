@@ -18,9 +18,9 @@ export default async function Voters() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex sm:items-center justify-between flex-col sm:flex-row gap-4">
         <Breadcrumb items={[{ name: 'Voters', href: '/voters' }]} />
-        <div className="flex gap-4">
+        <div className="flex justify-end gap-4">
           <Refresh />
           <Link href="/voters/create">
             <Button variant={Variant.Secondary} className="flex items-center">

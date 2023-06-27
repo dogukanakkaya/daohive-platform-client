@@ -13,7 +13,7 @@ export default function Breadcrumb({ items }: Props) {
   const path = usePathname()
 
   return (
-    <nav className="inline-block bg-gray-50 text-gray-700 border border-gray-200 py-3 px-5 rounded-lg dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
+    <nav className="inline-block bg-gray-50 text-gray-700 border border-gray-200 py-2 px-4 lg:py-3 lg:px-5 rounded-lg dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
       <ul className="flex items-center space-x-1 md:space-x-3">
         <li className="flex items-center">
           <Link href="/" className="text-sm text-gray-700 hover:text-gray-900 inline-flex items-center dark:text-gray-400 dark:hover:text-white">

@@ -6,6 +6,7 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import Link from 'next/link'
 import { Database } from '@/types/supabase'
 import { contractQuery } from '@/queries'
+import Refresh from '@/components/Refresh'
 
 export default async function Contracts() {
   const supabase = createServerComponentClient<Database>({ cookies })
@@ -14,12 +15,10 @@ export default async function Contracts() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex sm:items-center justify-between flex-col sm:flex-row gap-4">
         <Breadcrumb items={[{ name: 'Contracts', href: '/contracts' }]} />
-        <div className="flex gap-4">
-          <Button variant={Variant.Secondary} className="flex items-center shadow-lg">
-            <i className="bi bi-arrow-repeat text-lg"></i> <span className="border-l ml-2 pl-2 dark:border-gray-700">Refresh</span>
-          </Button>
+        <div className="flex justify-end gap-4">
+          <Refresh />
           <Link href="/contracts/create">
             <Button variant={Variant.Secondary} className="flex items-center">
               <i className="bi bi-cloud-upload animate-bounce text-lg"></i> <span className="border-l ml-2 pl-2 dark:border-gray-700">Deploy New</span>
