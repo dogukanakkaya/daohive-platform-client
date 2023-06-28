@@ -43,7 +43,7 @@ export default function ContractForm() {
     }
 
     const { data: { session } } = await supabase.auth.getSession()
-    await api.post<{ contractAddress: string }>('/deploy', { name, description, whitelist }, {
+    await api.post<{ contractAddress: string }>('/contracts', { name, description, whitelist }, {
       headers: {
         Authorization: `Bearer ${session?.access_token}`
       }

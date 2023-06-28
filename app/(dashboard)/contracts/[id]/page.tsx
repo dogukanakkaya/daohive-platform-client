@@ -3,6 +3,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/types/supabase'
 import { contractQuery } from '@/queries'
+import Link from 'next/link'
 
 interface Props {
   params: {
@@ -22,6 +23,7 @@ export default async function Contract({ params }: Props) {
       </div>
       <div>
         todo list contract proposals
+        <Link href={`/contracts/${params.id}/proposals/create`}>Create</Link>
       </div>
     </div>
   )

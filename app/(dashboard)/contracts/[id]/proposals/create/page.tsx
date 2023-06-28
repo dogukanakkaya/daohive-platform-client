@@ -29,7 +29,7 @@ export default async function Create({ params }: Props) {
       </div>
       <InfoCard messages={[
         'Your proposals will be permanently saved to Arweave blockchain. So once you created it, you can\'t delete or edit it. So be careful when you create one. You can close it if you want to but it will still be visible to everyone.',
-        'Be careful not to put sensitive information in your proposal!'
+        'Do not to put any kind of sensitive/private information in your proposal!'
       ]} />
       <ProposalForm />
     </div>

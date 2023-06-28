@@ -15,7 +15,7 @@ export const Proposal = z.object({
     .max(255, 'Description must contain at most 255 character(s)'),
   content: z
     .string({
-      required_error: 'Description is required'
+      required_error: 'Content is required'
     })
     .min(50, 'Content must contain at least 50 character(s)'),
   startAt: z
