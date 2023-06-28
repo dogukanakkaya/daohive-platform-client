@@ -12,6 +12,7 @@ export function voterGroupQuery(supabaseClient?: SupabaseClient<Database>) {
   const getVoterGroup = async <T extends string>(id: number, select: T = 'id,name' as T) => {
     const { data: voterGroup, error } = await supabase.from('voter_groups').select(select).eq('id', id).throwOnError().single()
 
+    // @todo(1)
     if (error) throw error
 
     return voterGroup
@@ -20,17 +21,17 @@ export function voterGroupQuery(supabaseClient?: SupabaseClient<Database>) {
   const createVoterGroup = async ({ name, voterIds }: VoterGroupPayload) => {
     const { data: voterGroup, error } = await supabase.from('voter_groups').insert({ name }).select('id').throwOnError().single()
 
-    // @todo: find something about this and other throws `supabase.throwOnError` will always return non-nullable
+    // @todo(1): find something about this and other throws `supabase.throwOnError` will always return non-nullable
     if (error) throw error
 
-    // @todo: transaction & rollback with the above insert (seems like supabase does not directly supports this but i'll check postgres functions)
+    // @todo(2): transaction & rollback with the above insert (seems like supabase does not directly supports this but i'll check postgres functions)
     const whitelistGroup = voterIds.map(voterId => ({ voter_group_id: voterGroup.id, voter_id: voterId }))
     await supabase.from('voter_group_voters').insert(whitelistGroup).throwOnError()
 
     return voterGroup
   }
 
-  // @todo: transaction & rollback
+  // @todo(2)
   const updateVoterGroup = async (id: number, { name, voterIds }: VoterGroupPayload) => {
     await supabase.from('voter_groups').update({ name }).eq('id', id).throwOnError()
 
