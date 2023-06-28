@@ -48,7 +48,7 @@ export default function ContractForm() {
       }
     })
 
-    router.replace('/contracts')
+    router.refresh(); router.replace('/contracts')
   }), setLoading)
 
   return (

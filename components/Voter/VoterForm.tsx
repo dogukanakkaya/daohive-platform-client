@@ -12,7 +12,7 @@ export default function VoterForm() {
 
   const handleSubmit = withLoadingToastr(async () => {
     await voterQuery().createVoter({ address, name: nullifyEmpty(name), email: nullifyEmpty(email) })
-    router.replace('/voters')
+    router.refresh(); router.replace('/voters')
   })
 
   return (
