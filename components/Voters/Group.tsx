@@ -1,6 +1,5 @@
 'use client'
 import Button, { Variant } from '../Button'
-import GroupCard from './GroupCard'
 import { useState } from 'react'
 import { useFormValidation, useEffectState } from '@/hooks'
 import { VoterGroup } from '@/utils/zod/voter-group'
@@ -9,6 +8,7 @@ import { withLoadingToastr } from '@/utils/hof'
 import { voterGroupQuery } from '@/queries'
 import { VoterGroupsResponse } from '@/types/voter-group'
 import { VotersResponse } from '@/types/voter'
+import GroupCard from './GroupCard'
 
 interface Props {
   data: VoterGroupsResponse

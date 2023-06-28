@@ -4,7 +4,7 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import InfoCard from '@/components/InfoCard'
 import { Database } from '@/types/supabase'
 import { contractQuery } from '@/queries'
-import ProposalForm from '@/components/Contracts/Proposals/ProposalForm'
+import { ProposalForm } from '@/components/Contracts/Proposals'
 
 interface Props {
   params: {

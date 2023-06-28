@@ -1,12 +1,11 @@
 import { cookies } from 'next/headers'
 import Breadcrumb from '@/components/Breadcrumb'
 import Button, { Variant } from '@/components/Button'
-import { Table } from '@/components/Voters'
+import { Table, Group } from '@/components/Voters'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import Link from 'next/link'
 import InfoCard from '@/components/InfoCard'
 import Refresh from '@/components/Refresh'
-import Group from '@/components/Voters/Group'
 import { Database } from '@/types/supabase'
 import { voterQuery, voterGroupQuery } from '@/queries'
 
