@@ -5,7 +5,6 @@ type FormErrors<T> = Record<keyof T extends string ? keyof T : string, string> |
 
 const INITIAL_ERROR_STATE = Object.freeze({})
 
-// @todo: server actions can be used instead of client side AFTER they're stable
 export default function useFormValidation<T = Record<string, unknown>>(initialState: T, schema: z.Schema) {
   const [state, setState] = useState<T>(initialState)
   const [errors, setErrors] = useState<FormErrors<T>>(INITIAL_ERROR_STATE)
