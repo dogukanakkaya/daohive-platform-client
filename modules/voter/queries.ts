@@ -1,6 +1,6 @@
 import { SupabaseClient, createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { Database } from '@/types/supabase'
-import { VoterPayload } from '@/types/voter'
+import { Database } from '@/supabase.types'
+import { VoterPayload } from './types'
 
 export function voterQuery(supabaseClient?: SupabaseClient<Database>) {
   const supabase = supabaseClient ?? createClientComponentClient<Database>()

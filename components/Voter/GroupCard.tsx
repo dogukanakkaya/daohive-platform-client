@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import React from 'react'
 import Tooltip from '../Tooltip'
-import { VoterGroupsResponse } from '@/types/voter-group'
+import { VoterGroupsResponse } from '@/modules/voter-group'
 
 interface Props {
   group: VoterGroupsResponse[number]

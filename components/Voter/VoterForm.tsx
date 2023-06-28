@@ -1,14 +1,13 @@
 'use client'
 import Button from '@/components/Button'
 import { useFormValidation } from '@/hooks'
-import { Voter } from '@/utils/zod/voter'
 import { withLoadingToastr } from '@/utils/hof'
 import { useRouter } from 'next/navigation'
-import { voterQuery } from '@/queries'
 import { nullifyEmpty } from '@/utils/parser'
+import { VoterSchema, voterQuery } from '@/modules/voter'
 
 export default function VoterForm() {
-  const { state: { address, name, email }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ address: '', name: '', email: '' }, Voter)
+  const { state: { address, name, email }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ address: '', name: '', email: '' }, VoterSchema)
   const router = useRouter()
 
   const handleSubmit = withLoadingToastr(async () => {

@@ -1,5 +1,5 @@
 import { SupabaseClient, createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { Database } from '@/types/supabase'
+import { Database } from '@/supabase.types'
 
 export function contractQuery(supabaseClient?: SupabaseClient<Database>) {
   const supabase = supabaseClient ?? createClientComponentClient<Database>()

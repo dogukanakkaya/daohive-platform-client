@@ -1,5 +1,5 @@
-import { voterQuery } from '@/queries'
-import { Database } from './supabase'
+import { voterQuery } from './queries'
+import { Database } from '@/supabase.types'
 
 type QueryWrapper = ReturnType<typeof voterQuery>
 export type VotersResponse = NonNullable<Awaited<ReturnType<QueryWrapper['getVoters']>>['data']>

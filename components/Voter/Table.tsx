@@ -12,13 +12,12 @@ import {
 import Tooltip from '../Tooltip'
 import { useDeferredValue, useState } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { Voter as VoterSchema } from '@/utils/zod/voter'
 import { toast } from 'react-toastify'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 import { useEffectState } from '@/hooks'
 import { withLoadingToastr } from '@/utils/hof'
-import { VotersResponse } from '@/types/voter'
+import { VoterSchema, VotersResponse } from '@/modules/voter'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {

@@ -1,5 +1,5 @@
-import { voterGroupQuery } from '@/queries'
-import { Database } from './supabase'
+import { voterGroupQuery } from './queries'
+import { Database } from '@/supabase.types'
 
 type QueryWrapper = ReturnType<typeof voterGroupQuery>
 

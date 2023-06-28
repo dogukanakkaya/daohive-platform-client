@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const Voter = z.object({
+export const VoterSchema = z.object({
   address: z
     .string({
       required_error: 'Address is required'

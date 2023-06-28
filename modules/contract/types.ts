@@ -1,4 +1,4 @@
-import { contractQuery } from '@/queries'
+import { contractQuery } from './queries'
 
 type QueryWrapper = ReturnType<typeof contractQuery>
 

@@ -2,9 +2,9 @@ import { cookies } from 'next/headers'
 import Breadcrumb from '@/components/Breadcrumb'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import InfoCard from '@/components/InfoCard'
-import { Database } from '@/types/supabase'
-import { contractQuery } from '@/queries'
-import { ProposalForm } from '@/components/Contracts/Proposals'
+import { Database } from '@/supabase.types'
+import { ProposalForm } from '@/components/Contract/Proposal'
+import { contractQuery } from '@/modules/contract'
 
 interface Props {
   params: {

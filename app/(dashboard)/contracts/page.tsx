@@ -1,12 +1,12 @@
 import { cookies } from 'next/headers'
 import Breadcrumb from '@/components/Breadcrumb'
 import Button, { Variant } from '@/components/Button'
-import { ContractCard } from '@/components/Contracts'
+import { ContractCard } from '@/components/Contract'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import Link from 'next/link'
-import { Database } from '@/types/supabase'
-import { contractQuery } from '@/queries'
+import { Database } from '@/supabase.types'
 import Refresh from '@/components/Refresh'
+import { contractQuery } from '@/modules/contract'
 
 export default async function Contracts() {
   const supabase = createServerComponentClient<Database>({ cookies })

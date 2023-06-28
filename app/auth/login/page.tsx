@@ -7,15 +7,15 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { toast } from 'react-toastify'
 import LoadingOverlay from '@/components/LoadingOverlay'
 import { withLoading } from '@/utils/hof'
-import { Credentials } from '@/utils/zod/auth'
 import { useFormValidation } from '@/hooks'
+import { CredentialsSchema } from '@/modules/auth'
 
 export default function Login() {
   const supabase = createClientComponentClient()
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const { state: { email, password }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ email: '', password: '' }, Credentials)
+  const { state: { email, password }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ email: '', password: '' }, CredentialsSchema)
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(event => {

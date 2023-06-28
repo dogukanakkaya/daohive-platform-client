@@ -2,21 +2,20 @@
 import Button from '@/components/Button'
 import { useFormValidation } from '@/hooks'
 import { useEffect, useState } from 'react'
-import { Contract } from '@/utils/zod/contract'
 import LoadingOverlay from '@/components/LoadingOverlay'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
 import { api } from '@/utils/api'
 import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { voterGroupQuery } from '@/queries'
-import { VoterGroupsResponse } from '@/types/voter-group'
-import { Database } from '@/types/supabase'
+import { Database } from '@/supabase.types'
+import { voterGroupQuery } from '@/modules/voter-group'
+import { ContractSchema } from '@/modules/contract'
 
 export default function ContractForm() {
   const supabase = createClientComponentClient<Database>()
-  const [voterGroups, setVoterGroups] = useState<VoterGroupsResponse>([])
+  const [voterGroups, setVoterGroups] = useState<{ id: number, name: string }[]>([])
   const [loading, setLoading] = useState(false)
-  const { state: { name, description, voterGroup }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ name: '', description: '', voterGroup: 0 }, Contract)
+  const { state: { name, description, voterGroup }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ name: '', description: '', voterGroup: 0 }, ContractSchema)
   const router = useRouter()
 
   useEffect(() => {

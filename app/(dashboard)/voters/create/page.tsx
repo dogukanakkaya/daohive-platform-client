@@ -1,5 +1,5 @@
 import Breadcrumb from '@/components/Breadcrumb'
-import { VoterForm } from '@/components/Voters'
+import { VoterForm } from '@/components/Voter'
 
 export default function Create() {
   return (

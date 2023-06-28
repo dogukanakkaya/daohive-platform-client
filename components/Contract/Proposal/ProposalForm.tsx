@@ -3,7 +3,6 @@ import Button from '@/components/Button'
 import { useFormValidation } from '@/hooks'
 import { useCallback, useState } from 'react'
 import LoadingOverlay from '@/components/LoadingOverlay'
-import { Proposal } from '@/utils/zod/proposal'
 import { DateTime } from 'luxon'
 import { useDropzone } from 'react-dropzone'
 import Image from 'next/image'
@@ -11,8 +10,9 @@ import { toast } from 'react-toastify'
 import { api } from '@/utils/api'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { Database } from '@/types/supabase'
+import { Database } from '@/supabase.types'
 import { useParams } from 'next/navigation'
+import { ProposalSchema } from '@/modules/proposal'
 
 const DEFAULT_START_TIME = DateTime.now().plus({ minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
 const DEFAULT_END_TIME = DateTime.now().plus({ days: 7, minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
@@ -27,7 +27,7 @@ export default function ProposalForm() {
     handleChange,
     validateForm,
     isFormValid
-  } = useFormValidation({ name: '', description: '', content: '', startAt: DEFAULT_START_TIME, endAt: DEFAULT_END_TIME }, Proposal)
+  } = useFormValidation({ name: '', description: '', content: '', startAt: DEFAULT_START_TIME, endAt: DEFAULT_END_TIME }, ProposalSchema)
   const params = useParams()
 
   const onDrop = useCallback((acceptedFiles: File[]) => {

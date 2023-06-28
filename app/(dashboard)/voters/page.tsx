@@ -1,13 +1,14 @@
 import { cookies } from 'next/headers'
 import Breadcrumb from '@/components/Breadcrumb'
 import Button, { Variant } from '@/components/Button'
-import { Table, Group } from '@/components/Voters'
+import { Table, Group } from '@/components/Voter'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import Link from 'next/link'
 import InfoCard from '@/components/InfoCard'
 import Refresh from '@/components/Refresh'
-import { Database } from '@/types/supabase'
-import { voterQuery, voterGroupQuery } from '@/queries'
+import { Database } from '@/supabase.types'
+import { voterQuery } from '@/modules/voter'
+import { voterGroupQuery } from '@/modules/voter-group'
 
 export default async function Voters() {
   const supabase = createServerComponentClient<Database>({ cookies })

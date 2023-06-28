@@ -2,13 +2,11 @@
 import Button, { Variant } from '../Button'
 import { useState } from 'react'
 import { useFormValidation, useEffectState } from '@/hooks'
-import { VoterGroup } from '@/utils/zod/voter-group'
 import Dialog from '../Dialog'
 import { withLoadingToastr } from '@/utils/hof'
-import { voterGroupQuery } from '@/queries'
-import { VoterGroupsResponse } from '@/types/voter-group'
-import { VotersResponse } from '@/types/voter'
 import GroupCard from './GroupCard'
+import { VoterGroupSchema, VoterGroupsResponse, voterGroupQuery } from '@/modules/voter-group'
+import { VotersResponse } from '@/modules/voter'
 
 interface Props {
   data: VoterGroupsResponse
@@ -31,7 +29,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
     validateForm,
     isFormValid,
     reset
-  } = useFormValidation({ name: '', voterIds: [] as number[] }, VoterGroup)
+  } = useFormValidation({ name: '', voterIds: [] as number[] }, VoterGroupSchema)
   const [data, setData] = useEffectState(voterGroups)
   const [action, setAction] = useState<{ id: number, type: ActionType }>({ id: 0, type: ActionType.Create })
 

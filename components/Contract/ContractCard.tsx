@@ -1,5 +1,5 @@
 'use client'
-import { ContractsResponse } from '@/types/contract'
+import { ContractsResponse } from '@/modules/contract'
 import Image from 'next/image'
 import Link from 'next/link'
 import Tooltip from '../Tooltip'

@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const VoterGroup = z.object({
+export const VoterGroupSchema = z.object({
   name: z
     .string()
     .min(5, 'Name must contain at least 5 character(s)')

@@ -1,6 +1,6 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import InfoCard from '@/components/InfoCard'
-import { ContractForm } from '@/components/Contracts'
+import { ContractForm } from '@/components/Contract'
 
 export default function Create() {
   return (
