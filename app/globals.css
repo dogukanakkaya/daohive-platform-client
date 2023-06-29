@@ -7,12 +7,14 @@
 
 :root {
   --secondary-color: #d5d5d5;
+  --dropzone-stripe: repeating-linear-gradient(45deg,#e5e7eb 0px,#e5e7eb 20px,#f9fafb 20px,#f9fafb 40px);
 }
 
 
 @media (prefers-color-scheme: dark) {
   :root {
     --secondary-color: #111827;
+    --dropzone-stripe: repeating-linear-gradient(45deg,#374151 0px,#374151 20px,#333d4d 20px,#333d4d 40px);
   }
 }
 

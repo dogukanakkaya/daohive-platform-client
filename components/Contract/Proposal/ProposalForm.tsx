@@ -70,7 +70,10 @@ export default function ProposalForm() {
       {loading && <LoadingOverlay />}
       <div className="mb-4">
         <label className="form-label">Proposal Banner Image <span className="text-xs text-red-500">*</span></label>
-        <div className="h-[400px] flex-center rounded-lg border dark:border-gray-600 dark:bg-gray-700 hover:ring-2 ring-primary hover:border-primary cursor-pointer" {...getRootProps()}>
+        <div
+          className={`h-[400px] flex-center rounded-lg border bg-dropzone-stripe dark:border-gray-600 dark:bg-gray-700 cursor-pointer ${!file && 'hover:ring-2 ring-primary hover:border-primary'}`}
+          {...getRootProps()}
+        >
           <input {...getInputProps()} />
           {
             file ? <Image src={file.preview} width={720} height={720} className="max-h-full object-contain" alt="" /> : <p>Drag and drop some files here, or click to select files</p>

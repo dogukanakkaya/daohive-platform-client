@@ -10,6 +10,9 @@ module.exports = {
       colors: {
         'primary': '#0050ff',
         'secondary': 'var(--secondary-color)'
+      },
+      backgroundImage: {
+        'dropzone-stripe': 'var(--dropzone-stripe)'
       }
     }
   },
