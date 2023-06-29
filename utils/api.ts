@@ -1,13 +1,16 @@
-import { API_URL } from '@/config'
+import { ARWEAVE_URL, BLOCKCHAIN_SERVICE_URL } from '@/config'
 import axios from 'axios'
 
-export const api = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json'
-  }
-})
+export const services = {
+  arweave: axios.create({ baseURL: ARWEAVE_URL }),
+  blockchain: axios.create({
+    baseURL: BLOCKCHAIN_SERVICE_URL,
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    }
+  })
+}
 
 export const toQueryString = (query: QueryParams) => {
   const params = new URLSearchParams()

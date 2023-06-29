@@ -7,13 +7,14 @@ import { DateTime } from 'luxon'
 import { useDropzone } from 'react-dropzone'
 import Image from 'next/image'
 import { toast } from 'react-toastify'
-import { api } from '@/utils/api'
+import { services } from '@/utils/api'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/supabase.types'
 import { useParams } from 'next/navigation'
 import { ProposalSchema } from '@/modules/proposal'
 import Editor from '@/components/Editor/Editor'
+import { useRouter } from 'next/navigation'
 
 const DEFAULT_START_TIME = DateTime.now().plus({ minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
 const DEFAULT_END_TIME = DateTime.now().plus({ days: 7, minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
@@ -31,6 +32,7 @@ export default function ProposalForm() {
     isFormValid
   } = useFormValidation({ name: '', description: '', content: '', startAt: DEFAULT_START_TIME, endAt: DEFAULT_END_TIME }, ProposalSchema)
   const params = useParams()
+  const router = useRouter()
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const acceptedFile = Object.assign(acceptedFiles[0], {
@@ -57,12 +59,14 @@ export default function ProposalForm() {
     formData.set('banner', file)
 
     const { data: { session } } = await supabase.auth.getSession()
-    await api.post('/proposals', formData, {
+    await services.blockchain.post('/proposals', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${session?.access_token}`
       }
     })
+
+    router.refresh(); router.replace(`/contracts/${params.id}`)
   }), setLoading)
 
   return (

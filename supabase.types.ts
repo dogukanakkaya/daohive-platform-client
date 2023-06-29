@@ -3,7 +3,7 @@ export type Json =
   | number
   | boolean
   | null
-  | { [key: string]: Json }
+  | { [key: string]: Json | undefined }
   | Json[]
 
 export interface Database {
@@ -42,6 +42,37 @@ export interface Database {
             foreignKeyName: "contracts_user_id_fkey"
             columns: ["user_id"]
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      proposals: {
+        Row: {
+          contract_id: string
+          created_at: string | null
+          id: string
+          metadata_id: string
+          metadata_provider: number
+        }
+        Insert: {
+          contract_id: string
+          created_at?: string | null
+          id?: string
+          metadata_id: string
+          metadata_provider: number
+        }
+        Update: {
+          contract_id?: string
+          created_at?: string | null
+          id?: string
+          metadata_id?: string
+          metadata_provider?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposals_contract_id_fkey"
+            columns: ["contract_id"]
+            referencedRelation: "contracts"
             referencedColumns: ["id"]
           }
         ]
@@ -91,7 +122,7 @@ export interface Database {
           created_at?: string | null
           id?: number
           name: string
-          user_id?: string
+          user_id: string
         }
         Update: {
           created_at?: string | null
@@ -99,7 +130,14 @@ export interface Database {
           name?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "voter_groups_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       voters: {
         Row: {

@@ -4,7 +4,7 @@ import { useFormValidation } from '@/hooks'
 import { useEffect, useState } from 'react'
 import LoadingOverlay from '@/components/LoadingOverlay'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
-import { api } from '@/utils/api'
+import { services } from '@/utils/api'
 import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/supabase.types'
@@ -42,7 +42,7 @@ export default function ContractForm() {
     }
 
     const { data: { session } } = await supabase.auth.getSession()
-    await api.post<{ contractAddress: string }>('/contracts', { name, description, whitelist }, {
+    await services.blockchain.post<{ contractAddress: string }>('/contracts', { name, description, whitelist }, {
       headers: {
         Authorization: `Bearer ${session?.access_token}`
       }
