@@ -1,0 +1,28 @@
+.w-md-editor-toolbar  {
+  @apply dark:bg-gray-800 rounded-t-lg;
+}
+
+.w-md-editor-toolbar li > button {
+  @apply h-full;
+}
+
+.w-md-editor-toolbar-divider {
+  @apply w-[2px] h-5 !m-[0px_5px_0px_5px];
+}
+
+.w-md-editor-toolbar ul {
+  @apply flex items-center;
+}
+
+.w-md-editor {
+  @apply dark:bg-gray-700 rounded-lg;
+}
+
+.wmde-markdown{
+  @apply dark:bg-gray-700;
+}
+
+.w-md-editor-text-pre > code,
+.w-md-editor-text-input {
+  @apply !text-sm lg:!text-base;
+}

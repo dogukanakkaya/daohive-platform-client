@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react'
+import { useState } from 'react'
 import { z } from 'zod'
 
 type FormErrors<T> = Record<keyof T extends string ? keyof T : string, string> | { [key: string]: string }
@@ -9,7 +9,7 @@ export default function useFormValidation<T = Record<string, unknown>>(initialSt
   const [state, setState] = useState<T>(initialState)
   const [errors, setErrors] = useState<FormErrors<T>>(INITIAL_ERROR_STATE)
 
-  const validateForm = async (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const validateForm = async (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     try {
       await schema.parseAsync(state)
       setErrors(INITIAL_ERROR_STATE)
@@ -19,7 +19,7 @@ export default function useFormValidation<T = Record<string, unknown>>(initialSt
     }
   }
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, multiple } = e.target
     let _value: unknown = value
 

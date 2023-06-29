@@ -13,6 +13,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/supabase.types'
 import { useParams } from 'next/navigation'
 import { ProposalSchema } from '@/modules/proposal'
+import Editor from '@/components/Editor/Editor'
 
 const DEFAULT_START_TIME = DateTime.now().plus({ minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
 const DEFAULT_END_TIME = DateTime.now().plus({ days: 7, minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
@@ -23,6 +24,7 @@ export default function ProposalForm() {
   const [file, setFile] = useState<File & { preview: string }>()
   const {
     state: { name, description, content, startAt, endAt },
+    setState: setProposalState,
     errors,
     handleChange,
     validateForm,
@@ -68,13 +70,12 @@ export default function ProposalForm() {
       {loading && <LoadingOverlay />}
       <div className="mb-4">
         <label className="form-label">Proposal Banner Image <span className="text-xs text-red-500">*</span></label>
-        <div className="h-72 flex-center dark:bg-gray-800" {...getRootProps()}>
+        <div className="h-[400px] flex-center rounded-lg border dark:border-gray-600 dark:bg-gray-700 hover:ring-2 ring-primary hover:border-primary cursor-pointer" {...getRootProps()}>
           <input {...getInputProps()} />
           {
-            file ? <Image src={file.preview} width={720} height={720} className="max-h-full object-contain" alt="" /> : <p>Drag drop some files here, or click to select files</p>
+            file ? <Image src={file.preview} width={720} height={720} className="max-h-full object-contain" alt="" /> : <p>Drag and drop some files here, or click to select files</p>
           }
         </div>
-        <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.name}</small>
       </div>
       <div className="mb-4">
         <label className="form-label">Proposal Name <span className="text-xs text-red-500">*</span></label>
@@ -88,18 +89,25 @@ export default function ProposalForm() {
       </div>
       <div className="mb-4">
         <label className="form-label">Proposal Content <span className="text-xs text-red-500">*</span></label>
-        <input value={content} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="content" placeholder="Enter Proposal Content" />
+        <Editor
+          height={400}
+          value={content}
+          onChange={value => setProposalState(prevState => ({ ...prevState, content: value ?? '' }))}
+          onBlur={() => validateForm({ target: { name: 'content' } } as React.ChangeEvent<any>)}
+        />
         <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.content}</small>
       </div>
-      <div className="mb-4">
-        <label className="form-label">Proposal Starts at <span className="text-xs text-red-500">*</span></label>
-        <input value={startAt} onChange={handleChange} onBlur={validateForm} className="form-input" type="datetime-local" name="startAt" />
-        <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.startAt}</small>
-      </div>
-      <div className="mb-4">
-        <label className="form-label">Proposal Ends at <span className="text-xs text-red-500">*</span></label>
-        <input value={endAt} onChange={handleChange} onBlur={validateForm} className="form-input" type="datetime-local" name="endAt" />
-        <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.endAt}</small>
+      <div className="sm:grid grid-cols-2 gap-4">
+        <div className="mb-4">
+          <label className="form-label">Proposal Starts at <span className="text-xs text-red-500">*</span></label>
+          <input value={startAt} onChange={handleChange} onBlur={validateForm} className="form-input" type="datetime-local" name="startAt" />
+          <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.startAt}</small>
+        </div>
+        <div className="mb-4">
+          <label className="form-label">Proposal Ends at <span className="text-xs text-red-500">*</span></label>
+          <input value={endAt} onChange={handleChange} onBlur={validateForm} className="form-input" type="datetime-local" name="endAt" />
+          <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.endAt}</small>
+        </div>
       </div>
       <div className="flex justify-end items-center">
         <Button onClick={handleSubmit} isEnabled={isFormValid} className="flex items-center gap-2">Propose <i className="bi bi-journal-arrow-up text-lg"></i></Button>
