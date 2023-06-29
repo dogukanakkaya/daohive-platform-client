@@ -31,8 +31,8 @@ export default async function Voters() {
       </div>
       <InfoCard messages={[
         'You can click on and type to edit name and email fields.',
-        'If you delete a voter, it will be removed from all groups and contract. Also won\'t be able to vote for future proposals.',
-        'If you edit the address of a voter it will also be updated in the contracts.'
+        <span key="delete-warning">If you delete a voter, it will be removed from all groups but <span className="text-red-500">won&apos;t</span> be mirrored in contract.</span>,
+        <span key="edit-warning">Editing the addresses of voters or editing the voters of a group (or deleting them) <span className="text-red-500">won&apos;t</span> be mirrored in the contracts. To update whitelist of a contract you need to go to the contract and edit it there.</span>
       ]} />
       {voters && <Table data={voters} />}
       {voters && voterGroups && <Group data={voterGroups} voters={voters} />}
