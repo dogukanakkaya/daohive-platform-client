@@ -79,7 +79,7 @@ export default function ProposalForm() {
       </div>
       <div className="mb-4">
         <label className="form-label">Proposal Name <span className="text-xs text-red-500">*</span></label>
-        <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter Proposal Name" autoFocus />
+        <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter Proposal Name" />
         <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.name}</small>
       </div>
       <div className="mb-4">
@@ -97,6 +97,9 @@ export default function ProposalForm() {
           value={content}
           onChange={value => setProposalState(prevState => ({ ...prevState, content: value ?? '' }))}
           onBlur={() => validateForm({ target: { name: 'content' } } as React.ChangeEvent<any>)}
+          textareaProps={{
+            placeholder: 'Enter Proposal Content'
+          }}
         />
         <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.content}</small>
       </div>
