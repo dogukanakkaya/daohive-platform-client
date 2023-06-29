@@ -8,7 +8,7 @@ export const VoterSchema = z.object({
     .length(42, 'Address must contain exactly 42 character(s)'),
   name: z
     .string()
-    .min(5, 'Name must contain at least 5 character(s)')
+    .min(2, 'Name must contain at least 5 character(s)')
     .max(255, 'Name must contain at most 255 character(s)')
     .optional()
     .or(z.literal('')),
