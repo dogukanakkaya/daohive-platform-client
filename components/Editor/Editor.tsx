@@ -97,6 +97,14 @@ export default function Editor({ ...props }: MDEditorProps) {
       ]}
       extraCommands={[
         {
+          name: 'help',
+          keyCommand: 'help',
+          buttonProps: { 'aria-label': 'Get help' },
+          icon: <i className="bi bi-question-circle text-xl"></i>,
+          execute: () => window.open('https://www.markdownguide.org/basic-syntax/', '_blank')
+        },
+        commands.divider,
+        {
           ...commands.codeEdit,
           icon: <i className="bi bi-pencil-square text-xl"></i>
         },

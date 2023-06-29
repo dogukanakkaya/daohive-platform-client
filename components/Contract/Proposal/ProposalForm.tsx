@@ -88,7 +88,10 @@ export default function ProposalForm() {
         <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.description}</small>
       </div>
       <div className="mb-4">
-        <label className="form-label">Proposal Content <span className="text-xs text-red-500">*</span></label>
+        <label className="form-label">Proposal Content&nbsp;
+          <span className="text-xs text-red-500">*</span> &nbsp;
+          <span className="text-xs text-gray-400">(<a href="https://www.markdownguide.org/basic-syntax/" target="_blank">Markdown</a> syntax is allowed)</span>
+        </label>
         <Editor
           height={400}
           value={content}
