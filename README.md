@@ -1,34 +1,57 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# daohive-platform
 
-## Getting Started
+## Project Setup
+- Run `cp .env.example .env.local` and fill the necessary environment variables in `.env.local` file
+- Run `npm i` at the root of the repository
+- Run `npm run supabase:generate-types` to generate supabase types
+- Run `npm run dev` to start the local server
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+## Custom hooks
+
+### useFormValidation
+This hook helps to validate forms easily. Expects a default state and a `zod` schema. Then will return necessary functions and values to use in a client component.
+
+```ts
+export default function Component() {
+  // setState only needed when you need to manually update state
+  const { state, setState, errors, handleChange, validateForm, isFormValid } = useFormValidation(initialState, Schema)
+
+  // ...
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+<br>
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### useEffectState
+This hook helps to set a state when initial state changes. This is useful for `useState` hooks which initialized with some prop or any other value. For example when a server component passes down data to client component state. That state must be updated whenever prop changes.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```ts
+// `state` will be updated whenever `data` property changes
+export default function Component({ data }: Props) {
+  const [state, setState] = useEffectState(data)
 
-## Learn More
+  // ...
+}
+```
 
-To learn more about Next.js, take a look at the following resources:
+<br>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### useAbortableAsyncEffect
+This hook helps to run async functions directly within the effect callback. Also provides a `signal` which can be passed to `fetch` and `axios` requests or `supabase` queries etc.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```ts
+export default function Component() {
+  useAbortableAsyncEffect(async signal => {
+    // for extra cleanups you can listen abort event of signal
+    signal.addEventListener('abort', () => {
+      console.log('Aborted, which means component unmounted')
+    })
 
-## Deploy on Vercel
+    const response = await fetch('/', { signal })
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+    // will automatically call `abortController.abort()` on unmount
+  }, [contractAddress])
+}
+```
