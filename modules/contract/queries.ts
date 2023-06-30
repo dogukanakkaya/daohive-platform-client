@@ -8,8 +8,8 @@ export function contractQuery(supabaseClient?: SupabaseClient<Database>) {
     return supabase.from('contracts').select('id,name,description,address,deployment_status').order('created_at', { ascending: false }).throwOnError()
   }
 
-  const getContract = async (id: string) => {
-    const { data: contract, error } = await supabase.from('contracts').select('id,name,description,address,deployment_status').eq('id', id).single().throwOnError()
+  const getContract = async <T extends string = '*'>(id: string, select: T = '*' as T) => {
+    const { data: contract, error } = await supabase.from('contracts').select(select).eq('id', id).single().throwOnError()
 
     // @todo(1)
     if (error) throw error

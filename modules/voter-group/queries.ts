@@ -9,7 +9,7 @@ export function voterGroupQuery(supabaseClient?: SupabaseClient<Database>) {
     return supabase.from('voter_groups').select('id,name').order('created_at', { ascending: false }).throwOnError()
   }
 
-  const getVoterGroup = async <T extends string>(id: number, select: T = 'id,name' as T) => {
+  const getVoterGroup = async <T extends string = '*'>(id: number, select: T = '*' as T) => {
     const { data: voterGroup, error } = await supabase.from('voter_groups').select(select).eq('id', id).throwOnError().single()
 
     // @todo(1)

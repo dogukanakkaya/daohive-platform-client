@@ -21,20 +21,16 @@ interface Props {
 export default async function Contract({ params }: Props) {
   const supabase = createServerComponentClient<Database>({ cookies })
 
-  const _contract = await contractQuery(supabase).getContract(params.id)
-
-  // @todo(3): join this with above query when i fix the supabase types problem with dynamic selects
-  // after that these 3 things won't be needed
-  const { data } = await supabase.from('contracts').select(`
-    id,
+  const contract = await contractQuery(supabase).getContract(params.id, `
+    id,name,address,
     proposals (
       id,
       metadata_id,
       metadata_provider
     )
-  `).eq('id', params.id).single().throwOnError()
-  if (!data) throw new Error('Contract not found')
-  const contract = { ..._contract, proposals: data.proposals }
+  `)
+
+  if (!contract.address) throw new Error('Contract is not yet deployed.')
 
   const { data: { session } } = await supabase.auth.getSession()
   const { data: abi } = await services.blockchain.get('/contracts/abi', {
@@ -43,7 +39,7 @@ export default async function Contract({ params }: Props) {
     }
   })
 
-  const deployedContract = new ethers.Contract(contract.address as string, abi, provider)
+  const deployedContract = new ethers.Contract(contract.address, abi, provider)
 
   // show 8 proposals at max for performance reasons, lazy load the rest on demand/scroll
   const promises = contract.proposals
@@ -57,7 +53,7 @@ export default async function Contract({ params }: Props) {
       return [proposal.id, { metadata, voteCount }]
     })
 
-  const extraProposalMap = new Map(await Promise.all(promises))
+  const proposalExtraMap = new Map(await Promise.all(promises))
 
   return (
     <div className="space-y-4">
@@ -75,12 +71,12 @@ export default async function Contract({ params }: Props) {
       <div>
         <div className="grid grid-cols-2 gap-4">
           {contract.proposals.map(proposal => {
-            const extraProposalData = extraProposalMap.get(proposal.id)
-            if (!extraProposalData) return <></>
+            const proposalExtra = proposalExtraMap.get(proposal.id)
+            if (!proposalExtra) return <></>
 
             return <ProposalCard key={proposal.id} proposal={{
               ...proposal,
-              ...extraProposalData
+              ...proposalExtra
             }} />
           })}
         </div>
