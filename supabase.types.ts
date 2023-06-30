@@ -51,22 +51,16 @@ export interface Database {
           contract_id: string
           created_at: string | null
           id: string
-          metadata_id: string
-          metadata_provider: number
         }
         Insert: {
           contract_id: string
           created_at?: string | null
           id?: string
-          metadata_id: string
-          metadata_provider: number
         }
         Update: {
           contract_id?: string
           created_at?: string | null
           id?: string
-          metadata_id?: string
-          metadata_provider?: number
         }
         Relationships: [
           {
