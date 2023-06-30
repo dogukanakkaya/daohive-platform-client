@@ -1,5 +1,5 @@
 'use client'
-import useAbortableAsyncEffect from '@/hooks/useAbortableAsyncEffect'
+import { useAbortableAsyncEffect } from '@/hooks'
 import { ExtraProposalProps, Metadata, ProposalResponse } from '@/modules/proposal'
 import { services } from '@/utils/api'
 import { ethers } from 'ethers'

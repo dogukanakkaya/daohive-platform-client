@@ -1,7 +1,7 @@
 'use client'
 import Button from '@/components/Button'
-import { useFormValidation } from '@/hooks'
-import { useEffect, useState } from 'react'
+import { useAbortableAsyncEffect, useFormValidation } from '@/hooks'
+import { useState } from 'react'
 import LoadingOverlay from '@/components/LoadingOverlay'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
 import { services } from '@/utils/api'
@@ -16,12 +16,11 @@ export default function ContractForm() {
   const { state: { name, description, voterGroup }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ name: '', description: '', voterGroup: 0 }, ContractSchema)
   const router = useRouter()
 
-  useEffect(() => {
-    !async function () {
-      const { data, error } = await voterGroupQuery().getVoterGroups()
-      if (error) return
-      setVoterGroups(data)
-    }()
+  useAbortableAsyncEffect(async signal => {
+    const { data, error } = await voterGroupQuery().getVoterGroups().abortSignal(signal)
+    // @todo(1)
+    if (error) return
+    setVoterGroups(data)
   }, [])
 
   const handleSubmit = withLoading(withLoadingToastr(async () => {

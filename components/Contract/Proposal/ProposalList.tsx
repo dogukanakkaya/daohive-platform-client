@@ -6,7 +6,7 @@ import { ethers } from 'ethers'
 import { provider } from '@/utils/contract'
 import { authQuery } from '@/modules/auth'
 import { ProposalResponse } from '@/modules/proposal'
-import useAbortableAsyncEffect from '@/hooks/useAbortableAsyncEffect'
+import { useAbortableAsyncEffect } from '@/hooks'
 
 interface Props {
   proposals: ProposalResponse<'id' | 'metadata_id'>[]
