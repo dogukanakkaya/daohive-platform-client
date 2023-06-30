@@ -52,6 +52,6 @@ export default function Component() {
     const response = await fetch('/', { signal })
 
     // will automatically call `abortController.abort()` on unmount
-  }, [contractAddress])
+  }, [])
 }
 ```
