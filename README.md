@@ -17,8 +17,6 @@ This hook helps to validate forms easily. Expects a default state and a `zod` sc
 export default function Component() {
   // setState only needed when you need to manually update state
   const { state, setState, errors, handleChange, validateForm, isFormValid } = useFormValidation(initialState, Schema)
-
-  // ...
 }
 ```
 
@@ -31,8 +29,6 @@ This hook helps to set a state when initial state changes. This is useful for `u
 // `state` will be updated whenever `data` property changes
 export default function Component({ data }: Props) {
   const [state, setState] = useEffectState(data)
-
-  // ...
 }
 ```
 
