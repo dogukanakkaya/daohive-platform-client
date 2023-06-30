@@ -1,9 +1,10 @@
 'use client'
+import useAbortableAsyncEffect from '@/hooks/useAbortableAsyncEffect'
 import { ExtraProposalProps, Metadata, ProposalResponse } from '@/modules/proposal'
 import { services } from '@/utils/api'
 import { ethers } from 'ethers'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 interface Props {
@@ -15,17 +16,15 @@ export default function ProposalCard({ proposal: _proposal, deployedContract }: 
   const [proposal, setProposal] = useState<{ id: string, metadata_id: string } & Partial<ExtraProposalProps>>(_proposal)
   const { ref, inView } = useInView({ threshold: 0 })
 
-  useEffect(() => {
-    !async function () {
-      if (inView && deployedContract && (!proposal.metadata || !proposal.voteCount)) {
-        const [{ data: metadata }, voteCount] = await Promise.all([
-          services.arweave.get<Metadata>(`/${proposal.metadata_id}`),
-          deployedContract.getVoteCount(proposal.id)
-        ])
+  useAbortableAsyncEffect(async signal => {
+    if (inView && deployedContract && !proposal.metadata) {
+      const [{ data: metadata }, voteCount] = await Promise.all([
+        services.arweave.get<Metadata>(`/${proposal.metadata_id}`, { signal }),
+        deployedContract.getVoteCount(proposal.id)
+      ])
 
-        setProposal({ ...proposal, metadata, voteCount })
-      }
-    }()
+      setProposal({ ...proposal, metadata, voteCount })
+    }
   }, [inView, proposal, deployedContract])
 
   return (

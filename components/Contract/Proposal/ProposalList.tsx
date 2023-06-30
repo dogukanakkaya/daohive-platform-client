@@ -1,11 +1,12 @@
 'use client'
 import ProposalCard from './ProposalCard'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { services } from '@/utils/api'
 import { ethers } from 'ethers'
 import { provider } from '@/utils/contract'
 import { authQuery } from '@/modules/auth'
 import { ProposalResponse } from '@/modules/proposal'
+import useAbortableAsyncEffect from '@/hooks/useAbortableAsyncEffect'
 
 interface Props {
   proposals: ProposalResponse<'id' | 'metadata_id'>[]
@@ -15,17 +16,16 @@ interface Props {
 export default function Proposal({ proposals, contractAddress }: Props) {
   const [deployedContract, setDeployedContract] = useState<ethers.Contract>()
 
-  useEffect(() => {
-    !async function () {
-      const { data: { session } } = await authQuery().getSession()
-      const { data: abi } = await services.blockchain.get('/contracts/abi', {
-        headers: {
-          Authorization: `Bearer ${session?.access_token}`
-        }
-      })
+  useAbortableAsyncEffect(async signal => {
+    const { data: { session } } = await authQuery().getSession()
+    const { data: abi } = await services.blockchain.get<ethers.InterfaceAbi>('/contracts/abi', {
+      headers: {
+        Authorization: `Bearer ${session?.access_token}`
+      },
+      signal
+    })
 
-      setDeployedContract(new ethers.Contract(contractAddress, abi, provider))
-    }()
+    setDeployedContract(new ethers.Contract(contractAddress, abi, provider))
   }, [contractAddress])
 
   return (
