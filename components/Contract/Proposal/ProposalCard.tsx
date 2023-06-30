@@ -8,36 +8,42 @@ import { useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 interface Props {
-  proposal: ProposalResponse<'id' | 'metadata_id'>
+  proposal: ProposalResponse<'id'>
   deployedContract?: ethers.Contract
 }
 
 export default function ProposalCard({ proposal: _proposal, deployedContract }: Props) {
-  const [proposal, setProposal] = useState<{ id: string, metadata_id: string } & Partial<ExtraProposalProps>>(_proposal)
+  const [proposal, setProposal] = useState<ProposalResponse<'id'> & Partial<ExtraProposalProps>>(_proposal)
   const { ref, inView } = useInView({ threshold: 0 })
 
   useAbortableAsyncEffect(async signal => {
     if (inView && deployedContract && !proposal.metadata) {
-      const [{ data: metadata }, voteCount] = await Promise.all([
-        services.arweave.get<Metadata>(`/${proposal.metadata_id}`, { signal }),
-        deployedContract.getVoteCount(proposal.id)
-      ])
+      const proposalOnChain = await deployedContract.proposals(proposal.id)
+      const { data: metadata } = await services.default.get<Metadata>(proposalOnChain.uri, { signal })
 
-      setProposal({ ...proposal, metadata, voteCount })
+      setProposal({
+        ...proposal,
+        metadata,
+        approvalCount: Number(proposalOnChain.approvalCount),
+        disapprovalCount: Number(proposalOnChain.disapprovalCount),
+        neutralCount: Number(proposalOnChain.neutralCount),
+        startAt: Number(proposalOnChain.startAt),
+        endAt: Number(proposalOnChain.endAt)
+      })
     }
   }, [inView, proposal, deployedContract])
 
   return (
-    <div ref={ref} className="shadow-lg bg-white dark:bg-gray-900 h-[350px]">
+    <div ref={ref} className="shadow-lg bg-white dark:bg-gray-900">
       {
-        proposal.metadata && proposal.voteCount ? (
+        proposal.metadata ? (
           <div className="flex">
             <Image src={proposal.metadata.image} width={300} height={350} className="h-[350px] object-cover" alt={proposal.metadata.name} />
             <div className="flex flex-col flex-grow gap-4 px-6 py-4">
               <ul className="flex justify-between gap-2 text-sm mb-4">
-                <li><i className="bi bi-emoji-smile text-green-100"></i> <span className="font-bold">{Number(proposal.voteCount[0])}</span> approval</li>
-                <li><i className="bi bi-emoji-frown text-red-100"></i> <span className="font-bold">{Number(proposal.voteCount[1])}</span> disapproval</li>
-                <li><i className="bi bi-emoji-neutral"></i> {Number(proposal.voteCount[2])} neutral</li>
+                <li><i className="bi bi-emoji-smile text-green-100"></i> <span className="font-bold">{Number(proposal.approvalCount)}</span> approval</li>
+                <li><i className="bi bi-emoji-frown text-red-100"></i> <span className="font-bold">{Number(proposal.disapprovalCount)}</span> disapproval</li>
+                <li><i className="bi bi-emoji-neutral"></i> {Number(proposal.neutralCount)} neutral</li>
               </ul>
               <h1 className="text-2xl font-extrabold">{proposal.metadata.name}</h1>
               <p>{proposal.metadata.description}</p>

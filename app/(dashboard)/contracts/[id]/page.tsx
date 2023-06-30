@@ -4,13 +4,9 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/supabase.types'
 import Link from 'next/link'
 import { contractQuery } from '@/modules/contract'
-import { ExtraProposalProps, Metadata } from '@/modules/proposal'
-import { services } from '@/utils/api'
 import Refresh from '@/components/Refresh'
 import Button, { Variant } from '@/components/Button'
-import { ethers } from 'ethers'
-import { provider } from '@/utils/contract'
-import { ProposalCard, ProposalList } from '@/components/Contract/Proposal'
+import { ProposalList } from '@/components/Contract/Proposal'
 
 interface Props {
   params: {
@@ -23,11 +19,7 @@ export default async function Contract({ params }: Props) {
 
   const contract = await contractQuery(supabase).getContract(params.id, `
     id,name,address,
-    proposals (
-      id,
-      metadata_id,
-      metadata_provider
-    )
+    proposals (id)
   `)
 
   if (!contract.address) throw new Error('Contract is not yet deployed.')

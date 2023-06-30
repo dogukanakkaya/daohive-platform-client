@@ -1,8 +1,8 @@
-import { ARWEAVE_URL, BLOCKCHAIN_SERVICE_URL } from '@/config'
+import { BLOCKCHAIN_SERVICE_URL } from '@/config'
 import axios from 'axios'
 
 export const services = {
-  arweave: axios.create({ baseURL: ARWEAVE_URL }),
+  default: axios.create(),
   blockchain: axios.create({
     baseURL: BLOCKCHAIN_SERVICE_URL,
     headers: {

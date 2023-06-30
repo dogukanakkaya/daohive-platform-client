@@ -11,9 +11,9 @@ export interface Metadata {
 
 export interface ExtraProposalProps {
   metadata: Metadata
-  voteCount: [number, number, number]
-}
-
-export enum MetadataProvider {
-  Arweave = 1
+  approvalCount: number
+  disapprovalCount: number
+  neutralCount: number
+  startAt: number
+  endAt: number
 }

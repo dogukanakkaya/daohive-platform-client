@@ -9,11 +9,11 @@ import { ProposalResponse } from '@/modules/proposal'
 import { useAbortableAsyncEffect } from '@/hooks'
 
 interface Props {
-  proposals: ProposalResponse<'id' | 'metadata_id'>[]
+  proposals: ProposalResponse<'id'>[]
   contractAddress: string
 }
 
-export default function Proposal({ proposals, contractAddress }: Props) {
+export default function ProposalList({ proposals, contractAddress }: Props) {
   const [deployedContract, setDeployedContract] = useState<ethers.Contract>()
 
   useAbortableAsyncEffect(async signal => {
@@ -29,7 +29,7 @@ export default function Proposal({ proposals, contractAddress }: Props) {
   }, [contractAddress])
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
       {proposals.map(proposal => (
         <ProposalCard
           key={proposal.id}
