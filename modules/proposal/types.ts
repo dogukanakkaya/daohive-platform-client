@@ -5,6 +5,11 @@ export interface Metadata {
   image: string
 }
 
+export interface ExtraProposalProps {
+  metadata: Metadata
+  voteCount: [number, number, number]
+}
+
 export enum MetadataProvider {
   Arweave = 1
 }

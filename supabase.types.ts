@@ -122,7 +122,7 @@ export interface Database {
           created_at?: string | null
           id?: number
           name: string
-          user_id: string
+          user_id?: string
         }
         Update: {
           created_at?: string | null

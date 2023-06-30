@@ -11,7 +11,7 @@ export function contractQuery(supabaseClient?: SupabaseClient<Database>) {
   const getContract = async (id: string) => {
     const { data: contract, error } = await supabase.from('contracts').select('id,name,description,address,deployment_status').eq('id', id).single().throwOnError()
 
-    // @todo(1):
+    // @todo(1)
     if (error) throw error
 
     return contract

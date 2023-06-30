@@ -4,13 +4,13 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/supabase.types'
 import Link from 'next/link'
 import { contractQuery } from '@/modules/contract'
-import { Metadata, MetadataProvider } from '@/modules/proposal'
-import { ARWEAVE_URL } from '@/config'
+import { ExtraProposalProps, Metadata, MetadataProvider } from '@/modules/proposal'
 import { services } from '@/utils/api'
 import Refresh from '@/components/Refresh'
 import Button, { Variant } from '@/components/Button'
-import Image from 'next/image'
 import ProposalCard from '@/components/Contract/Proposal/ProposalCard'
+import { ethers } from 'ethers'
+import { provider } from '@/utils/contract'
 
 interface Props {
   params: {
@@ -23,7 +23,7 @@ export default async function Contract({ params }: Props) {
 
   const _contract = await contractQuery(supabase).getContract(params.id)
 
-  // @todo: join this with above query when i fix the supabase types problem with dynamic selects
+  // @todo(3): join this with above query when i fix the supabase types problem with dynamic selects
   // after that these 3 things won't be needed
   const { data } = await supabase.from('contracts').select(`
     id,
@@ -36,19 +36,28 @@ export default async function Contract({ params }: Props) {
   if (!data) throw new Error('Contract not found')
   const contract = { ..._contract, proposals: data.proposals }
 
-  // fetch only last 8 proposal metadata for better performance and lazy load others on user action
-  const metadataPromises = data.proposals
-    .slice(0, 8)
-    .map(async ({ id, metadata_id, metadata_provider }): Promise<[string, Metadata]> => {
-      if (metadata_provider === MetadataProvider.Arweave) {
-        const { data: metadata } = await services.arweave.get(`/${metadata_id}`)
-        return [id, metadata]
-      }
+  const { data: { session } } = await supabase.auth.getSession()
+  const { data: abi } = await services.blockchain.get('/contracts/abi', {
+    headers: {
+      Authorization: `Bearer ${session?.access_token}`
+    }
+  })
 
-      return [id, {} as Metadata]
+  const deployedContract = new ethers.Contract(contract.address as string, abi, provider)
+
+  // show 8 proposals at max for performance reasons, lazy load the rest on demand/scroll
+  const promises = contract.proposals
+    .slice(0, 8)
+    .map<Promise<[string, ExtraProposalProps]>>(async proposal => {
+      const [{ data: metadata }, voteCount] = await Promise.all([
+        services.arweave.get<Metadata>(`/${proposal.metadata_id}`),
+        deployedContract.getVoteCount(proposal.id)
+      ])
+
+      return [proposal.id, { metadata, voteCount }]
     })
 
-  const metadataMap = new Map(await Promise.all(metadataPromises))
+  const extraProposalMap = new Map(await Promise.all(promises))
 
   return (
     <div className="space-y-4">
@@ -65,11 +74,14 @@ export default async function Contract({ params }: Props) {
       </div>
       <div>
         <div className="grid grid-cols-2 gap-4">
-          {contract.proposals.map(({ id }) => {
-            const metadata = metadataMap.get(id)
-            if (!metadata) return <></>
+          {contract.proposals.map(proposal => {
+            const extraProposalData = extraProposalMap.get(proposal.id)
+            if (!extraProposalData) return <></>
 
-            return <ProposalCard key={id} metadata={metadata} />
+            return <ProposalCard key={proposal.id} proposal={{
+              ...proposal,
+              ...extraProposalData
+            }} />
           })}
         </div>
       </div>
