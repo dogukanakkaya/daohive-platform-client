@@ -6,13 +6,11 @@ import LoadingOverlay from '@/components/LoadingOverlay'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
 import { services } from '@/utils/api'
 import { useRouter } from 'next/navigation'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { Database } from '@/supabase.types'
 import { voterGroupQuery } from '@/modules/voter-group'
 import { ContractSchema } from '@/modules/contract'
+import { authQuery } from '@/modules/auth'
 
 export default function ContractForm() {
-  const supabase = createClientComponentClient<Database>()
   const [voterGroups, setVoterGroups] = useState<{ id: number, name: string }[]>([])
   const [loading, setLoading] = useState(false)
   const { state: { name, description, voterGroup }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ name: '', description: '', voterGroup: 0 }, ContractSchema)
@@ -41,7 +39,7 @@ export default function ContractForm() {
         .map(({ voters }) => voters?.address)
     }
 
-    const { data: { session } } = await supabase.auth.getSession()
+    const { data: { session } } = await authQuery().getSession()
     await services.blockchain.post<{ contractAddress: string }>('/contracts', { name, description, whitelist }, {
       headers: {
         Authorization: `Bearer ${session?.access_token}`

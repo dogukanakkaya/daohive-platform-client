@@ -9,18 +9,16 @@ import Image from 'next/image'
 import { toast } from 'react-toastify'
 import { services } from '@/utils/api'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { Database } from '@/supabase.types'
 import { useParams } from 'next/navigation'
 import { ProposalSchema } from '@/modules/proposal'
 import Editor from '@/components/Editor/Editor'
 import { useRouter } from 'next/navigation'
+import { authQuery } from '@/modules/auth'
 
 const DEFAULT_START_TIME = DateTime.now().plus({ minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
 const DEFAULT_END_TIME = DateTime.now().plus({ days: 7, minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
 
 export default function ProposalForm() {
-  const supabase = createClientComponentClient<Database>()
   const [loading, setLoading] = useState(false)
   const [file, setFile] = useState<File & { preview: string }>()
   const {
@@ -58,7 +56,7 @@ export default function ProposalForm() {
     formData.set('endAt', endAt)
     formData.set('banner', file)
 
-    const { data: { session } } = await supabase.auth.getSession()
+    const { data: { session } } = await authQuery().getSession()
     await services.blockchain.post('/proposals', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
