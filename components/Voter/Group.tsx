@@ -6,11 +6,11 @@ import Dialog from '../Dialog'
 import { withLoadingToastr } from '@/utils/hof'
 import GroupCard from './GroupCard'
 import { VoterGroupSchema, VoterGroupsResponse, voterGroupQuery } from '@/modules/voter-group'
-import { VotersResponse } from '@/modules/voter'
+import { VoterResponse } from '@/modules/voter'
 
 interface Props {
   data: VoterGroupsResponse
-  voters: VotersResponse
+  voters: VoterResponse<'id' | 'address' | 'name' | 'email'>[]
 }
 
 enum ActionType {

@@ -1,11 +1,11 @@
 'use client'
-import { ContractsResponse } from '@/modules/contract'
+import { ContractResponse } from '@/modules/contract'
 import Image from 'next/image'
 import Link from 'next/link'
 import Tooltip from '../Tooltip'
 
 interface Props {
-  contract: ContractsResponse[number] & { totalProposals: number, totalVoters: number, activeProposals: number } // @todo temporary until we have these values in database
+  contract: ContractResponse<'id' | 'name' | 'description' | 'address' | 'deployment_status'> & { totalProposals: number, totalVoters: number, activeProposals: number } // @todo temporary until we have these values in database
 }
 
 export default function ContractCard({ contract }: Props) {

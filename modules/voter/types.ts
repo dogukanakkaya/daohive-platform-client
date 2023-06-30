@@ -1,7 +1,5 @@
-import { voterQuery } from './queries'
 import { Database } from '@/supabase.types'
 
-type QueryWrapper = ReturnType<typeof voterQuery>
-export type VotersResponse = NonNullable<Awaited<ReturnType<QueryWrapper['getVoters']>>['data']>
+export type VoterResponse<T extends keyof Database['public']['Tables']['voters']['Row']> = Pick<Database['public']['Tables']['voters']['Row'], T>
 
 export type VoterPayload = Required<Pick<Database['public']['Tables']['voters']['Insert'], 'address' | 'name' | 'email'>>

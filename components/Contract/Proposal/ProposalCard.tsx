@@ -1,5 +1,5 @@
 'use client'
-import { ExtraProposalProps, Metadata } from '@/modules/proposal'
+import { ExtraProposalProps, Metadata, ProposalResponse } from '@/modules/proposal'
 import { services } from '@/utils/api'
 import { ethers } from 'ethers'
 import Image from 'next/image'
@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 interface Props {
-  proposal: { id: string, metadata_id: string } // @todo(3): instead of id, it'll be typeof joined contract query result 
+  proposal: ProposalResponse<'id' | 'metadata_id'>
   deployedContract?: ethers.Contract
 }
 

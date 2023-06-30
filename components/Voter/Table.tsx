@@ -17,18 +17,21 @@ import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 import { useEffectState } from '@/hooks'
 import { withLoadingToastr } from '@/utils/hof'
-import { VoterSchema, VotersResponse } from '@/modules/voter'
+import { VoterSchema, VoterResponse as VoterResponseGeneric } from '@/modules/voter'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
     updateData: (rowIndex: number, columnId: string, value: unknown) => Promise<void>
   }
 }
+
+type VoterResponse = VoterResponseGeneric<'id' | 'address' | 'name' | 'email'>
+
 interface Props {
-  data: VotersResponse
+  data: VoterResponse[]
 }
 
-const defaultColumn: Partial<ColumnDef<VotersResponse[number]>> = {
+const defaultColumn: Partial<ColumnDef<VoterResponse>> = {
   cell: function Cell({ getValue, row: { index }, column, table }) {
     const initialValue = getValue()
     const [value, setValue] = useEffectState(initialValue)
@@ -65,7 +68,7 @@ const defaultColumn: Partial<ColumnDef<VotersResponse[number]>> = {
   }
 }
 
-const columnHelper = createColumnHelper<VotersResponse[number]>()
+const columnHelper = createColumnHelper<VoterResponse>()
 const columns = [
   columnHelper.accessor('address', {
     cell: info => typeof defaultColumn.cell === 'function' ? (

@@ -5,9 +5,10 @@ import { services } from '@/utils/api'
 import { ethers } from 'ethers'
 import { provider } from '@/utils/contract'
 import { authQuery } from '@/modules/auth'
+import { ProposalResponse } from '@/modules/proposal'
 
 interface Props {
-  proposals: { id: string, metadata_id: string }[] // @todo(3): instead of id, it'll be typeof joined contract query result 
+  proposals: ProposalResponse<'id' | 'metadata_id'>[]
   contractAddress: string
 }
 

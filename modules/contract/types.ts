@@ -1,7 +1,3 @@
-import { contractQuery } from './queries'
+import { Database } from '@/supabase.types'
 
-type QueryWrapper = ReturnType<typeof contractQuery>
-
-export type ContractsResponse = NonNullable<Awaited<ReturnType<QueryWrapper['getContracts']>>['data']>
-
-export type ContractResponse = NonNullable<Awaited<ReturnType<QueryWrapper['getContract']>>>
+export type ContractResponse<T extends keyof Database['public']['Tables']['contracts']['Row']> = Pick<Database['public']['Tables']['contracts']['Row'], T>
