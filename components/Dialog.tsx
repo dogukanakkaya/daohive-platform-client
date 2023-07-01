@@ -3,10 +3,11 @@ import clsx from 'clsx'
 import { useEffect, useRef } from 'react'
 
 interface Props {
-  children: React.ReactNode;
-  title: string;
-  size?: Size;
-  isOpen: boolean;
+  children: React.ReactNode
+  title: string
+  isOpen: boolean
+  setIsOpen: (isOpen: boolean) => void
+  size?: Size
 }
 
 export enum Size {
@@ -15,7 +16,7 @@ export enum Size {
   Large = 'max-w-2xl',
 }
 
-export default function Dialog({ children, title, size = Size.Medium, isOpen, ...rest }: Props & React.HTMLAttributes<HTMLDialogElement>) {
+export default function Dialog({ children, title, size = Size.Medium, isOpen, setIsOpen, ...rest }: Props & React.HTMLAttributes<HTMLDialogElement>) {
   const dialogRef = useRef<HTMLDialogElement>(null)
 
   const { className, ...restAttributes } = rest
@@ -32,6 +33,7 @@ export default function Dialog({ children, title, size = Size.Medium, isOpen, ..
       )
     ) {
       dialogRef.current?.close()
+      setIsOpen(false)
     }
   }
 

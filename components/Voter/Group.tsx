@@ -89,7 +89,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
           group={group}
         />)}
       </div>
-      <Dialog title={action.id ? `Edit "${name}" group` : 'Create new whitelist group'} isOpen={isDialogOpen}>
+      <Dialog title={action.id ? `Edit "${name}" group` : 'Create new whitelist group'} isOpen={isDialogOpen} setIsOpen={setIsDialogOpen}>
         <div className="mb-4">
           <label className="form-label">Group Name <span className="text-xs text-red-500">*</span></label>
           <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter Group Name" autoFocus />
@@ -97,7 +97,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
         </div>
         <div className="mb-4">
           <label className="form-label">Voters <span className="text-xs font-light">(Hold <b className="font-medium">CTRL</b> or <b className="font-medium">CMD</b> and click to select multiple)</span></label>
-          <select value={voterIds as unknown as string[]} onChange={handleChange} className="form-input" multiple name="voterIds">
+          <select value={voterIds as unknown as string[]} onChange={handleChange} className="form-input h-[300px] overflow-y-scroll" multiple name="voterIds">
             {voters.map(voter => <option key={voter.id} value={voter.id}>{voter.address} {voter.name ? `- ${voter.name}` : ''}</option>)}
           </select>
           <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.voterIds}</small>
