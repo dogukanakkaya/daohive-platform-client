@@ -9,7 +9,7 @@ export default function useFormValidation<T = Record<string, unknown>>(initialSt
   const [state, setState] = useState<T>(initialState)
   const [errors, setErrors] = useState<FormErrors<T>>(INITIAL_ERROR_STATE)
 
-  const validateForm = async (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const validateForm = async (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     try {
       await schema.parseAsync(state)
       setErrors(INITIAL_ERROR_STATE)
@@ -19,11 +19,11 @@ export default function useFormValidation<T = Record<string, unknown>>(initialSt
     }
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, multiple } = e.target
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
     let _value: unknown = value
 
-    if (multiple) {
+    if (!(e.target instanceof HTMLTextAreaElement) && e.target.multiple) {
       const el = e.target as HTMLSelectElement
       _value = Array.from(el.selectedOptions).map(o => o.value)
     }
