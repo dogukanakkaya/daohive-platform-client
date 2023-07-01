@@ -37,7 +37,21 @@ export default function Sidebar() {
               <h2 className="uppercase text-gray-800 dark:text-gray-400 ml-4 my-4 text-sm">Developer</h2>
               <ul className="flex flex-col">
                 <li>
+                  <Link href="#" className="sidebar-link"><i className="bi bi-file-text"></i> Docs</Link>
+                </li>
+                <li>
                   <Link href="#" className="sidebar-link"><i className="bi bi-code"></i> API Settings</Link>
+                </li>
+                <li>
+                  <Link href="#" className="sidebar-link"><i className="bi bi-globe2"></i> Webhooks</Link>
+                </li>
+              </ul>
+            </div>
+            <div className="p-4">
+              <h2 className="uppercase text-gray-800 dark:text-gray-400 ml-4 my-4 text-sm">Other</h2>
+              <ul className="flex flex-col">
+                <li>
+                  <Link href="#" className="sidebar-link"><i className="bi bi-journal-bookmark"></i> Usage Plan</Link>
                 </li>
               </ul>
             </div>

@@ -43,7 +43,7 @@ export default function ProposalCard({ proposal: _proposal, deployedContract }: 
       return (
         <Tooltip text={<>Ended at <span className="font-semibold">{DateTime.fromMillis(endAt).toFormat('yyyy-MM-dd T')}</span></>}>
           <span className="inline-flex gap-1 px-2 py-1 text-xs rounded-xl bg-gray-300 dark:bg-gray-700">
-            Ended
+            Inactive
             <span className="absolute right-0 top-0 flex h-2 w-2">
               <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
             </span>
