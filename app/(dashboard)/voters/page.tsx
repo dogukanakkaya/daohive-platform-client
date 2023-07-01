@@ -13,8 +13,8 @@ import { voterGroupQuery } from '@/modules/voter-group'
 export default async function Voters() {
   const supabase = createServerComponentClient<Database>({ cookies })
 
-  const { data: voters } = await voterQuery(supabase).getVoters()
-  const { data: voterGroups } = await voterGroupQuery(supabase).getVoterGroups()
+  const { data: voters } = await voterQuery(supabase).getVoters('id,address,name,email')
+  const { data: voterGroups } = await voterGroupQuery(supabase).getVoterGroups('id,name')
 
   return (
     <div className="space-y-4">

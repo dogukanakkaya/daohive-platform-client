@@ -11,7 +11,7 @@ import { contractQuery } from '@/modules/contract'
 export default async function Contracts() {
   const supabase = createServerComponentClient<Database>({ cookies })
 
-  const { data: contracts } = await contractQuery(supabase).getContracts()
+  const { data: contracts } = await contractQuery(supabase).getContracts('id,name,description,address,deployment_status')
 
   return (
     <div className="space-y-4">

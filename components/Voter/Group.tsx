@@ -5,11 +5,11 @@ import { useFormValidation, useEffectState } from '@/hooks'
 import Dialog from '../Dialog'
 import { withLoadingToastr } from '@/utils/hof'
 import GroupCard from './GroupCard'
-import { VoterGroupSchema, VoterGroupsResponse, voterGroupQuery } from '@/modules/voter-group'
+import { VoterGroupResponse, VoterGroupSchema, voterGroupQuery } from '@/modules/voter-group'
 import { VoterResponse } from '@/modules/voter'
 
 interface Props {
-  data: VoterGroupsResponse
+  data: VoterGroupResponse<'id' | 'name'>[]
   voters: VoterResponse<'id' | 'address' | 'name' | 'email'>[]
 }
 
@@ -98,7 +98,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
         <div className="mb-4">
           <label className="form-label">Voters <span className="text-xs font-light">(Hold <b className="font-medium">CTRL</b> or <b className="font-medium">CMD</b> and click to select multiple)</span></label>
           <select value={voterIds as unknown as string[]} onChange={handleChange} className="form-input" multiple name="voterIds">
-            {voters.map(voter => <option key={voter.id} value={voter.id}>{voter.name}</option>)}
+            {voters.map(voter => <option key={voter.id} value={voter.id}>{voter.address} {voter.name ? `- ${voter.name}` : ''}</option>)}
           </select>
           <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.voterIds}</small>
         </div>

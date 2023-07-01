@@ -17,7 +17,7 @@ export default function ContractForm() {
   const router = useRouter()
 
   useAbortableAsyncEffect(async signal => {
-    const { data, error } = await voterGroupQuery().getVoterGroups().abortSignal(signal)
+    const { data, error } = await voterGroupQuery().getVoterGroups('id,name').abortSignal(signal)
     // @todo(1)
     if (error) return
     setVoterGroups(data)

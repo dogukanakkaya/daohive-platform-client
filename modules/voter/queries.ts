@@ -5,8 +5,8 @@ import { VoterPayload } from './types'
 export function voterQuery(supabaseClient?: SupabaseClient<Database>) {
   const supabase = supabaseClient ?? createClientComponentClient<Database>()
 
-  const getVoters = () => {
-    return supabase.from('voters').select('id,address,name,email').order('created_at', { ascending: false }).throwOnError()
+  const getVoters = <T extends string = '*'>(select: T = '*' as T) => {
+    return supabase.from('voters').select(select).order('created_at', { ascending: false }).throwOnError()
   }
 
   const createVoter = ({ address, name, email }: VoterPayload) => {

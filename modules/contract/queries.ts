@@ -4,8 +4,8 @@ import { Database } from '@/supabase.types'
 export function contractQuery(supabaseClient?: SupabaseClient<Database>) {
   const supabase = supabaseClient ?? createClientComponentClient<Database>()
 
-  const getContracts = () => {
-    return supabase.from('contracts').select('id,name,description,address,deployment_status').order('created_at', { ascending: false }).throwOnError()
+  const getContracts = <T extends string = '*'>(select: T = '*' as T) => {
+    return supabase.from('contracts').select(select).order('created_at', { ascending: false }).throwOnError()
   }
 
   const getContract = async <T extends string = '*'>(id: string, select: T = '*' as T) => {
