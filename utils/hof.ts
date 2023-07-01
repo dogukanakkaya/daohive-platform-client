@@ -16,7 +16,7 @@ export const withLoading = <T extends (...args: any[]) => Promise<any>>(fn: T, s
 }
 
 export const withLoadingToastr = <T extends (...args: any[]) => Promise<any>>(fn: T) => async (...args: Parameters<T>) => {
-  const toastId = toast.loading('Action in progress, please wait....', { type: 'default' })
+  const toastId = toast.loading('Action in progress, please wait...', { type: 'default' })
 
   try {
     await fn(...args)

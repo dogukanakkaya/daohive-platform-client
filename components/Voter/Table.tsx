@@ -165,12 +165,12 @@ export default function Table({ data: voters }: Props) {
                       <input id={`checkbox-table-${row.id}`} type="checkbox" className="w-4 h-4 form-input" />
                       <label htmlFor={`checkbox-table-${row.id}`} className="sr-only">checkbox</label>
                     </div>
-                    <Tooltip text="Copy Address" textAfterClick={<>Copied <i className="bi bi-check"></i></>} position="top">
+                    <Tooltip text="Copy Address" textAfterClick={<>Copied <i className="bi bi-check"></i></>}>
                       <span onClick={() => navigator.clipboard.writeText(data[row.index].address)} className="cursor-pointer">
                         <i className="bi bi-clipboard"></i>
                       </span>
                     </Tooltip>
-                    <Tooltip text={remove === data[row.index].id ? 'Confirm' : 'Delete'} position="top">
+                    <Tooltip text={remove === data[row.index].id ? 'Confirm' : 'Delete'}>
                       <span onClick={() => handleRemove(data[row.index].id)} className="text-red-500 hover:text-red-500 cursor-pointer">
                         {remove === data[row.index].id ? <i className="bi bi-check-lg"></i> : <i className="bi bi-trash3"></i>}
                       </span>

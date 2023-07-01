@@ -29,7 +29,7 @@ export default function ProposalList({ proposals, contractAddress }: Props) {
   }, [contractAddress])
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8">
       {proposals.map(proposal => (
         <ProposalCard
           key={proposal.id}

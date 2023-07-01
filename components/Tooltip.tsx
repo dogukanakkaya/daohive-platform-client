@@ -10,7 +10,7 @@ interface Props {
   position?: 'top' | 'bottom' | 'left' | 'right'
 }
 
-export default function Tooltip({ children, text, textAfterClick, revertTimeout = 1000, position = 'bottom' }: Props) {
+export default function Tooltip({ children, text, textAfterClick, revertTimeout = 1000, position = 'top' }: Props) {
   const [tooltipText, setTooltipText] = useEffectState<string | React.ReactNode>(text)
 
   const handleClick = () => {

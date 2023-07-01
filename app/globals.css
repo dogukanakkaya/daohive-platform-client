@@ -44,7 +44,7 @@ body {
   }
 
   .tooltip {
-    @apply absolute z-20 whitespace-nowrap rounded bg-black py-1 px-2 text-xs font-semibold text-white opacity-0 group-hover:opacity-100;
+    @apply absolute z-20 whitespace-nowrap rounded bg-black py-1 px-2 text-xs font-medium text-white opacity-0 group-hover:opacity-100;
   }
 
   .overlay {

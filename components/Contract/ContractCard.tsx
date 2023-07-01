@@ -40,7 +40,7 @@ export default function ContractCard({ contract }: Props) {
             <div className="w-1/2 lg:w-1/4 mb-2 lg:mb-0">
               <h2>Contract Address</h2>
               {
-                contract.address ? <Tooltip text="Copy Address" textAfterClick={<>Copied <i className="bi bi-check"></i></>} position="top">
+                contract.address ? <Tooltip text="Copy Address" textAfterClick={<>Copied <i className="bi bi-check"></i></>}>
                   <p onClick={() => navigator.clipboard.writeText(contract.address!)} className="cursor-pointer text-gray-700 dark:text-gray-200 text-sm bg-gray-300 dark:bg-gray-700 rounded-xl py-1 px-2 w-max">
                     {contract.address.slice(0, 6)}...{contract.address?.slice(contract.address.length - 4)}
                   </p>
