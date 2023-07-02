@@ -77,7 +77,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
   return (
     <div className="border-t-4 dark:border-gray-700">
       <div className="flex items-center gap-2">
-        <h2 className="text-xl font-semibold my-4">Whitelist Groups</h2>
+        <h2 className="section-title my-4">Whitelist Groups</h2>
         <Button onClick={handleCreate} variant={Variant.Secondary} className="!py-1 !px-2"><i className="bi bi-plus text-lg"></i></Button>
       </div>
       <div className="flex items-center flex-wrap gap-4">

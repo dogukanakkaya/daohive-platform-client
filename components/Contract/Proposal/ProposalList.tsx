@@ -1,42 +1,31 @@
 'use client'
 import ProposalCard from './ProposalCard'
-import { useState } from 'react'
-import { services } from '@/utils/api'
+import { useMemo } from 'react'
 import { ethers } from 'ethers'
 import { provider } from '@/utils/contract'
-import { authQuery } from '@/modules/auth'
 import { ProposalResponse } from '@/modules/proposal'
-import { useAbortableAsyncEffect } from '@/hooks'
 
 interface Props {
   proposals: ProposalResponse<'id'>[]
   contractAddress: string
+  abi: ethers.InterfaceAbi
 }
 
-export default function ProposalList({ proposals, contractAddress }: Props) {
-  const [deployedContract, setDeployedContract] = useState<ethers.Contract>()
-
-  useAbortableAsyncEffect(async signal => {
-    const { data: { session } } = await authQuery().getSession()
-    const { data: abi } = await services.blockchain.get<ethers.InterfaceAbi>('/contracts/abi', {
-      headers: {
-        Authorization: `Bearer ${session?.access_token}`
-      },
-      signal
-    })
-
-    setDeployedContract(new ethers.Contract(contractAddress, abi, provider))
-  }, [contractAddress])
+export default function ProposalList({ proposals, contractAddress, abi }: Props) {
+  const deployedContract = useMemo(() => new ethers.Contract(contractAddress, abi, provider), [contractAddress, abi])
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8">
-      {proposals.map(proposal => (
-        <ProposalCard
-          key={proposal.id}
-          proposal={proposal}
-          deployedContract={deployedContract}
-        />
-      ))}
+    <div>
+      <h1 className="section-title">Proposals</h1>
+      <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8">
+        {proposals.map(proposal => (
+          <ProposalCard
+            key={proposal.id}
+            proposal={proposal}
+            deployedContract={deployedContract}
+          />
+        ))}
+      </div>
     </div>
   )
 }

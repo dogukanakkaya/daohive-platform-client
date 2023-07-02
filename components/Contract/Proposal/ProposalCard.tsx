@@ -11,7 +11,7 @@ import { useInView } from 'react-intersection-observer'
 
 interface Props {
   proposal: ProposalResponse<'id'>
-  deployedContract?: ethers.Contract
+  deployedContract: ethers.Contract
 }
 
 export default function ProposalCard({ proposal: _proposal, deployedContract }: Props) {
@@ -19,7 +19,7 @@ export default function ProposalCard({ proposal: _proposal, deployedContract }: 
   const { ref, inView } = useInView({ threshold: 0 })
 
   useAbortableAsyncEffect(async signal => {
-    if (inView && deployedContract && !proposal.metadata) {
+    if (inView && !proposal.metadata) {
       const proposalOnChain = await deployedContract.proposals(proposal.id)
       const { data: metadata } = await services.default.get<Metadata>(proposalOnChain.uri, { signal })
 

@@ -7,6 +7,11 @@ import { contractQuery } from '@/modules/contract'
 import Refresh from '@/components/Refresh'
 import Button, { Variant } from '@/components/Button'
 import { ProposalList } from '@/components/Contract/Proposal'
+import { authQuery } from '@/modules/auth'
+import { services } from '@/utils/api'
+import { ethers } from 'ethers'
+import { provider } from '@/utils/contract'
+import { VoterResponse, voterQuery } from '@/modules/voter'
 
 interface Props {
   params: {
@@ -22,7 +27,29 @@ export default async function Contract({ params }: Props) {
     proposals (id)
   `)
 
+  const { data: { session } } = await authQuery(supabase).getSession()
+  const { data: abi } = await services.blockchain.get<ethers.InterfaceAbi>('/contracts/abi', {
+    headers: {
+      Authorization: `Bearer ${session?.access_token}`
+    }
+  })
+
   if (!contract.address) throw new Error('Contract is not yet deployed.')
+
+  const deployedContract = new ethers.Contract(contract.address, abi, provider)
+
+  // pair whitelist on chain and whitelist on db to be able to show the names of the addresses
+  const whitelistOnChain = await deployedContract.getWhitelist()
+  const { data: voters } = await voterQuery(supabase).getVoters('address,name').in('address', whitelistOnChain)
+
+  // @todo(1)
+  if (!voters) throw new Error()
+
+  const votersByAddress = Object.fromEntries(voters.map(voter => [voter.address, voter.name]))
+  const whitelist: VoterResponse<'address' | 'name'>[] = whitelistOnChain.map((address: string) => ({
+    address,
+    name: votersByAddress[address]
+  }))
 
   return (
     <div className="space-y-4">
@@ -32,12 +59,17 @@ export default async function Contract({ params }: Props) {
           <Refresh key={Math.random()} />
           <Link href={`/contracts/${params.id}/proposals/create`}>
             <Button variant={Variant.Secondary} className="flex items-center">
-              <i className="bi bi-plus text-lg"></i> <span className="border-l ml-2 pl-2 dark:border-gray-700">Create New</span>
+              <i className="bi bi-journal-arrow-up animate-bounce text-lg"></i> <span className="border-l ml-2 pl-2 dark:border-gray-700">New Proposal</span>
             </Button>
           </Link>
         </div>
       </div>
-      <ProposalList proposals={contract.proposals} contractAddress={contract.address} />
+      <div>
+        <h1 className="section-title">Whitelist</h1>
+        {/* @todo */}
+        {whitelist.map(voter => <li key={voter.address}>{voter.name}</li>)}
+      </div>
+      <ProposalList proposals={contract.proposals} contractAddress={contract.address} abi={abi} />
     </div>
   )
 }
