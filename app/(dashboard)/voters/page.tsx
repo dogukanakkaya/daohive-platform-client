@@ -17,7 +17,7 @@ export default async function Voters() {
   const { data: voterGroups } = await voterGroupQuery(supabase).getVoterGroups('id,name')
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex sm:items-center justify-between flex-col sm:flex-row gap-4">
         <Breadcrumb items={[{ name: 'Voters', href: '/voters' }]} />
         <div className="flex justify-end gap-4">
@@ -32,7 +32,7 @@ export default async function Voters() {
       <InfoCard messages={[
         'You can click on and type to edit name and email fields.',
         <span key="delete-warning">If you delete a voter, it will be removed from all groups but <span className="text-red-500">won&apos;t</span> be mirrored in contract.</span>,
-        <span key="edit-warning">Editing the addresses of voters or editing the voters of a group (or deleting them) <span className="text-red-500">won&apos;t</span> be mirrored in the contracts. To update whitelist of a contract you need to go to the contract and edit it there.</span>
+        <span key="edit-warning">Editing the addresses of voters or editing the voters of a group (or deleting them) <span className="text-red-500">won&apos;t</span> be mirrored in the contracts. To update whitelist of a contract you need to do it from contracts page.</span>
       ]} />
       {voters && <Table data={voters} />}
       {voters && voterGroups && <Group data={voterGroups} voters={voters} />}

@@ -14,7 +14,7 @@ export default async function Contracts() {
   const { data: contracts } = await contractQuery(supabase).getContracts('id,name,description,address,deployment_status')
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex sm:items-center justify-between flex-col sm:flex-row gap-4">
         <Breadcrumb items={[{ name: 'Contracts', href: '/contracts' }]} />
         <div className="flex justify-end gap-4">

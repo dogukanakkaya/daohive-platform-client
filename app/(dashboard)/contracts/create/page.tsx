@@ -4,7 +4,7 @@ import { ContractForm } from '@/components/Contract'
 
 export default function Create() {
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <Breadcrumb items={[{ name: 'Contracts', href: '/contracts' }, { name: 'Create', href: '/contracts/create' }]} />
       </div>

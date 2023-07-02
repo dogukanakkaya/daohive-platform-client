@@ -12,6 +12,8 @@ import { services } from '@/utils/api'
 import { ethers } from 'ethers'
 import { provider } from '@/utils/contract'
 import { VoterResponse, voterQuery } from '@/modules/voter'
+import Whitelist from '@/components/Contract/Whitelist'
+import InfoCard from '@/components/InfoCard'
 
 interface Props {
   params: {
@@ -23,7 +25,7 @@ export default async function Contract({ params }: Props) {
   const supabase = createServerComponentClient<Database>({ cookies })
 
   const contract = await contractQuery(supabase).getContract(params.id, `
-    id,name,address,
+    name,address,
     proposals (id)
   `)
 
@@ -52,7 +54,7 @@ export default async function Contract({ params }: Props) {
   }))
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex sm:items-center justify-between flex-col sm:flex-row gap-4">
         <Breadcrumb items={[{ name: 'Contracts', href: '/contracts' }, { name: contract.name, href: `/contracts/${params.id}` }]} />
         <div className="flex justify-end gap-4">
@@ -64,11 +66,10 @@ export default async function Contract({ params }: Props) {
           </Link>
         </div>
       </div>
-      <div>
-        <h1 className="section-title">Whitelist</h1>
-        {/* @todo */}
-        {whitelist.map(voter => <li key={voter.address}>{voter.name}</li>)}
-      </div>
+      <InfoCard messages={[
+        <span key="delete-warning">Deleting any whitelisted voter from this page <span className="text-red-500">won&apos;t</span> be mirrored in voters or voter groups. It will also <span className="text-red-500">not</span> affect any other contract.</span>
+      ]} />
+      <Whitelist whitelist={whitelist} />
       <ProposalList proposals={contract.proposals} contractAddress={contract.address} abi={abi} />
     </div>
   )

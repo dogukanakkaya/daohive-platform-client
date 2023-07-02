@@ -18,7 +18,7 @@ export default async function Create({ params }: Props) {
   const contract = await contractQuery(supabase).getContract(params.id)
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <Breadcrumb items={[
           { name: 'Contracts', href: '/contracts' },
