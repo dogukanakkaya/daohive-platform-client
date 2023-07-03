@@ -6,7 +6,7 @@ import { services } from '@/utils/api'
 import { ethers } from 'ethers'
 import { DateTime } from 'luxon'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 interface Props {
@@ -35,7 +35,7 @@ export default function ProposalCard({ proposal: _proposal, deployedContract }: 
     }
   }, [inView, proposal, deployedContract])
 
-  const renderStatusComponent = () => {
+  const renderStatusComponent = useCallback(() => {
     const startAt = proposal.startAt || 0
     const endAt = proposal.endAt || 0
 
@@ -77,7 +77,7 @@ export default function ProposalCard({ proposal: _proposal, deployedContract }: 
         </span>
       </Tooltip>
     )
-  }
+  }, [proposal])
 
   return (
     <div ref={ref} className={`relative flex flex-col gap-4 p-4 shadow-lg bg-white dark:bg-gray-900 rounded-xl ${!proposal.metadata ? 'animate-pulse' : ''}`}>
@@ -103,15 +103,15 @@ export default function ProposalCard({ proposal: _proposal, deployedContract }: 
         ) : (
           <>
             <div className="bg-slate-500 dark:bg-slate-700 w-full h-[350px] rounded-xl"></div>
-            <div className="flex-1 space-y-6 py-1">
-              <div className="flex flex-col flex-grow gap-4">
-                <div className="flex justify-between items-center mb-2">
-                  <div className="w-28 h-4 bg-slate-500 dark:bg-slate-700 rounded mb-4"></div>
-                  <div className="w-16 h-4 bg-slate-500 dark:bg-slate-700 rounded mb-4"></div>
-                </div>
+            <div className="flex-1 space-y-6 py-1 gap-4">
+              <div className="flex justify-between items-center mb-2">
+                <div className="w-28 h-4 bg-slate-500 dark:bg-slate-700 rounded"></div>
+                <div className="w-16 h-4 bg-slate-500 dark:bg-slate-700 rounded"></div>
+              </div>
+              <div>
                 <div className="w-2/3 h-4 bg-slate-500 dark:bg-slate-700 rounded mb-2"></div>
-                <div className="h-4 bg-slate-500 dark:bg-slate-700 rounded"></div>
-                <div className="h-4 bg-slate-500 dark:bg-slate-700 rounded"></div>
+                <div className="h-3 bg-slate-500 dark:bg-slate-700 rounded mb-2"></div>
+                <div className="h-3 bg-slate-500 dark:bg-slate-700 rounded"></div>
               </div>
             </div>
           </>
