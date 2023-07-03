@@ -52,7 +52,7 @@ body {
   }
 
   .section-title {
-    @apply uppercase text-2xl tracking-wider mb-4 font-semibold text-gray-400;
+    @apply uppercase text-2xl tracking-wider my-6 font-semibold text-gray-400;
   }
 }
 

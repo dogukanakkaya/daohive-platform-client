@@ -3,17 +3,24 @@ import { VoterResponse } from '@/modules/voter'
 import Tooltip from '../Tooltip'
 import { useState } from 'react'
 import { withLoadingToastr } from '@/utils/hof'
+import { services } from '@/utils/api'
+import { authQuery } from '@/modules/auth'
 
 interface Props {
   whitelist: VoterResponse<'address' | 'name'>[]
+  contractAddress: string
 }
 
-export default function Whitelist({ whitelist }: Props) {
+export default function Whitelist({ whitelist, contractAddress }: Props) {
   const [remove, setRemove] = useState('')
 
   const handleRemove = (address: string) => remove === address ? withLoadingToastr(async () => {
-    // @todo: api request to delete from contract
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    const { data: { session } } = await authQuery().getSession()
+    await services.blockchain.delete(`/contracts/${contractAddress}/whitelist/${address}`, {
+      headers: {
+        Authorization: `Bearer ${session?.access_token}`
+      }
+    })
     setRemove('')
   })() : setRemove(address)
 

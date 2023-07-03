@@ -15,7 +15,7 @@ export default function ProposalList({ proposals, contractAddress, abi }: Props)
   const deployedContract = useMemo(() => new ethers.Contract(contractAddress, abi, provider), [contractAddress, abi])
 
   return (
-    <div>
+    <div className="border-t-4 dark:border-gray-700">
       <h1 className="section-title">Proposals</h1>
       <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8">
         {proposals.map(proposal => (

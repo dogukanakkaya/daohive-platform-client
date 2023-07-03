@@ -69,7 +69,7 @@ export default async function Contract({ params }: Props) {
       <InfoCard messages={[
         <span key="delete-warning">Deleting any whitelisted voter from this page <span className="text-red-500">won&apos;t</span> be mirrored in voters or voter groups. It will also <span className="text-red-500">not</span> affect any other contract.</span>
       ]} />
-      <Whitelist whitelist={whitelist} />
+      <Whitelist whitelist={whitelist} contractAddress={contract.address} />
       <ProposalList proposals={contract.proposals} contractAddress={contract.address} abi={abi} />
     </div>
   )
