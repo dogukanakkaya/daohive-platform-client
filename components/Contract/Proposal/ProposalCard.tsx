@@ -1,12 +1,12 @@
 'use client'
 import Tooltip from '@/components/Tooltip'
-import { useAbortableAsyncEffect } from '@/hooks'
-import { ExtraProposalProps, Metadata, ProposalResponse } from '@/modules/proposal'
+import { useAbortableAsyncEffect, useEffectState } from '@/hooks'
+import { Metadata, OnChainProposal, ProposalResponse } from '@/modules/proposal'
 import { services } from '@/utils/api'
 import { ethers } from 'ethers'
 import { DateTime } from 'luxon'
 import Image from 'next/image'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 interface Props {
@@ -15,7 +15,7 @@ interface Props {
 }
 
 export default function ProposalCard({ proposal: _proposal, deployedContract }: Props) {
-  const [proposal, setProposal] = useState<ProposalResponse<'id'> & Partial<ExtraProposalProps>>(_proposal)
+  const [proposal, setProposal] = useEffectState<Props['proposal'] & Partial<OnChainProposal>>(_proposal)
   const { ref, inView } = useInView({ threshold: 0 })
 
   useAbortableAsyncEffect(async signal => {
@@ -85,7 +85,7 @@ export default function ProposalCard({ proposal: _proposal, deployedContract }: 
         proposal.metadata ? (
           <>
             <Image src={proposal.metadata.image} width={500} height={350} className="w-full h-[350px] object-cover rounded-xl" alt={proposal.metadata.name} />
-            <div className="flex flex-col flex-grow gap-4">
+            <div className="flex flex-col gap-4">
               <div className="flex justify-between items-center mb-2">
                 <ul className="flex gap-4 text-sm">
                   <li><i className="bi bi-emoji-smile text-green-100"></i> <span className="font-bold">{proposal.approvalCount}</span></li>
@@ -103,13 +103,13 @@ export default function ProposalCard({ proposal: _proposal, deployedContract }: 
         ) : (
           <>
             <div className="bg-slate-500 dark:bg-slate-700 w-full h-[350px] rounded-xl"></div>
-            <div className="flex-1 space-y-6 py-1 gap-4">
+            <div className="flex flex-col gap-4">
               <div className="flex justify-between items-center mb-2">
-                <div className="w-28 h-4 bg-slate-500 dark:bg-slate-700 rounded"></div>
-                <div className="w-16 h-4 bg-slate-500 dark:bg-slate-700 rounded"></div>
+                <div className="w-28 h-5 bg-slate-500 dark:bg-slate-700 rounded"></div>
+                <div className="w-16 h-5 bg-slate-500 dark:bg-slate-700 rounded"></div>
               </div>
               <div>
-                <div className="w-2/3 h-4 bg-slate-500 dark:bg-slate-700 rounded mb-2"></div>
+                <div className="w-2/3 h-5 bg-slate-500 dark:bg-slate-700 rounded mb-2"></div>
                 <div className="h-3 bg-slate-500 dark:bg-slate-700 rounded mb-2"></div>
                 <div className="h-3 bg-slate-500 dark:bg-slate-700 rounded"></div>
               </div>

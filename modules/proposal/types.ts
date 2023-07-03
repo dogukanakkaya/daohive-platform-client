@@ -9,7 +9,7 @@ export interface Metadata {
   image: string
 }
 
-export interface ExtraProposalProps {
+export interface OnChainProposal {
   metadata: Metadata
   approvalCount: number
   disapprovalCount: number
