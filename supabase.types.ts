@@ -11,30 +11,21 @@ export interface Database {
     Tables: {
       contracts: {
         Row: {
-          address: string | null
+          address: string
           created_at: string | null
-          deployment_status: number | null
-          description: string | null
           id: string
-          name: string
           user_id: string
         }
         Insert: {
-          address?: string | null
+          address: string
           created_at?: string | null
-          deployment_status?: number | null
-          description?: string | null
           id?: string
-          name?: string
           user_id?: string
         }
         Update: {
-          address?: string | null
+          address?: string
           created_at?: string | null
-          deployment_status?: number | null
-          description?: string | null
           id?: string
-          name?: string
           user_id?: string
         }
         Relationships: [

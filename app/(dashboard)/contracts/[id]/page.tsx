@@ -24,39 +24,49 @@ interface Props {
 export default async function Contract({ params }: Props) {
   const supabase = createServerComponentClient<Database>({ cookies })
 
-  const contract = await contractQuery(supabase).getContract(params.id, `
-    name,address,
-    proposals (id)
-  `)
+  const [contract, abi] = await Promise.all([
+    contractQuery(supabase).getContract(params.id, `
+      address,
+      proposals (id)
+    `),
+    (async () => {
+      const { data: { session } } = await authQuery(supabase).getSession()
+      const { data: abi } = await services.blockchain.get<ethers.InterfaceAbi>('/contracts/abi', {
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`
+        }
+      })
 
-  const { data: { session } } = await authQuery(supabase).getSession()
-  const { data: abi } = await services.blockchain.get<ethers.InterfaceAbi>('/contracts/abi', {
-    headers: {
-      Authorization: `Bearer ${session?.access_token}`
-    }
-  })
-
-  if (!contract.address) throw new Error('Contract is not yet deployed.')
+      return abi
+    })()
+  ])
 
   const deployedContract = new ethers.Contract(contract.address, abi, provider)
 
-  // pair whitelist on chain and whitelist on db to be able to show the names of the addresses
-  const whitelistOnChain = await deployedContract.getWhitelist()
-  const { data: voters } = await voterQuery(supabase).getVoters('address,name').in('address', whitelistOnChain)
+  const [contractName, whitelist] = await Promise.all([
+    deployedContract.name(),
+    (async () => {
+      // fetch whitelist on chain and voters that are in whitelist and pair them (because we don't have their names on chain)
+      const whitelistOnChain = await deployedContract.getWhitelist()
+      const { data: voters } = await voterQuery(supabase).getVoters('address,name').in('address', whitelistOnChain)
 
-  // @todo(1)
-  if (!voters) throw new Error()
+      // @todo(1)
+      if (!voters) throw new Error()
 
-  const votersByAddress = Object.fromEntries(voters.map(voter => [voter.address, voter.name]))
-  const whitelist: VoterResponse<'address' | 'name'>[] = whitelistOnChain.map((address: string) => ({
-    address,
-    name: votersByAddress[address]
-  }))
+      const votersByAddress = Object.fromEntries(voters.map(voter => [voter.address, voter.name]))
+      const whitelist: VoterResponse<'address' | 'name'>[] = whitelistOnChain.map((address: string) => ({
+        address,
+        name: votersByAddress[address]
+      }))
+
+      return whitelist
+    })()
+  ])
 
   return (
     <div className="space-y-6">
       <div className="flex sm:items-center justify-between flex-col sm:flex-row gap-4">
-        <Breadcrumb items={[{ name: 'Contracts', href: '/contracts' }, { name: contract.name, href: `/contracts/${params.id}` }]} />
+        <Breadcrumb items={[{ name: 'Contracts', href: '/contracts' }, { name: contractName, href: `/contracts/${params.id}` }]} />
         <div className="flex justify-end gap-4">
           <Refresh key={Math.random()} />
           <Link href={`/contracts/${params.id}/proposals/create`}>

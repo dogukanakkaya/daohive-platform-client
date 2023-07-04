@@ -12,28 +12,17 @@ import { services } from '@/utils/api'
 import { authQuery } from '@/modules/auth'
 
 interface Props {
-  contract: ContractResponse<'id' | 'address' | 'deployment_status'> & { totalProposals: number, totalVoters: number, activeProposals: number } // @todo temporary until we have these values in database
+  contract: ContractResponse<'id' | 'address'> & { totalProposals: number, totalVoters: number, activeProposals: number } // @todo temporary until we have these values in database
+  abi: ethers.InterfaceAbi
 }
 
-export default function ContractCard({ contract: _contract }: Props) {
+export default function ContractCard({ contract: _contract, abi }: Props) {
   const [contract, setContract] = useEffectState<Props['contract'] & Partial<OnChainContract>>(_contract)
-  const [deployedContract, setDeployedContract] = useState<ethers.Contract>()
+  const deployedContract = useMemo(() => new ethers.Contract(contract.address, abi, provider), [contract, abi])
   const { ref, inView } = useInView({ threshold: 0 })
 
-  useAbortableAsyncEffect(async signal => {
-    const { data: { session } } = await authQuery().getSession()
-    const { data: abi } = await services.blockchain.get<ethers.InterfaceAbi>('/contracts/abi', {
-      headers: {
-        Authorization: `Bearer ${session?.access_token}`
-      },
-      signal
-    })
-
-    setDeployedContract(new ethers.Contract(contract.address as string, abi, provider)) // remove as string
-  }, [contract])
-
   useAbortableAsyncEffect(async () => {
-    if (inView && deployedContract) {
+    if (inView && deployedContract && !contract.name) {
       const [name, description] = await Promise.all([
         deployedContract.name(),
         deployedContract.description()
