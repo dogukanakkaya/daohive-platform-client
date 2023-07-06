@@ -5,6 +5,7 @@ export type ContractResponse<T extends keyof Database['public']['Tables']['contr
 export interface OnChainContract {
   name: string
   description: string
+  totalVoters: number
 }
 
 export interface ContractWhitelist {
@@ -13,4 +14,4 @@ export interface ContractWhitelist {
 }[]
 
 export type MergedContract<T extends keyof Database['public']['Tables']['contracts']['Row']> = ContractResponse<T> & OnChainContract & ContractWhitelist
-  & { totalProposals: number, totalVoters: number, activeProposals: number } // @todo temp for now until i have the data
+  & { totalProposals: number, activeProposals: number } // @todo temp for now until i have the data

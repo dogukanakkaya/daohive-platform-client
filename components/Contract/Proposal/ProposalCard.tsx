@@ -13,14 +13,16 @@ interface Props {
   id: string
 }
 
+type ProposalData = { id: string } & Partial<MergedProposal<'id'>>
+
 export default function ProposalCard({ id }: Props) {
-  const [proposal, setProposal] = useState<Partial<MergedProposal<'id'>>>({ id })
+  const [proposal, setProposal] = useState<ProposalData>({ id })
   const { ref, inView } = useInView({ threshold: 0 })
 
   useAbortableAsyncEffect(async signal => {
     if (inView && !proposal.metadata) {
       const { data: { session } } = await authQuery().getSession()
-      const { data } = await services.blockchain.get<MergedProposal<'id'>>(`/proposals/${id}`, {
+      const { data } = await services.blockchain.get<ProposalData>(`/proposals/${id}`, {
         headers: {
           Authorization: `Bearer ${session?.access_token}`
         },
@@ -76,7 +78,7 @@ export default function ProposalCard({ id }: Props) {
   }, [proposal])
 
   return (
-    <div ref={ref} className={`relative flex flex-col gap-4 p-4 shadow-lg bg-white dark:bg-gray-900 rounded-xl ${!proposal.metadata ? 'animate-pulse' : ''}`}>
+    <div ref={ref} className="relative flex flex-col gap-4 p-4 shadow-lg bg-white dark:bg-gray-900 rounded-xl">
       {
         proposal.metadata ? (
           <>
@@ -96,23 +98,27 @@ export default function ProposalCard({ id }: Props) {
               </div>
             </div>
           </>
-        ) : (
-          <>
-            <div className="bg-slate-500 dark:bg-slate-700 w-full h-[350px] rounded-xl"></div>
-            <div className="flex flex-col gap-4">
-              <div className="flex justify-between items-center mb-2">
-                <div className="w-28 h-5 bg-slate-500 dark:bg-slate-700 rounded"></div>
-                <div className="w-16 h-5 bg-slate-500 dark:bg-slate-700 rounded"></div>
-              </div>
-              <div>
-                <div className="w-2/3 h-5 bg-slate-500 dark:bg-slate-700 rounded mb-2"></div>
-                <div className="h-3 bg-slate-500 dark:bg-slate-700 rounded mb-2"></div>
-                <div className="h-3 bg-slate-500 dark:bg-slate-700 rounded"></div>
-              </div>
-            </div>
-          </>
-        )
+        ) : <PlaceholderContent />
       }
+    </div>
+  )
+}
+
+function PlaceholderContent() {
+  return (
+    <div className="relative flex flex-col gap-4 p-4 shadow-lg bg-white dark:bg-gray-900 rounded-xl animate-pulse">
+      <div className="bg-slate-500 dark:bg-slate-700 w-full h-[350px] rounded-xl"></div>
+      <div className="flex flex-col gap-4">
+        <div className="flex justify-between items-center mb-2">
+          <div className="w-28 h-5 bg-slate-500 dark:bg-slate-700 rounded"></div>
+          <div className="w-16 h-5 bg-slate-500 dark:bg-slate-700 rounded"></div>
+        </div>
+        <div>
+          <div className="w-2/3 h-5 bg-slate-500 dark:bg-slate-700 rounded mb-2"></div>
+          <div className="h-3 bg-slate-500 dark:bg-slate-700 rounded mb-2"></div>
+          <div className="h-3 bg-slate-500 dark:bg-slate-700 rounded"></div>
+        </div>
+      </div>
     </div>
   )
 }
