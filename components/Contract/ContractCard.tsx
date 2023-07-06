@@ -34,7 +34,7 @@ export default function ContractCard({ address }: Props) {
         activeProposals: 1
       })
     }
-  }, [inView])
+  }, [inView, contract])
 
   return (
     <div ref={ref} className="bg-white dark:bg-gray-900 shadow-lg rounded-lg">
