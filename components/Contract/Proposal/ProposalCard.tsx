@@ -1,39 +1,35 @@
 'use client'
 import Tooltip from '@/components/Tooltip'
-import { useAbortableAsyncEffect, useEffectState } from '@/hooks'
-import { Metadata, OnChainProposal, ProposalResponse } from '@/modules/proposal'
+import { useAbortableAsyncEffect } from '@/hooks'
+import { authQuery } from '@/modules/auth'
+import { MergedProposal } from '@/modules/proposal'
 import { services } from '@/utils/api'
-import { ethers } from 'ethers'
 import { DateTime } from 'luxon'
 import Image from 'next/image'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 interface Props {
-  proposal: ProposalResponse<'id'>
-  deployedContract: ethers.Contract
+  id: string
 }
 
-export default function ProposalCard({ proposal: _proposal, deployedContract }: Props) {
-  const [proposal, setProposal] = useEffectState<Props['proposal'] & Partial<OnChainProposal>>(_proposal)
+export default function ProposalCard({ id }: Props) {
+  const [proposal, setProposal] = useState<Partial<MergedProposal<'id'>>>({ id })
   const { ref, inView } = useInView({ threshold: 0 })
 
   useAbortableAsyncEffect(async signal => {
     if (inView && !proposal.metadata) {
-      const proposalOnChain = await deployedContract.proposals(proposal.id)
-      const { data: metadata } = await services.default.get<Metadata>(proposalOnChain.uri, { signal })
-
-      setProposal({
-        ...proposal,
-        metadata,
-        approvalCount: Number(proposalOnChain.approvalCount),
-        disapprovalCount: Number(proposalOnChain.disapprovalCount),
-        neutralCount: Number(proposalOnChain.neutralCount),
-        startAt: Number(proposalOnChain.startAt),
-        endAt: Number(proposalOnChain.endAt)
+      const { data: { session } } = await authQuery().getSession()
+      const { data } = await services.blockchain.get<MergedProposal<'id'>>(`/proposals/${id}`, {
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`
+        },
+        signal
       })
+
+      setProposal(data)
     }
-  }, [inView, proposal, deployedContract])
+  }, [inView, proposal])
 
   const renderStatusComponent = useCallback(() => {
     const startAt = proposal.startAt || 0

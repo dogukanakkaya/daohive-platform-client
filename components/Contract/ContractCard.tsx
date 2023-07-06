@@ -1,40 +1,40 @@
 'use client'
-import { ContractResponse, OnChainContract } from '@/modules/contract'
+import { MergedContract } from '@/modules/contract'
 import Image from 'next/image'
 import Link from 'next/link'
 import Tooltip from '../Tooltip'
 import { useInView } from 'react-intersection-observer'
-import { useAbortableAsyncEffect, useEffectState } from '@/hooks'
-import { useEffect, useMemo, useState } from 'react'
-import { ethers } from 'ethers'
-import { provider } from '@/utils/contract'
+import { useAbortableAsyncEffect } from '@/hooks'
+import { useState } from 'react'
 import { services } from '@/utils/api'
 import { authQuery } from '@/modules/auth'
 
 interface Props {
-  contract: ContractResponse<'id' | 'address'> & { totalProposals: number, totalVoters: number, activeProposals: number } // @todo temporary until we have these values in database
-  abi: ethers.InterfaceAbi
+  address: string
 }
 
-export default function ContractCard({ contract: _contract, abi }: Props) {
-  const [contract, setContract] = useEffectState<Props['contract'] & Partial<OnChainContract>>(_contract)
-  const deployedContract = useMemo(() => new ethers.Contract(contract.address, abi, provider), [contract, abi])
+export default function ContractCard({ address }: Props) {
+  const [contract, setContract] = useState<Partial<MergedContract<'address'>>>({ address })
   const { ref, inView } = useInView({ threshold: 0 })
 
-  useAbortableAsyncEffect(async () => {
-    if (inView && deployedContract && !contract.name) {
-      const [name, description] = await Promise.all([
-        deployedContract.name(),
-        deployedContract.description()
-      ])
+  useAbortableAsyncEffect(async signal => {
+    if (inView && !contract.name) {
+      const { data: { session } } = await authQuery().getSession()
+      const { data } = await services.blockchain.get(`/contracts/${contract.address}`, {
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`
+        },
+        signal
+      })
 
       setContract({
-        ...contract,
-        name,
-        description
+        ...data,
+        totalProposals: 17,
+        totalVoters: 2366,
+        activeProposals: 1
       })
     }
-  }, [inView, deployedContract])
+  }, [inView])
 
   return (
     <div ref={ref} className="bg-white dark:bg-gray-900 shadow-lg rounded-lg">
@@ -46,7 +46,7 @@ export default function ContractCard({ contract: _contract, abi }: Props) {
           {contract.name ? (
             <>
               <h1 className="dark:text-gray-50 dark:hover:text-gray-200 text-2xl font-semibold mb-2">
-                <Link href={`/contracts/${contract.id}`}>{contract.name}</Link>
+                <Link href={`/contracts/${contract.address}`}>{contract.name}</Link>
               </h1>
               <p>{contract.description}</p>
             </>
@@ -100,7 +100,7 @@ export default function ContractCard({ contract: _contract, abi }: Props) {
               <p className="text-sm bg-gray-300 dark:bg-gray-700 rounded-xl py-1 px-2 inline-block">{contract.activeProposals}</p>
             </div>
           </div>
-          <Link href={`/contracts/${contract.id}`} className="mt-2 text-indigo-500 flex items-center gap-2">
+          <Link href={`/contracts/${contract.address}`} className="mt-2 text-indigo-500 flex items-center gap-2">
             Show More
             <i className="bi bi-box-arrow-up-right"></i>
           </Link>

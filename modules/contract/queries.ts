@@ -8,10 +8,10 @@ export function contractQuery(supabaseClient?: SupabaseClient<Database>) {
     return supabase.from('contracts').select(select).order('created_at', { ascending: false }).throwOnError()
   }
 
-  const getContract = async <T extends string = '*'>(id: string, select: T = '*' as T) => {
+  const getContractByAddress = async <T extends string = '*'>(address: string, select: T = '*' as T) => {
     const { data: contract, error } = await supabase.from('contracts')
       .select(select)
-      .eq('id', id)
+      .eq('address', address)
       .single()
       .throwOnError()
 
@@ -21,5 +21,5 @@ export function contractQuery(supabaseClient?: SupabaseClient<Database>) {
     return contract
   }
 
-  return { getContracts, getContract }
+  return { getContracts, getContractByAddress }
 }

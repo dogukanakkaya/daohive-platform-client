@@ -7,21 +7,12 @@ import Link from 'next/link'
 import { Database } from '@/supabase.types'
 import Refresh from '@/components/Refresh'
 import { contractQuery } from '@/modules/contract'
-import { ethers } from 'ethers'
-import { services } from '@/utils/api'
-import { authQuery } from '@/modules/auth'
 
 export default async function Contracts() {
   const supabase = createServerComponentClient<Database>({ cookies })
 
-  const { data: contracts } = await contractQuery(supabase).getContracts('id,address')
-
-  const { data: { session } } = await authQuery(supabase).getSession()
-  const { data: abi } = await services.blockchain.get<ethers.InterfaceAbi>('/contracts/abi', {
-    headers: {
-      Authorization: `Bearer ${session?.access_token}`
-    }
-  })
+  const { data: contracts } = await contractQuery(supabase).getContracts('address')
+  // const c = await supabase.from('proposals').select('count').in('contract_id', contracts?.map(contract => contract.id) ?? []).single()
 
   return (
     <div className="space-y-6">
@@ -37,12 +28,7 @@ export default async function Contracts() {
         </div>
       </div>
       {contracts?.map(contract => (
-        <ContractCard key={contract.id} contract={{
-          ...contract,
-          totalProposals: 17,
-          totalVoters: 2366,
-          activeProposals: 1
-        }} abi={abi} />
+        <ContractCard key={contract.address} address={contract.address} />
       ))}
     </div>
   )

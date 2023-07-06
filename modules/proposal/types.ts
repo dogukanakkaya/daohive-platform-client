@@ -17,3 +17,5 @@ export interface OnChainProposal {
   startAt: number
   endAt: number
 }
+
+export type MergedProposal<T extends keyof Database['public']['Tables']['proposals']['Row']> = ProposalResponse<T> & OnChainProposal
