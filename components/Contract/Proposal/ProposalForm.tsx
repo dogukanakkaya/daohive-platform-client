@@ -48,7 +48,7 @@ export default function ProposalForm() {
     }
 
     const formData = new FormData()
-    formData.set('contractId', params.id)
+    formData.set('contractAddress', params.address)
     formData.set('name', name)
     formData.set('description', description)
     formData.set('content', content)
@@ -64,7 +64,7 @@ export default function ProposalForm() {
       }
     })
 
-    router.refresh(); router.replace(`/contracts/${params.id}`)
+    router.refresh(); router.replace(`/contracts/${params.address}`)
   }), setLoading)
 
   return (

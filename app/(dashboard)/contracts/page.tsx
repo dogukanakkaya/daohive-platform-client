@@ -11,8 +11,7 @@ import { contractQuery } from '@/modules/contract'
 export default async function Contracts() {
   const supabase = createServerComponentClient<Database>({ cookies })
 
-  const { data: contracts } = await contractQuery(supabase).getContracts('address')
-  // const c = await supabase.from('proposals').select('count').in('contract_id', contracts?.map(contract => contract.id) ?? []).single()
+  const { data: contracts } = await contractQuery(supabase).getContracts('address') // proposals(count)
 
   return (
     <div className="space-y-6">

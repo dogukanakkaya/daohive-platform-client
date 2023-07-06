@@ -2,7 +2,7 @@
 import Tooltip from '@/components/Tooltip'
 import { useAbortableAsyncEffect } from '@/hooks'
 import { authQuery } from '@/modules/auth'
-import { MergedProposal } from '@/modules/proposal'
+import { MergedProposal, ProposalResponse } from '@/modules/proposal'
 import { services } from '@/utils/api'
 import { DateTime } from 'luxon'
 import Image from 'next/image'
@@ -13,7 +13,7 @@ interface Props {
   id: string
 }
 
-type ProposalData = { id: string } & Partial<MergedProposal<'id'>>
+type ProposalData = ProposalResponse<'id'> & Partial<MergedProposal<'id'>>
 
 export default function ProposalCard({ id }: Props) {
   const [proposal, setProposal] = useState<ProposalData>({ id })

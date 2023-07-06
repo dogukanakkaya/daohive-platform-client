@@ -1,5 +1,5 @@
 'use client'
-import { MergedContract } from '@/modules/contract'
+import { ContractResponse, MergedContract } from '@/modules/contract'
 import Image from 'next/image'
 import Link from 'next/link'
 import Tooltip from '../Tooltip'
@@ -13,7 +13,7 @@ interface Props {
   address: string
 }
 
-type ContractData = { address: string } & Partial<MergedContract<'address'>>
+type ContractData = ContractResponse<'address'> & Partial<MergedContract<'address'>>
 
 export default function ContractCard({ address }: Props) {
   const [contract, setContract] = useState<ContractData>({ address })
