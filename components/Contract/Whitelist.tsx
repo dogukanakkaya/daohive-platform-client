@@ -1,10 +1,13 @@
 'use client'
-import { VoterResponse } from '@/modules/voter'
+import { VoterResponse, VoterSchema } from '@/modules/voter'
 import Tooltip from '../Tooltip'
 import { useState } from 'react'
 import { withLoadingToastr } from '@/utils/hof'
 import { services } from '@/utils/api'
 import { authQuery } from '@/modules/auth'
+import Button, { Variant } from '../Button'
+import Dialog from '../Dialog'
+import { useFormValidation } from '@/hooks'
 
 interface Props {
   whitelist: VoterResponse<'address' | 'name'>[]
@@ -12,6 +15,9 @@ interface Props {
 }
 
 export default function Whitelist({ whitelist, contractAddress }: Props) {
+  const { state: { address, name, email }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ address: '', name: '', email: '' }, VoterSchema)
+  const [addToVoters, setAddToVoters] = useState(false)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [remove, setRemove] = useState('')
 
   const handleRemove = (address: string) => remove === address ? withLoadingToastr(async () => {
@@ -26,7 +32,10 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
 
   return (
     <div>
-      <h1 className="section-title">Whitelisted Voters</h1>
+      <div className="flex items-center gap-2">
+        <h1 className="section-title">Whitelisted Voters</h1>
+        <Button onClick={() => setIsDialogOpen(true)} variant={Variant.Secondary} className="!py-1 !px-2"><i className="bi bi-plus text-lg"></i></Button>
+      </div>
       <ul className="flex flex-wrap gap-4">
         {whitelist.map(voter => (
           <li key={voter.address} className="bg-gray-300 dark:bg-gray-700 text-sm px-2 py-1 rounded-full">
@@ -39,6 +48,37 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
           </li>
         ))}
       </ul>
+      <Dialog title="Add new voter" isOpen={isDialogOpen} setIsOpen={setIsDialogOpen}>
+        <div className="mb-4">
+          <label className="form-label">Voter Address <span className="text-xs text-red-500">*</span></label>
+          <input value={address} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="address" placeholder="Enter Voter Address" autoFocus />
+          <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.address}</small>
+        </div>
+        <div className="mb-4 flex items-center gap-2">
+          <label className="form-label mb-0">Also add this to your voters if doesn&apos;t exists yet</label>
+          <input value={String(addToVoters)} onChange={e => setAddToVoters(e.target.checked)} className="form-input" type="checkbox" name="addToVoters" />
+        </div>
+        {
+          addToVoters && (
+            <>
+              <div className="mb-4">
+                <label className="form-label">Voter Name</label>
+                <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter Voter Name" />
+                <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.name}</small>
+              </div>
+              <div className="mb-4">
+                <label className="form-label">Voter Email</label>
+                <input value={email} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="email" placeholder="Enter Voter Email" />
+                <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.email}</small>
+              </div>
+            </>
+          )
+        }
+        <div className="flex items-center justify-end gap-2">
+          <Button onClick={() => setIsDialogOpen(false)} variant={Variant.Secondary}>Cancel</Button>
+          <Button onClick={() => { }} isEnabled={isFormValid}>Add</Button>
+        </div>
+      </Dialog>
     </div>
   )
 }
