@@ -1,5 +1,5 @@
 'use client'
-import { VoterResponse, VoterSchema } from '@/modules/voter'
+import { VoterResponse, VoterSchema, voterQuery } from '@/modules/voter'
 import Tooltip from '../Tooltip'
 import { useState } from 'react'
 import { withLoadingToastr } from '@/utils/hof'
@@ -7,6 +7,7 @@ import { services } from '@/utils/api'
 import Button, { Variant } from '../Button'
 import Dialog from '../Dialog'
 import { useEffectState, useFormValidation } from '@/hooks'
+import { nullifyEmpty } from '@/utils/parser'
 
 interface Props {
   whitelist: VoterResponse<'address' | 'name'>[]
@@ -34,12 +35,11 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
   })() : setRemove(address)
 
   const handleSubmit = withLoadingToastr(async () => {
-    await services.blockchain.post(`/contracts/${contractAddress}/whitelist`, {
-      addToVoters,
-      name,
-      email,
-      voterAddress: address
-    })
+    await services.blockchain.post(`/contracts/${contractAddress}/whitelist`, { voterAddress: address })
+
+    if (addToVoters) {
+      await voterQuery().createVoter({ address, name, email: nullifyEmpty(email) })
+    }
 
     setData([...data, { address, name }])
     setIsDialogOpen(false)
