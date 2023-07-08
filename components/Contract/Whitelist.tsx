@@ -38,7 +38,7 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
     await services.blockchain.post(`/contracts/${contractAddress}/whitelist`, { voterAddress: address })
 
     if (addToVoters) {
-      await voterQuery().createVoter({ address, name, email: nullifyEmpty(email) })
+      await voterQuery().createVoter({ address, name: nullifyEmpty(name), email: nullifyEmpty(email) })
     }
 
     setData([...data, { address, name }])
