@@ -7,7 +7,7 @@ import { services } from '@/utils/api'
 import { authQuery } from '@/modules/auth'
 import Button, { Variant } from '../Button'
 import Dialog from '../Dialog'
-import { useFormValidation } from '@/hooks'
+import { useEffectState, useFormValidation } from '@/hooks'
 
 interface Props {
   whitelist: VoterResponse<'address' | 'name'>[]
@@ -15,7 +15,15 @@ interface Props {
 }
 
 export default function Whitelist({ whitelist, contractAddress }: Props) {
-  const { state: { address, name, email }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ address: '', name: '', email: '' }, VoterSchema)
+  const {
+    state: { address, name, email },
+    errors,
+    handleChange,
+    validateForm,
+    isFormValid,
+    reset
+  } = useFormValidation({ address: '', name: '', email: '' }, VoterSchema)
+  const [data, setData] = useEffectState(whitelist)
   const [addToVoters, setAddToVoters] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [remove, setRemove] = useState('')
@@ -27,8 +35,27 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
         Authorization: `Bearer ${session?.access_token}`
       }
     })
+    setData(data.filter(voter => voter.address !== address))
     setRemove('')
   })() : setRemove(address)
+
+  const handleSubmit = withLoadingToastr(async () => {
+    const { data: { session } } = await authQuery().getSession()
+    await services.blockchain.post(`/contracts/${contractAddress}/whitelist`, {
+      addToVoters,
+      name,
+      email,
+      voterAddress: address
+    }, {
+      headers: {
+        Authorization: `Bearer ${session?.access_token}`
+      }
+    })
+
+    setData([...data, { address, name }])
+    setIsDialogOpen(false)
+    reset()
+  })
 
   return (
     <div>
@@ -37,7 +64,7 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
         <Button onClick={() => setIsDialogOpen(true)} variant={Variant.Secondary} className="!py-1 !px-2"><i className="bi bi-plus text-lg"></i></Button>
       </div>
       <ul className="flex flex-wrap gap-4">
-        {whitelist.map(voter => (
+        {data.map(voter => (
           <li key={voter.address} className="bg-gray-300 dark:bg-gray-700 text-sm px-2 py-1 rounded-full">
             <span className="mr-2">{voter.address} {voter.name ? `- ${voter.name}` : ''}</span>
             <Tooltip text={remove === voter.address ? 'Confirm' : 'Delete'}>
@@ -76,7 +103,7 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
         }
         <div className="flex items-center justify-end gap-2">
           <Button onClick={() => setIsDialogOpen(false)} variant={Variant.Secondary}>Cancel</Button>
-          <Button onClick={() => { }} isEnabled={isFormValid}>Add</Button>
+          <Button onClick={handleSubmit} isEnabled={isFormValid}>Add</Button>
         </div>
       </Dialog>
     </div>

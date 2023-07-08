@@ -29,8 +29,8 @@ export default function Group({ data: voterGroups, voters }: Props) {
     isFormValid,
     reset
   } = useFormValidation({ name: '', voterIds: [] as number[] }, VoterGroupSchema)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [data, setData] = useEffectState(voterGroups)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [action, setAction] = useState<{ id: number, type: ActionType }>({ id: 0, type: ActionType.Create })
 
   const handleCreate = () => {
