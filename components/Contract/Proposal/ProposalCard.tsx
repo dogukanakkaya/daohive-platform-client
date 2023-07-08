@@ -99,7 +99,7 @@ export default function ProposalCard({ id }: Props) {
 
 function PlaceholderContent() {
   return (
-    <div className="relative flex flex-col gap-4 p-4 shadow-lg bg-white dark:bg-gray-900 rounded-xl animate-pulse">
+    <div className="relative flex flex-col gap-4 shadow-lg bg-white dark:bg-gray-900 rounded-xl animate-pulse">
       <div className="bg-slate-500 dark:bg-slate-700 w-full h-[350px] rounded-xl"></div>
       <div className="flex flex-col gap-4">
         <div className="flex justify-between items-center mb-2">
