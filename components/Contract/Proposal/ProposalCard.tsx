@@ -1,7 +1,6 @@
 'use client'
 import Tooltip from '@/components/Tooltip'
 import { useAbortableAsyncEffect } from '@/hooks'
-import { authQuery } from '@/modules/auth'
 import { MergedProposal, ProposalResponse } from '@/modules/proposal'
 import { services } from '@/utils/api'
 import { DateTime } from 'luxon'
@@ -21,13 +20,7 @@ export default function ProposalCard({ id }: Props) {
 
   useAbortableAsyncEffect(async signal => {
     if (inView && !proposal.metadata) {
-      const { data: { session } } = await authQuery().getSession()
-      const { data } = await services.blockchain.get<ProposalData>(`/proposals/${id}`, {
-        headers: {
-          Authorization: `Bearer ${session?.access_token}`
-        },
-        signal
-      })
+      const { data } = await services.blockchain.get<ProposalData>(`/proposals/${id}`, { signal })
 
       setProposal(data)
     }

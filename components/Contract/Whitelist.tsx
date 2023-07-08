@@ -4,7 +4,6 @@ import Tooltip from '../Tooltip'
 import { useState } from 'react'
 import { withLoadingToastr } from '@/utils/hof'
 import { services } from '@/utils/api'
-import { authQuery } from '@/modules/auth'
 import Button, { Variant } from '../Button'
 import Dialog from '../Dialog'
 import { useEffectState, useFormValidation } from '@/hooks'
@@ -29,27 +28,17 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
   const [remove, setRemove] = useState('')
 
   const handleRemove = (address: string) => remove === address ? withLoadingToastr(async () => {
-    const { data: { session } } = await authQuery().getSession()
-    await services.blockchain.delete(`/contracts/${contractAddress}/whitelist/${address}`, {
-      headers: {
-        Authorization: `Bearer ${session?.access_token}`
-      }
-    })
+    await services.blockchain.delete(`/contracts/${contractAddress}/whitelist/${address}`)
     setData(data.filter(voter => voter.address !== address))
     setRemove('')
   })() : setRemove(address)
 
   const handleSubmit = withLoadingToastr(async () => {
-    const { data: { session } } = await authQuery().getSession()
     await services.blockchain.post(`/contracts/${contractAddress}/whitelist`, {
       addToVoters,
       name,
       email,
       voterAddress: address
-    }, {
-      headers: {
-        Authorization: `Bearer ${session?.access_token}`
-      }
     })
 
     setData([...data, { address, name }])

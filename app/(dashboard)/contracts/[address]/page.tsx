@@ -7,7 +7,6 @@ import { contractQuery } from '@/modules/contract'
 import Refresh from '@/components/Refresh'
 import Button, { Variant } from '@/components/Button'
 import { ProposalCard } from '@/components/Contract/Proposal'
-import { authQuery } from '@/modules/auth'
 import { services } from '@/utils/api'
 import Whitelist from '@/components/Contract/Whitelist'
 import InfoCard from '@/components/InfoCard'
@@ -21,8 +20,6 @@ interface Props {
 export default async function Contract({ params }: Props) {
   const supabase = createServerComponentClient<Database>({ cookies })
 
-  const { data: { session } } = await authQuery(supabase).getSession()
-
   const contract = await contractQuery(supabase).getContractByAddress(params.address, `
     address,
     proposals (id)
@@ -30,7 +27,7 @@ export default async function Contract({ params }: Props) {
 
   const { data: { name, whitelist } } = await services.blockchain.get(`/contracts/${contract.address}`, {
     headers: {
-      Authorization: `Bearer ${session?.access_token}`
+      Cookie: cookies().toString()
     }
   })
 

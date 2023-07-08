@@ -8,7 +8,6 @@ import { services } from '@/utils/api'
 import { useRouter } from 'next/navigation'
 import { voterGroupQuery } from '@/modules/voter-group'
 import { ContractSchema } from '@/modules/contract'
-import { authQuery } from '@/modules/auth'
 
 export default function ContractForm() {
   const [voterGroups, setVoterGroups] = useState<{ id: number, name: string }[]>([])
@@ -38,12 +37,7 @@ export default function ContractForm() {
         .map(({ voters }) => voters?.address)
     }
 
-    const { data: { session } } = await authQuery().getSession()
-    await services.blockchain.post<{ contractAddress: string }>('/contracts', { name, description, whitelist }, {
-      headers: {
-        Authorization: `Bearer ${session?.access_token}`
-      }
-    })
+    await services.blockchain.post<{ contractAddress: string }>('/contracts', { name, description, whitelist })
 
     router.refresh(); router.replace('/contracts')
   }), setLoading)

@@ -1,6 +1,5 @@
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 import { NextRequest, NextResponse } from 'next/server'
-import { authQuery } from './modules/auth'
 
 const UNAUTHENTICATED_ROUTES = ['/auth/login', '/auth/callback']
 
@@ -8,7 +7,8 @@ export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
 
   const supabase = createMiddlewareClient({ req, res })
-  const { data } = await authQuery(supabase).getSession()
+
+  const { data } = await supabase.auth.getSession()
 
   if (data.session && UNAUTHENTICATED_ROUTES.includes(req.nextUrl.pathname)) {
     return NextResponse.redirect(new URL('/', req.url))

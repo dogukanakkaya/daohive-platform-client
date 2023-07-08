@@ -8,7 +8,8 @@ export const services = {
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json'
-    }
+    },
+    withCredentials: true
   })
 }
 

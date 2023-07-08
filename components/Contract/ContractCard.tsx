@@ -7,7 +7,6 @@ import { useInView } from 'react-intersection-observer'
 import { useAbortableAsyncEffect } from '@/hooks'
 import { useState } from 'react'
 import { services } from '@/utils/api'
-import { authQuery } from '@/modules/auth'
 
 interface Props {
   address: string
@@ -21,13 +20,7 @@ export default function ContractCard({ address }: Props) {
 
   useAbortableAsyncEffect(async signal => {
     if (inView && !contract.name) {
-      const { data: { session } } = await authQuery().getSession()
-      const { data } = await services.blockchain.get<ContractData>(`/contracts/${contract.address}`, {
-        headers: {
-          Authorization: `Bearer ${session?.access_token}`
-        },
-        signal
-      })
+      const { data } = await services.blockchain.get<ContractData>(`/contracts/${contract.address}`, { signal })
 
       setContract({
         ...data,
