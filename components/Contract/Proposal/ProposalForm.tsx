@@ -81,12 +81,12 @@ export default function ProposalForm() {
       </div>
       <div className="mb-4">
         <label className="form-label">Proposal Name <span className="text-xs text-red-500">*</span></label>
-        <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter Proposal Name" />
+        <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter proposal name" />
         <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.name}</small>
       </div>
       <div className="mb-4">
         <label className="form-label">Proposal Description <span className="text-xs text-red-500">*</span></label>
-        <textarea value={description} onChange={handleChange} onBlur={validateForm} className="form-input" rows={3} name="description" placeholder="Enter Proposal Description" />
+        <textarea value={description} onChange={handleChange} onBlur={validateForm} className="form-input" rows={3} name="description" placeholder="Enter proposal description" />
         <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.description}</small>
       </div>
       <div className="mb-4">

@@ -19,17 +19,17 @@ export default function VoterForm() {
     <div className="relative bg-white dark:bg-gray-900 p-5 rounded-xl shadow">
       <div className="mb-4">
         <label className="form-label">Voter Address <span className="text-xs text-red-500">*</span></label>
-        <input value={address} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="address" placeholder="Enter Voter Address" autoFocus />
+        <input value={address} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="address" placeholder="Enter voter address" autoFocus />
         <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.address}</small>
       </div>
       <div className="mb-4">
         <label className="form-label">Voter Name</label>
-        <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter Voter Name" />
+        <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter voter name" />
         <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.name}</small>
       </div>
       <div className="mb-4">
         <label className="form-label">Voter Email</label>
-        <input value={email} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="email" placeholder="Enter Voter Email" />
+        <input value={email} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="email" placeholder="Enter voter email" />
         <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.email}</small>
       </div>
       <div className="flex justify-end items-center">

@@ -47,12 +47,12 @@ export default function ContractForm() {
       {loading && <LoadingOverlay />}
       <div className="mb-4">
         <label className="form-label">Contract Name <span className="text-xs text-red-500">*</span></label>
-        <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter Contract Name" autoFocus />
+        <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter contract name" autoFocus />
         <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.name}</small>
       </div>
       <div className="mb-4">
         <label className="form-label">Contract Description</label>
-        <textarea value={description} onChange={handleChange} onBlur={validateForm} className="form-input" rows={3} name="description" placeholder="Enter Contract Description" />
+        <textarea value={description} onChange={handleChange} onBlur={validateForm} className="form-input" rows={3} name="description" placeholder="Enter contract description" />
         <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.description}</small>
       </div>
       <div className="mb-4">

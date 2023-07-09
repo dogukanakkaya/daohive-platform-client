@@ -47,7 +47,7 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
   })
 
   return (
-    <div>
+    <div className="border-t-4 dark:border-gray-700">
       <div className="flex items-center gap-2">
         <h1 className="section-title">Whitelisted Voters</h1>
         <Button onClick={() => setIsDialogOpen(true)} variant={Variant.Secondary} className="!py-1 !px-2"><i className="bi bi-plus text-lg"></i></Button>
@@ -67,24 +67,24 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
       <Dialog title="Add new voter" isOpen={isDialogOpen} setIsOpen={setIsDialogOpen}>
         <div className="mb-4">
           <label className="form-label">Voter Address <span className="text-xs text-red-500">*</span></label>
-          <input value={address} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="address" placeholder="Enter Voter Address" autoFocus />
+          <input value={address} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="address" placeholder="Enter voter address" autoFocus />
           <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.address}</small>
         </div>
         <div className="mb-4 flex items-center gap-2">
-          <label className="form-label mb-0">Also add this to your voters if doesn&apos;t exists yet</label>
-          <input value={String(addToVoters)} onChange={e => setAddToVoters(e.target.checked)} className="form-input" type="checkbox" name="addToVoters" />
+          <label className="form-label mb-0" htmlFor="addToVoters">Also add this to your voters if doesn&apos;t exists yet</label>
+          <input value={String(addToVoters)} onChange={e => setAddToVoters(e.target.checked)} className="form-input" type="checkbox" name="addToVoters" id="addToVoters" />
         </div>
         {
           addToVoters && (
             <>
               <div className="mb-4">
                 <label className="form-label">Voter Name</label>
-                <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter Voter Name" />
+                <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter voter name" />
                 <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.name}</small>
               </div>
               <div className="mb-4">
                 <label className="form-label">Voter Email</label>
-                <input value={email} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="email" placeholder="Enter Voter Email" />
+                <input value={email} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="email" placeholder="Enter voter email" />
                 <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.email}</small>
               </div>
             </>

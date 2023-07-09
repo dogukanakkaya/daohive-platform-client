@@ -47,8 +47,7 @@ export default async function Contract({ params }: Props) {
       <InfoCard messages={[
         <span key="delete-warning">Deleting any whitelisted voter from this page <span className="text-red-500">won&apos;t</span> be mirrored in voters or voter groups. It will also <span className="text-red-500">not</span> affect any other contract.</span>
       ]} />
-      <Whitelist whitelist={whitelist} contractAddress={contract.address} />
-      <div className="border-t-4 dark:border-gray-700">
+      <div>
         <h1 className="section-title">Proposals</h1>
         <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8">
           {contract.proposals.map(proposal => (
@@ -59,6 +58,7 @@ export default async function Contract({ params }: Props) {
           ))}
         </div>
       </div>
+      <Whitelist whitelist={whitelist} contractAddress={contract.address} />
     </div>
   )
 }

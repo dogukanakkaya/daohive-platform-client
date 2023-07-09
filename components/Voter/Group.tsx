@@ -92,7 +92,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
       <Dialog title={action.id ? `Edit "${name}" group` : 'Create new whitelist group'} isOpen={isDialogOpen} setIsOpen={setIsDialogOpen}>
         <div className="mb-4">
           <label className="form-label">Group Name <span className="text-xs text-red-500">*</span></label>
-          <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter Group Name" autoFocus />
+          <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter group name" autoFocus />
           <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.name}</small>
         </div>
         <div className="mb-4">
