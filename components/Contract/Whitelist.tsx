@@ -32,12 +32,12 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
 
   const handleRemove = (address: string) => remove === address ? withLoading(withLoadingToastr(async () => {
     setRemove('')
-    await services.blockchain.delete(`/contracts/${contractAddress}/whitelist/${address}`)
+    await services.blockchain.delete(`/contracts/${contractAddress}/whitelist`, { data: { voterAddresses: [address] } })
     setData(data.filter(voter => voter.address !== address))
   }), setLoading)() : setRemove(address)
 
   const handleSubmit = withLoading(withLoadingToastr(async () => {
-    await services.blockchain.post(`/contracts/${contractAddress}/whitelist`, { voterAddress: address })
+    await services.blockchain.post(`/contracts/${contractAddress}/whitelist`, { voterAddresses: [address] })
 
     if (addToVoters) {
       await voterQuery().createVoter({ address, name: nullifyEmpty(name), email: nullifyEmpty(email) })
