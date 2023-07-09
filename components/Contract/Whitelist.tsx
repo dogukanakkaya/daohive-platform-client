@@ -2,12 +2,13 @@
 import { VoterResponse, VoterSchema, voterQuery } from '@/modules/voter'
 import Tooltip from '../Tooltip'
 import { useState } from 'react'
-import { withLoadingToastr } from '@/utils/hof'
+import { withLoading, withLoadingToastr } from '@/utils/hof'
 import { services } from '@/utils/api'
 import Button, { Variant } from '../Button'
 import Dialog from '../Dialog'
 import { useEffectState, useFormValidation } from '@/hooks'
 import { nullifyEmpty } from '@/utils/parser'
+import LoadingOverlay from '../LoadingOverlay'
 
 interface Props {
   whitelist: VoterResponse<'address' | 'name'>[]
@@ -27,14 +28,15 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
   const [addToVoters, setAddToVoters] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [remove, setRemove] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleRemove = (address: string) => remove === address ? withLoadingToastr(async () => {
+  const handleRemove = (address: string) => remove === address ? withLoading(withLoadingToastr(async () => {
+    setRemove('')
     await services.blockchain.delete(`/contracts/${contractAddress}/whitelist/${address}`)
     setData(data.filter(voter => voter.address !== address))
-    setRemove('')
-  })() : setRemove(address)
+  }), setLoading)() : setRemove(address)
 
-  const handleSubmit = withLoadingToastr(async () => {
+  const handleSubmit = withLoading(withLoadingToastr(async () => {
     await services.blockchain.post(`/contracts/${contractAddress}/whitelist`, { voterAddress: address })
 
     if (addToVoters) {
@@ -44,7 +46,7 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
     setData([...data, { address, name }])
     setIsDialogOpen(false)
     reset()
-  })
+  }), setLoading)
 
   return (
     <div className="border-t-4 dark:border-gray-700">
@@ -64,7 +66,8 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
           </li>
         ))}
       </ul>
-      <Dialog title="Add new voter" isOpen={isDialogOpen} setIsOpen={setIsDialogOpen}>
+      <Dialog title="Add new voter" isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} className="relative">
+        {loading && <LoadingOverlay />}
         <div className="mb-4">
           <label className="form-label">Voter Address <span className="text-xs text-red-500">*</span></label>
           <input value={address} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="address" placeholder="Enter voter address" autoFocus />

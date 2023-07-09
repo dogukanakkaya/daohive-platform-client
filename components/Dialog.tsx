@@ -20,7 +20,7 @@ export default function Dialog({ children, title, size = Size.Medium, isOpen, se
   const dialogRef = useRef<HTMLDialogElement>(null)
 
   const { className, ...restAttributes } = rest
-  const _className = clsx('bg-white text-gray-600 p-6 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.2)] w-full space-y-4 backdrop:bg-opacity-50 backdrop:bg-gray-600 outline-none dark:bg-gray-900 dark:text-gray-300', size, className)
+  const _className = clsx('bg-white text-gray-600 p-6 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.2)] w-full backdrop:bg-opacity-50 backdrop:bg-gray-600 outline-none dark:bg-gray-900 dark:text-gray-300', size, className)
 
   const handleClick = (e: React.MouseEvent<HTMLDialogElement>) => {
     const dialogDimensions = dialogRef.current?.getBoundingClientRect()
@@ -47,7 +47,7 @@ export default function Dialog({ children, title, size = Size.Medium, isOpen, se
 
   return (
     <dialog ref={dialogRef} onClick={handleClick} className={_className} {...restAttributes}>
-      <div>
+      <div className="mb-4">
         <h3 className="text-xl font-extrabold">{title}</h3>
       </div>
       {children}

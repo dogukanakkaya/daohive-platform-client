@@ -105,9 +105,9 @@ export default function Table({ data: voters }: Props) {
   })
 
   const handleRemove = (id: number) => remove === id ? withLoadingToastr(async () => {
+    setRemove(0)
     await supabase.from('voters').delete().eq('id', id).throwOnError()
     setData(data.filter(voter => voter.id !== id))
-    setRemove(0)
   })() : setRemove(id)
 
   const router = useRouter()

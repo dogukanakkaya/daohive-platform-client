@@ -69,9 +69,9 @@ export default function Group({ data: voterGroups, voters }: Props) {
   })
 
   const handleRemove = (id: number) => action.type === ActionType.Remove && action.id === id ? withLoadingToastr(async () => {
+    setAction({ id: 0, type: ActionType.Create })
     await voterGroupQuery().deleteVoterGroup(id)
     setData(data.filter(voter => voter.id !== id))
-    setAction({ id: 0, type: ActionType.Create })
   })() : setAction({ id, type: ActionType.Remove })
 
   return (
