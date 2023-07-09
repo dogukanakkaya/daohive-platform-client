@@ -13,6 +13,18 @@ export const services = {
   })
 }
 
+services.blockchain.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const retryStatuses = [503]
+    if (retryStatuses.includes(error.response?.status)) {
+      const retryDelay = error.response?.headers['Retry-After'] || 5
+
+      return new Promise((resolve) => setTimeout(() => resolve(services.blockchain.request(error.config)), retryDelay * 1000))
+    }
+  }
+)
+
 export const toQueryString = (query: QueryParams) => {
   const params = new URLSearchParams()
 
