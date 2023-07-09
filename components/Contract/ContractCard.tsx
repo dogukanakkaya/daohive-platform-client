@@ -46,19 +46,11 @@ export default function ContractCard({ address }: Props) {
               <div className="flex items-center justify-center md:justify-start gap-4 my-2">
                 <div className="flex gap-2 pr-2 h-full items-center">
                   <i className="bi bi-check2-circle text-xl text-green-500"></i>
-                  <p className="font-medium">Python</p>
-                </div>
-                <div className="flex gap-2 pr-2 h-full items-center">
-                  <i className="bi bi-check2-circle text-xl text-green-500"></i>
-                  <p className="font-medium">Javascript</p>
+                  <p className="font-medium">Fully Immutable</p>
                 </div>
                 <div className="flex gap-2 pr-2 h-full items-center">
                   <i className="bi bi-x-circle text-xl text-red-500"></i>
-                  <p className="font-medium">Java</p>
-                </div>
-                <div className="flex gap-2 pr-2 h-full items-center">
-                  <i className="bi bi-x-circle text-xl text-red-500"></i>
-                  <p className="font-medium">C#</p>
+                  <p className="font-medium">Queryable Whitelist</p>
                 </div>
               </div>
               <div className="flex flex-wrap">
