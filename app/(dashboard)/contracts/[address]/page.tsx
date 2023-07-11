@@ -10,6 +10,7 @@ import { ProposalCard } from '@/components/Contract/Proposal'
 import { services } from '@/utils/api'
 import Whitelist from '@/components/Contract/Whitelist'
 import InfoCard from '@/components/InfoCard'
+import ZeroRecord from '@/components/ZeroRecord'
 
 interface Props {
   params: {
@@ -49,6 +50,7 @@ export default async function Contract({ params }: Props) {
       ]} />
       <div>
         <h1 className="section-title">Proposals</h1>
+        {contract.proposals.length === 0 && <ZeroRecord />}
         <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8">
           {contract.proposals.map(proposal => (
             <ProposalCard
