@@ -40,7 +40,7 @@ export default function Sidebar() {
                   <Link href="#" className="sidebar-link"><i className="bi bi-file-text"></i> Docs</Link>
                 </li>
                 <li>
-                  <Link href="#" className="sidebar-link"><i className="bi bi-code"></i> API Settings</Link>
+                  <Link href="/developer/api" className="sidebar-link"><i className="bi bi-code"></i> API Settings</Link>
                 </li>
                 <li>
                   <Link href="#" className="sidebar-link"><i className="bi bi-globe2"></i> Webhooks</Link>

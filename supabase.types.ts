@@ -9,6 +9,49 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      api_credentials: {
+        Row: {
+          active: boolean
+          created_at: string | null
+          expires_at: string | null
+          id: number
+          name: string
+          permissions: string[]
+          secret: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string | null
+          expires_at?: string | null
+          id?: number
+          name: string
+          permissions: string[]
+          secret: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string | null
+          expires_at?: string | null
+          id?: number
+          name?: string
+          permissions?: string[]
+          secret?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_credentials_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       contracts: {
         Row: {
           address: string
