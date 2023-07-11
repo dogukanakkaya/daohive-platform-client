@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { Database } from '@/supabase.types'
 import Refresh from '@/components/Refresh'
 import { contractQuery } from '@/modules/contract'
+import ZeroRecord from '@/components/ZeroRecord'
 
 export default async function Contracts() {
   const supabase = createServerComponentClient<Database>({ cookies })
@@ -26,6 +27,7 @@ export default async function Contracts() {
           </Link>
         </div>
       </div>
+      {contracts?.length === 0 && <ZeroRecord />}
       {contracts?.map(contract => (
         <ContractCard key={contract.address} address={contract.address} />
       ))}

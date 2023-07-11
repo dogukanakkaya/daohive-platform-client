@@ -7,6 +7,7 @@ import { withLoadingToastr } from '@/utils/hof'
 import GroupCard from './GroupCard'
 import { VoterGroupResponse, VoterGroupSchema, voterGroupQuery } from '@/modules/voter-group'
 import { VoterResponse } from '@/modules/voter'
+import ZeroRecord from '../ZeroRecord'
 
 interface Props {
   data: VoterGroupResponse<'id' | 'name'>[]
@@ -80,6 +81,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
         <h2 className="section-title">Whitelist Groups</h2>
         <Button onClick={handleCreate} variant={Variant.Secondary} className="!py-1 !px-2"><i className="bi bi-plus text-lg"></i></Button>
       </div>
+      {data.length === 0 && <ZeroRecord />}
       <div className="flex items-center flex-wrap gap-4">
         {data.map(group => <GroupCard
           key={group.id}
