@@ -10,7 +10,7 @@ interface Props {
   position?: 'top' | 'bottom' | 'left' | 'right'
 }
 
-export default function Tooltip({ children, text, textAfterClick, revertTimeout = 1000, position = 'top' }: Props) {
+export default function Tooltip({ children, text, textAfterClick, revertTimeout = 1000, position = 'top', ...rest }: Props & React.HTMLAttributes<HTMLDivElement>) {
   const [tooltipText, setTooltipText] = useEffectState<string | React.ReactNode>(text)
 
   const handleClick = () => {
@@ -19,6 +19,9 @@ export default function Tooltip({ children, text, textAfterClick, revertTimeout 
       setTimeout(() => setTooltipText(text), revertTimeout)
     }
   }
+
+  const { className, ...restAttributes } = rest
+  const _className = clsx('group relative inline-block', className)
 
   const tooltipClass = clsx('tooltip', {
     'bottom-full mb-2 left-1/2 -translate-x-1/2': position === 'top',
@@ -35,7 +38,7 @@ export default function Tooltip({ children, text, textAfterClick, revertTimeout 
   })
 
   return (
-    <div className="group relative inline-block" onClick={handleClick}>
+    <div className={_className} onClick={handleClick}>
       {children}
       <div className={tooltipClass}>
         <span className={tooltipArrowClass} />

@@ -9,36 +9,67 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      api_credential_api_permissions: {
+        Row: {
+          api_credential_id: number
+          api_permission_id: number
+          id: number
+        }
+        Insert: {
+          api_credential_id: number
+          api_permission_id: number
+          id?: number
+        }
+        Update: {
+          api_credential_id?: number
+          api_permission_id?: number
+          id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_credential_api_permissions_api_credential_id_fkey"
+            columns: ["api_credential_id"]
+            referencedRelation: "api_credentials"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_credential_api_permissions_api_credential_id_fkey"
+            columns: ["api_credential_id"]
+            referencedRelation: "decrypted_api_credentials"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_credential_api_permissions_api_permission_id_fkey"
+            columns: ["api_permission_id"]
+            referencedRelation: "api_permissions"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       api_credentials: {
         Row: {
-          active: boolean
           created_at: string | null
           expires_at: string | null
           id: number
           name: string
-          permissions: string[]
           secret: string
           updated_at: string | null
           user_id: string
         }
         Insert: {
-          active?: boolean
           created_at?: string | null
           expires_at?: string | null
           id?: number
           name: string
-          permissions: string[]
           secret: string
           updated_at?: string | null
           user_id: string
         }
         Update: {
-          active?: boolean
           created_at?: string | null
           expires_at?: string | null
           id?: number
           name?: string
-          permissions?: string[]
           secret?: string
           updated_at?: string | null
           user_id?: string
@@ -51,6 +82,27 @@ export interface Database {
             referencedColumns: ["id"]
           }
         ]
+      }
+      api_permissions: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: number
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: number
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: number
+          name?: string
+        }
+        Relationships: []
       }
       contracts: {
         Row: {
@@ -107,19 +159,16 @@ export interface Database {
       }
       voter_group_voters: {
         Row: {
-          created_at: string | null
           id: number
           voter_group_id: number
           voter_id: number
         }
         Insert: {
-          created_at?: string | null
           id?: number
           voter_group_id: number
           voter_id: number
         }
         Update: {
-          created_at?: string | null
           id?: number
           voter_group_id?: number
           voter_id?: number
@@ -203,7 +252,46 @@ export interface Database {
       }
     }
     Views: {
-      [_ in never]: never
+      decrypted_api_credentials: {
+        Row: {
+          created_at: string | null
+          decrypted_secret: string | null
+          expires_at: string | null
+          id: number | null
+          name: string | null
+          secret: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          decrypted_secret?: never
+          expires_at?: string | null
+          id?: number | null
+          name?: string | null
+          secret?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          decrypted_secret?: never
+          expires_at?: string | null
+          id?: number | null
+          name?: string | null
+          secret?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_credentials_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Functions: {
       [_ in never]: never
