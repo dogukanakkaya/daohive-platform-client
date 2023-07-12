@@ -14,9 +14,10 @@ export default function ContractForm() {
   const [loading, setLoading] = useState(false)
   const { state: { name, description, voterGroup }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ name: '', description: '', voterGroup: 0 }, ContractSchema)
   const router = useRouter()
+  const { getVoterGroup, getVoterGroups } = voterGroupQuery()
 
   useAbortableAsyncEffect(async signal => {
-    const { data, error } = await voterGroupQuery().getVoterGroups('id,name').abortSignal(signal)
+    const { data, error } = await getVoterGroups('id,name').abortSignal(signal)
     // @todo(1)
     if (error) return
     setVoterGroups(data)
@@ -26,7 +27,7 @@ export default function ContractForm() {
     let whitelist: string[] = []
 
     if (voterGroup !== 0) {
-      const { voter_group_voters } = await voterGroupQuery().getVoterGroup(voterGroup, `
+      const { voter_group_voters } = await getVoterGroup(voterGroup, `
         voter_group_voters (
           voters (address)
         )

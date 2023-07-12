@@ -6,21 +6,21 @@ import { Database } from '@/supabase.types'
 import { ApiCredentialCard } from '@/components/Developer'
 import Button, { Variant } from '@/components/Button'
 import Link from 'next/link'
+import { developerQuery } from '@/modules/developer'
 
 export default async function Api() {
   const supabase = createServerComponentClient<Database>({ cookies })
 
+  const { getApiCredentials, getApiPermissions } = developerQuery(supabase)
+
   const [{ data: credentials }, { data: permissions }] = await Promise.all([
-    supabase.from('api_credentials')
-      .select(`
+    getApiCredentials(`
       id,secret,name,expires_at,created_at,
       api_credential_api_permissions (
         api_permissions (name,description)
       )
-    `)
-      .order('created_at', { ascending: false })
-      .throwOnError(),
-    supabase.from('api_permissions').select('name,description').throwOnError()
+    `),
+    getApiPermissions('name,description')
   ])
 
   return (

@@ -33,6 +33,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
   const [data, setData] = useEffectState(voterGroups)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [action, setAction] = useState<{ id: number, type: ActionType }>({ id: 0, type: ActionType.Create })
+  const { getVoterGroup, createVoterGroup, updateVoterGroup, deleteVoterGroup } = voterGroupQuery()
 
   const handleCreate = () => {
     if (action.id) {
@@ -43,7 +44,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
   }
 
   const handleEdit = async (id: number) => {
-    const { name, voter_group_voters } = await voterGroupQuery().getVoterGroup(id, `
+    const { name, voter_group_voters } = await getVoterGroup(id, `
       id,name,
       voter_group_voters (voter_id)
     `)
@@ -55,11 +56,11 @@ export default function Group({ data: voterGroups, voters }: Props) {
 
   const handleSubmit = withLoadingToastr(async () => {
     if (action.id) {
-      await voterGroupQuery().updateVoterGroup(action.id, { name, voterIds })
+      await updateVoterGroup(action.id, { name, voterIds })
 
       setData(data.map(voterGroup => voterGroup.id === action.id ? { ...voterGroup, name } : voterGroup))
     } else {
-      const voterGroup = await voterGroupQuery().createVoterGroup({ name, voterIds })
+      const voterGroup = await createVoterGroup({ name, voterIds })
 
       setData([...data, { ...voterGroup, name }])
     }
@@ -71,7 +72,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
 
   const handleRemove = (id: number) => action.type === ActionType.Remove && action.id === id ? withLoadingToastr(async () => {
     setAction({ id: 0, type: ActionType.Create })
-    await voterGroupQuery().deleteVoterGroup(id)
+    await deleteVoterGroup(id)
     setData(data.filter(voter => voter.id !== id))
   })() : setAction({ id, type: ActionType.Remove })
 

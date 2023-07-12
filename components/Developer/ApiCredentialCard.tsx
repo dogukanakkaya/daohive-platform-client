@@ -3,6 +3,7 @@ import { ApiCredentialResponse, ApiPermissionResponse } from '@/modules/develope
 import Button from '../Button'
 import Tooltip from '../Tooltip'
 import { useRef, useState } from 'react'
+import { withLoading, withLoadingToastr } from '@/utils/hof'
 
 interface ApiCredentialApiPermissions {
   api_credential_api_permissions: {
@@ -17,6 +18,8 @@ interface Props {
 
 export default function ApiCredentialCard({ credential, permissions }: Props) {
   const [showSecret, setShowSecret] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [remove, setRemove] = useState(0)
 
   const handleShowSecret = () => {
     setShowSecret(true)
@@ -26,18 +29,28 @@ export default function ApiCredentialCard({ credential, permissions }: Props) {
     }, 10000)
   }
 
+  const handleRemove = (id: number) => remove === id ? withLoading(withLoadingToastr(async () => {
+    setRemove(0)
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    // @todo delete
+  }), setLoading)() : setRemove(id)
+
   return (
     <div key={credential.id} className="p-5 relative bg-white dark:bg-gray-900 shadow-lg rounded-lg space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="font-semibold text-lg">{credential.name}</h1>
         <div className="flex items-center gap-4">
           {<span className="text-sm">Expires at: <b className="font-semibold">{credential.expires_at ?? 'Never'}</b></span>}
-          <Button className="bg-red-600">Delete <i className="bi bi-trash text-lg"></i></Button>
+          {
+            remove === credential.id
+              ? <Button onClick={() => handleRemove(credential.id)} className="bg-red-600">Confirm <i className="bi bi-check-lg text-lg"></i></Button>
+              : <Button onClick={() => handleRemove(credential.id)} className="bg-red-600">Delete <i className="bi bi-trash text-lg"></i></Button>
+          }
         </div>
       </div>
       <div>
         <h3 className="flex items-center gap-2 h-[30px]">
-          API Key:&nbsp;
+          API Key:
           <Tooltip text="Copy Address" textAfterClick={<>Copied <i className="bi bi-check"></i></>}>
             <span onClick={() => navigator.clipboard.writeText(credential.secret)} className={`cursor-pointer text-sm font-semibold ${!showSecret ? 'tracking-wider' : ''}`}>
               {!showSecret ? '********************************' : credential.secret}
@@ -46,7 +59,7 @@ export default function ApiCredentialCard({ credential, permissions }: Props) {
           {!showSecret && <i onClick={handleShowSecret} className="bi bi-eye text-lg cursor-pointer"></i>}
         </h3>
       </div>
-      <div className="border-t dark:border-gray-600">
+      <div className="border-t dark:border-gray-700">
         <h3 className="section-title mb-2">Permissions</h3>
         <div className="md:flex items-center justify-between flex-wrap">
           {permissions.map(permission => {
@@ -55,7 +68,7 @@ export default function ApiCredentialCard({ credential, permissions }: Props) {
             return (
               <div key={permission.name} className="w-1/2">
                 <label className="flex items-center gap-2" htmlFor={`checkbox-${permission.name}`}>
-                  <input checked={hasPermission !== -1} id={`checkbox-${permission.name}`} type="checkbox" className="w-4 h-4 form-input" /> {permission.name}
+                  <input onChange={() => { }} checked={hasPermission !== -1} className="w-4 h-4 form-input" id={`checkbox-${permission.name}`} type="checkbox" /> {permission.name}
                 </label>
                 <p>{permission.description}</p>
               </div>
