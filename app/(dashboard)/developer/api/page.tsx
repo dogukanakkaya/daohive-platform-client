@@ -1,6 +1,5 @@
 import { cookies } from 'next/headers'
 import Breadcrumb from '@/components/Breadcrumb'
-import DeveloperForm from '@/components/Developer/DeveloperForm'
 import Refresh from '@/components/Refresh'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/supabase.types'

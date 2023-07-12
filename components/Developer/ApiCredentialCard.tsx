@@ -3,8 +3,14 @@ import { ApiCredentialResponse, ApiPermissionResponse } from '@/modules/develope
 import Button from '../Button'
 import Tooltip from '../Tooltip'
 
+interface ApiCredentialApiPermissions {
+  api_credential_api_permissions: {
+    api_permissions: ApiPermissionResponse<'name' | 'description'> | null
+  }[]
+}
+
 interface Props {
-  apiCredentials: ApiCredentialResponse<'id' | 'name' | 'expires_at' | 'created_at'>[]
+  apiCredentials: (ApiCredentialResponse<'id' | 'name' | 'expires_at' | 'created_at'> & ApiCredentialApiPermissions)[]
   apiPermissions: ApiPermissionResponse<'name' | 'description'>[]
 }
 
@@ -31,13 +37,12 @@ export default function ApiCredentialCard({ apiCredentials, apiPermissions }: Pr
           </div>
           <div className="md:flex items-center justify-between flex-wrap">
             {apiPermissions.map(permission => {
-              // @ts-ignore @todo: no way to extract relation types from supabase generated types, maybe manual union? think on it
-              const hasPermission = credential.api_credential_api_permissions.find(credentialPermission => credentialPermission.api_permissions.name === permission.name)
+              const hasPermission = credential.api_credential_api_permissions.findIndex(credentialPermission => credentialPermission.api_permissions?.name === permission.name)
 
               return (
                 <div key={permission.name} className="w-1/2">
                   <label className="flex items-center gap-2" htmlFor={`checkbox-${permission.name}`}>
-                    <input checked={hasPermission} id={`checkbox-${permission.name}`} type="checkbox" className="w-4 h-4 form-input" /> {permission.name}
+                    <input checked={hasPermission !== -1} id={`checkbox-${permission.name}`} type="checkbox" className="w-4 h-4 form-input" /> {permission.name}
                   </label>
                   <p>{permission.description}</p>
                 </div>
