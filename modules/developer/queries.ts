@@ -12,5 +12,9 @@ export function developerQuery(supabaseClient?: SupabaseClient<Database>) {
     return supabase.from('api_permissions').select(select).order('created_at', { ascending: false }).throwOnError()
   }
 
-  return { getApiCredentials, getApiPermissions }
+  const deleteApiCredential = (id: number) => {
+    return supabase.from('api_credentials').delete().eq('id', id).throwOnError()
+  }
+
+  return { getApiCredentials, deleteApiCredential, getApiPermissions }
 }

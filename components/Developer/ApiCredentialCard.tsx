@@ -1,9 +1,11 @@
 'use client'
-import { ApiCredentialResponse, ApiPermissionResponse } from '@/modules/developer'
+import { ApiCredentialResponse, ApiPermissionResponse, developerQuery } from '@/modules/developer'
 import Button from '../Button'
 import Tooltip from '../Tooltip'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
+import { useRouter } from 'next/navigation'
+import LoadingOverlay from '../LoadingOverlay'
 
 interface ApiCredentialApiPermissions {
   api_credential_api_permissions: {
@@ -20,6 +22,7 @@ export default function ApiCredentialCard({ credential, permissions }: Props) {
   const [showSecret, setShowSecret] = useState(false)
   const [loading, setLoading] = useState(false)
   const [remove, setRemove] = useState(0)
+  const router = useRouter()
 
   const handleShowSecret = () => {
     setShowSecret(true)
@@ -31,12 +34,13 @@ export default function ApiCredentialCard({ credential, permissions }: Props) {
 
   const handleRemove = (id: number) => remove === id ? withLoading(withLoadingToastr(async () => {
     setRemove(0)
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    // @todo delete
+    await developerQuery().deleteApiCredential(id)
+    router.refresh()
   }), setLoading)() : setRemove(id)
 
   return (
     <div key={credential.id} className="p-5 relative bg-white dark:bg-gray-900 shadow-lg rounded-lg space-y-4">
+      {loading && <LoadingOverlay />}
       <div className="flex items-center justify-between">
         <h1 className="font-semibold text-lg">{credential.name}</h1>
         <div className="flex items-center gap-4">

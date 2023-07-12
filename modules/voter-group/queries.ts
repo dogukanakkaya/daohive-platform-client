@@ -41,8 +41,8 @@ export function voterGroupQuery(supabaseClient?: SupabaseClient<Database>) {
     await supabase.from('voter_group_voters').insert(whitelistGroup).throwOnError()
   }
 
-  const deleteVoterGroup = async (id: number) => {
-    await supabase.from('voter_groups').delete().eq('id', id).throwOnError()
+  const deleteVoterGroup = (id: number) => {
+    return supabase.from('voter_groups').delete().eq('id', id).throwOnError()
   }
 
   return { getVoterGroups, getVoterGroup, createVoterGroup, updateVoterGroup, deleteVoterGroup }
