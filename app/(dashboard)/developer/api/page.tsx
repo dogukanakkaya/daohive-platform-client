@@ -39,7 +39,7 @@ export default async function Api() {
       </div>
       {credentials?.length === 0 && (
         <ZeroRecord title="No api credential found" src="/images/api-credential-zero-record-icon.svg">
-          <p>Seems like you don&apos;t have any api credential created yet. <Link href="#" className="underline text-primary">Click here</Link> to create one.</p>
+          <p>Seems like you don&apos;t have any api credential created yet. <Link href="/developer/api/create" className="underline text-primary">Click here</Link> to create one.</p>
         </ZeroRecord>
       )}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
