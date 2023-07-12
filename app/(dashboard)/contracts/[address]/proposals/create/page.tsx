@@ -5,6 +5,7 @@ import InfoCard from '@/components/InfoCard'
 import { Database } from '@/supabase.types'
 import { ProposalForm } from '@/components/Contract/Proposal'
 import { contractQuery } from '@/modules/contract'
+import { services } from '@/utils/api'
 
 interface Props {
   params: {
@@ -17,12 +18,18 @@ export default async function Create({ params }: Props) {
 
   const contract = await contractQuery(supabase).getContractByAddress(params.address)
 
+  const { data: { name } } = await services.blockchain.get(`/contracts/${contract.address}`, {
+    headers: {
+      Cookie: cookies().toString()
+    }
+  })
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <Breadcrumb items={[
           { name: 'Contracts', href: '/contracts' },
-          { name: contract.name, href: `/contracts/${params.address}` },
+          { name: name, href: `/contracts/${params.address}` },
           { name: 'Proposals', href: `/contracts/${params.address}/proposals` },
           { name: 'Create', href: `/contracts/${params.address}/proposals/create` }
         ]} />
