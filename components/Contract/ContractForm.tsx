@@ -1,33 +1,28 @@
 'use client'
 import Button from '@/components/Button'
-import { useAbortableAsyncEffect, useFormValidation } from '@/hooks'
+import { useFormValidation } from '@/hooks'
 import { useState } from 'react'
 import LoadingOverlay from '@/components/LoadingOverlay'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
 import { services } from '@/utils/api'
 import { useRouter } from 'next/navigation'
-import { voterGroupQuery } from '@/modules/voter-group'
+import { VoterGroupResponse, voterGroupQuery } from '@/modules/voter-group'
 import { ContractSchema } from '@/modules/contract'
 
-export default function ContractForm() {
-  const [voterGroups, setVoterGroups] = useState<{ id: number, name: string }[]>([])
+interface Props {
+  voterGroups: VoterGroupResponse<'id' | 'name'>[]
+}
+
+export default function ContractForm({ voterGroups }: Props) {
   const [loading, setLoading] = useState(false)
   const { state: { name, description, voterGroup }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ name: '', description: '', voterGroup: 0 }, ContractSchema)
   const router = useRouter()
-  const { getVoterGroup, getVoterGroups } = voterGroupQuery()
-
-  useAbortableAsyncEffect(async signal => {
-    const { data, error } = await getVoterGroups('id,name').abortSignal(signal)
-    // @todo(1)
-    if (error) return
-    setVoterGroups(data)
-  }, [])
 
   const handleSubmit = withLoading(withLoadingToastr(async () => {
     let whitelist: string[] = []
 
     if (voterGroup !== 0) {
-      const { voter_group_voters } = await getVoterGroup(voterGroup, `
+      const { voter_group_voters } = await voterGroupQuery().getVoterGroup(voterGroup, `
         voter_group_voters (
           voters (address)
         )
