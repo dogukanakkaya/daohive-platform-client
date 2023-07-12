@@ -27,7 +27,11 @@ export default async function Contracts() {
           </Link>
         </div>
       </div>
-      {contracts?.length === 0 && <ZeroRecord />}
+      {contracts?.length === 0 && (
+        <ZeroRecord title="No contract found">
+          <p>Seems like you don&apos;t have any contract deployed yet. <Link href="/contracts/create" className="underline text-primary">Click here</Link> to deploy one.</p>
+        </ZeroRecord>
+      )}
       {contracts?.map(contract => (
         <ContractCard key={contract.address} address={contract.address} />
       ))}

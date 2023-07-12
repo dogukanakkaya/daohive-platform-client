@@ -50,7 +50,11 @@ export default async function Contract({ params }: Props) {
       ]} />
       <div>
         <h1 className="section-title">Proposals</h1>
-        {contract.proposals.length === 0 && <ZeroRecord />}
+        {contract.proposals.length === 0 && (
+          <ZeroRecord title="No proposal found">
+            <p>Seems like you don&apos;t have any proposal created yet. <Link href={`/contracts/${params.address}/proposals/create`} className="underline text-primary">Click here</Link> to create one.</p>
+          </ZeroRecord>
+        )}
         <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8">
           {contract.proposals.map(proposal => (
             <ProposalCard
