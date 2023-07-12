@@ -10,10 +10,10 @@ import Link from 'next/link'
 export default async function Api() {
   const supabase = createServerComponentClient<Database>({ cookies })
 
-  const [{ data: apiCredentials }, { data: apiPermissions }] = await Promise.all([
+  const [{ data: credentials }, { data: permissions }] = await Promise.all([
     supabase.from('api_credentials')
       .select(`
-      id,name,expires_at,created_at,
+      id,secret,name,expires_at,created_at,
       api_credential_api_permissions (
         api_permissions (name,description)
       )
@@ -37,7 +37,13 @@ export default async function Api() {
         </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {apiCredentials && apiPermissions && <ApiCredentialCard apiCredentials={apiCredentials} apiPermissions={apiPermissions} />}
+        {credentials && permissions && credentials.map(credential => (
+          <ApiCredentialCard
+            key={credential.id}
+            credential={credential}
+            permissions={permissions}
+          />
+        ))}
       </div>
     </div>
   )
