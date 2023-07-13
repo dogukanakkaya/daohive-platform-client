@@ -41,7 +41,7 @@ export default function ApiCredentialCard({ credential, permissions }: Props) {
 
     setTimeout(() => {
       setShowSecret(false)
-    }, 10000)
+    }, 5000)
   }
 
   const handleCopySecret = async () => {
@@ -74,7 +74,7 @@ export default function ApiCredentialCard({ credential, permissions }: Props) {
         </div>
       </div>
       <div>
-        <h3 className="flex gap-2">
+        <h3 className="flex items-center gap-2">
           API Key:
           <Tooltip text="Copy Address" textAfterClick={<>Copied <i className="bi bi-check"></i></>}>
             <span onClick={handleCopySecret} className={`cursor-pointer text-sm font-semibold block max-w-[400px] break-words ${!showSecret ? 'mt-1 tracking-wider' : 'mt-0.5'}`}>
