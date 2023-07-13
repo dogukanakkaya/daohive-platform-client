@@ -14,17 +14,28 @@ interface ApiCredentialApiPermissions {
 }
 
 interface Props {
-  credential: ApiCredentialResponse<'id' | 'secret' | 'name' | 'expires_at' | 'created_at'> & ApiCredentialApiPermissions
+  credential: ApiCredentialResponse<'id' | 'name' | 'expires_at' | 'created_at'> & ApiCredentialApiPermissions
   permissions: ApiPermissionResponse<'name' | 'description'>[]
 }
 
 export default function ApiCredentialCard({ credential, permissions }: Props) {
   const [showSecret, setShowSecret] = useState(false)
+  const [secret, setSecret] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [remove, setRemove] = useState(0)
   const router = useRouter()
+  const { getDecryptedApiCredentialSecret, deleteApiCredential } = developerQuery()
 
-  const handleShowSecret = () => {
+  const handleFetchSecret = async () => {
+    const _secret = await getDecryptedApiCredentialSecret(credential.id)
+    setSecret(_secret)
+
+    return _secret
+  }
+
+  const handleShowSecret = async () => {
+    if (!secret) await handleFetchSecret()
+
     setShowSecret(true)
 
     setTimeout(() => {
@@ -32,11 +43,16 @@ export default function ApiCredentialCard({ credential, permissions }: Props) {
     }, 10000)
   }
 
-  const handleRemove = (id: number) => remove === id ? withLoading(withLoadingToastr(async () => {
+  const handleCopySecret = async () => {
+    let _secret = secret ?? await handleFetchSecret()
+    navigator.clipboard.writeText(_secret)
+  }
+
+  const handleRemove = () => remove === credential.id ? withLoading(withLoadingToastr(async () => {
     setRemove(0)
-    await developerQuery().deleteApiCredential(id)
+    await deleteApiCredential(credential.id)
     router.refresh()
-  }), setLoading)() : setRemove(id)
+  }), setLoading)() : setRemove(credential.id)
 
   return (
     <div key={credential.id} className="p-5 relative bg-white dark:bg-gray-900 shadow-lg rounded-lg space-y-4">
@@ -47,17 +63,17 @@ export default function ApiCredentialCard({ credential, permissions }: Props) {
           {<span className="text-sm">Expires at: <b className="font-semibold">{credential.expires_at ?? 'Never'}</b></span>}
           {
             remove === credential.id
-              ? <Button onClick={() => handleRemove(credential.id)} className="bg-red-600">Confirm <i className="bi bi-check-lg text-lg"></i></Button>
-              : <Button onClick={() => handleRemove(credential.id)} className="bg-red-600">Delete <i className="bi bi-trash text-lg"></i></Button>
+              ? <Button onClick={handleRemove} className="bg-red-600">Confirm <i className="bi bi-check-lg text-lg"></i></Button>
+              : <Button onClick={handleRemove} className="bg-red-600">Delete <i className="bi bi-trash text-lg"></i></Button>
           }
         </div>
       </div>
       <div>
-        <h3 className="flex items-center gap-2 h-[30px]">
+        <h3 className="flex gap-2">
           API Key:
           <Tooltip text="Copy Address" textAfterClick={<>Copied <i className="bi bi-check"></i></>}>
-            <span onClick={() => navigator.clipboard.writeText(credential.secret)} className={`cursor-pointer text-sm font-semibold ${!showSecret ? 'tracking-wider' : ''}`}>
-              {!showSecret ? '********************************' : credential.secret}
+            <span onClick={handleCopySecret} className={`cursor-pointer text-sm font-semibold block max-w-[400px] break-words ${!showSecret ? 'mt-1 tracking-wider' : 'mt-0.5'}`}>
+              {!showSecret ? '********************************' : secret}
             </span>
           </Tooltip>
           {!showSecret && <i onClick={handleShowSecret} className="bi bi-eye text-lg cursor-pointer"></i>}

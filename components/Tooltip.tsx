@@ -20,9 +20,6 @@ export default function Tooltip({ children, text, textAfterClick, revertTimeout 
     }
   }
 
-  const { className, ...restAttributes } = rest
-  const _className = clsx('group relative inline-block', className)
-
   const tooltipClass = clsx('tooltip', {
     'bottom-full mb-2 left-1/2 -translate-x-1/2': position === 'top',
     'left-full ml-2 top-1/2 -translate-y-1/2': position === 'right',
@@ -38,7 +35,7 @@ export default function Tooltip({ children, text, textAfterClick, revertTimeout 
   })
 
   return (
-    <div className={_className} onClick={handleClick}>
+    <div className="group relative inline-block" onClick={handleClick}>
       {children}
       <div className={tooltipClass}>
         <span className={tooltipArrowClass} />

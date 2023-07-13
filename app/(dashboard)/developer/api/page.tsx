@@ -16,7 +16,7 @@ export default async function Api() {
 
   const [{ data: credentials }, { data: permissions }] = await Promise.all([
     getApiCredentials(`
-      id,secret,name,expires_at,created_at,
+      id,name,expires_at,created_at,
       api_credential_api_permissions (
         api_permissions (name,description)
       )

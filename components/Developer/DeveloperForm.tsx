@@ -35,6 +35,7 @@ export default function DeveloperForm({ permissions }: Props) {
       name,
       permissionIds
     })
+    
     router.refresh(); router.replace('/developer/api')
   }), setLoading)
 

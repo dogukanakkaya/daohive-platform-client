@@ -20,6 +20,15 @@ export function developerQuery(supabaseClient?: SupabaseClient<Database>) {
     await supabase.from('api_credential_api_permissions').insert(apiPermissions).throwOnError()
   }
 
+  const getDecryptedApiCredentialSecret = async (id: number) => {
+    const { data, error } = await supabase.from('decrypted_api_credentials').select('decrypted_secret').eq('id', id).single().throwOnError()
+
+    // @todo(1)
+    if (error) throw error
+
+    return data.decrypted_secret as string
+  }
+
   const deleteApiCredential = (id: number) => {
     return supabase.from('api_credentials').delete().eq('id', id).throwOnError()
   }
@@ -28,5 +37,5 @@ export function developerQuery(supabaseClient?: SupabaseClient<Database>) {
     return supabase.from('api_permissions').select(select).order('created_at', { ascending: false }).throwOnError()
   }
 
-  return { getApiCredentials, createApiCredential, deleteApiCredential, getApiPermissions }
+  return { getApiCredentials, getDecryptedApiCredentialSecret, createApiCredential, deleteApiCredential, getApiPermissions }
 }
