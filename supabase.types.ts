@@ -52,6 +52,7 @@ export interface Database {
           expires_at: string | null
           id: number
           name: string
+          request_count: number
           secret: string
           updated_at: string | null
           user_id: string
@@ -61,15 +62,17 @@ export interface Database {
           expires_at?: string | null
           id?: number
           name: string
-          secret: string
+          request_count?: number
+          secret?: string
           updated_at?: string | null
-          user_id: string
+          user_id?: string
         }
         Update: {
           created_at?: string | null
           expires_at?: string | null
           id?: number
           name?: string
+          request_count?: number
           secret?: string
           updated_at?: string | null
           user_id?: string
@@ -259,6 +262,7 @@ export interface Database {
           expires_at: string | null
           id: number | null
           name: string | null
+          request_count: number | null
           secret: string | null
           updated_at: string | null
           user_id: string | null
@@ -269,6 +273,7 @@ export interface Database {
           expires_at?: string | null
           id?: number | null
           name?: string | null
+          request_count?: number | null
           secret?: string | null
           updated_at?: string | null
           user_id?: string | null
@@ -279,6 +284,7 @@ export interface Database {
           expires_at?: string | null
           id?: number | null
           name?: string | null
+          request_count?: number | null
           secret?: string | null
           updated_at?: string | null
           user_id?: string | null

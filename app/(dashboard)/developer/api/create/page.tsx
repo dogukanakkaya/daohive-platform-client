@@ -8,7 +8,7 @@ import { Database } from '@/supabase.types'
 export default async function Create() {
   const supabase = createServerComponentClient<Database>({ cookies })
 
-  const { data: permissions } = await developerQuery(supabase).getApiPermissions('name,description')
+  const { data: permissions } = await developerQuery(supabase).getApiPermissions('id,name,description')
 
   return (
     <div className="space-y-6">

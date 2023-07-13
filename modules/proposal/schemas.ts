@@ -21,15 +21,13 @@ export const ProposalSchema = z.object({
   startAt: z
     .coerce
     .date({
-      required_error: 'Please select a start date',
-      invalid_type_error: "That's not a date!"
+      required_error: 'Please select a start date'
     })
     .min(new Date(), 'Start date must be in the future'),
   endAt: z
     .coerce
     .date({
-      required_error: 'Please select a start date',
-      invalid_type_error: "That's not a date!"
+      required_error: 'Please select a start date'
     })
     .min(new Date(), 'End date must be in the future')
 })
