@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
 import { useRouter } from 'next/navigation'
 import LoadingOverlay from '../LoadingOverlay'
+import { DateTime } from 'luxon'
 
 interface ApiCredentialApiPermissions {
   api_credential_api_permissions: {
@@ -60,7 +61,11 @@ export default function ApiCredentialCard({ credential, permissions }: Props) {
       <div className="flex items-center justify-between">
         <h1 className="font-semibold text-lg">{credential.name}</h1>
         <div className="flex items-center gap-4">
-          {<span className="text-sm">Expires at: <b className="font-semibold">{credential.expires_at ?? 'Never'}</b></span>}
+          <span className="text-sm">Expires at:&nbsp;
+            <b className="font-semibold">
+              {credential.expires_at ? DateTime.fromISO(credential.expires_at).toFormat('yyyy-MM-dd') : 'Never'}
+            </b>
+          </span>
           {
             remove === credential.id
               ? <Button onClick={handleRemove} className="bg-red-600">Confirm <i className="bi bi-check-lg text-lg"></i></Button>
