@@ -6,7 +6,7 @@ export function developerQuery(supabaseClient?: SupabaseClient<Database>) {
   const supabase = supabaseClient ?? createClientComponentClient<Database>()
 
   const getApiCredentials = <T extends string = '*'>(select: T = '*' as T) => {
-    return supabase.from('api_credentials').select(select).order('created_at', { ascending: false }).throwOnError()
+    return supabase.from('api_credentials').select(select).order('created_at', { ascending: false }).is('deleted_at', null).throwOnError()
   }
 
   const createApiCredential = async ({ name, expires_at, permissionIds }: ApiCredentialPayload) => {
@@ -30,7 +30,7 @@ export function developerQuery(supabaseClient?: SupabaseClient<Database>) {
   }
 
   const deleteApiCredential = (id: number) => {
-    return supabase.from('api_credentials').delete().eq('id', id).throwOnError()
+    return supabase.from('api_credentials').update({ deleted_at: new Date().toISOString() }).eq('id', id).throwOnError()
   }
 
   const getApiPermissions = <T extends string = '*'>(select: T = '*' as T) => {

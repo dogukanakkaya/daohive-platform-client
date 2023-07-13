@@ -49,32 +49,32 @@ export interface Database {
       api_credentials: {
         Row: {
           created_at: string | null
+          deleted_at: string | null
           expires_at: string | null
           id: number
           name: string
           request_count: number
           secret: string
-          updated_at: string | null
           user_id: string
         }
         Insert: {
           created_at?: string | null
+          deleted_at?: string | null
           expires_at?: string | null
           id?: number
           name: string
           request_count?: number
           secret?: string
-          updated_at?: string | null
           user_id?: string
         }
         Update: {
           created_at?: string | null
+          deleted_at?: string | null
           expires_at?: string | null
           id?: number
           name?: string
           request_count?: number
           secret?: string
-          updated_at?: string | null
           user_id?: string
         }
         Relationships: [
@@ -259,34 +259,34 @@ export interface Database {
         Row: {
           created_at: string | null
           decrypted_secret: string | null
+          deleted_at: string | null
           expires_at: string | null
           id: number | null
           name: string | null
           request_count: number | null
           secret: string | null
-          updated_at: string | null
           user_id: string | null
         }
         Insert: {
           created_at?: string | null
           decrypted_secret?: never
+          deleted_at?: string | null
           expires_at?: string | null
           id?: number | null
           name?: string | null
           request_count?: number | null
           secret?: string | null
-          updated_at?: string | null
           user_id?: string | null
         }
         Update: {
           created_at?: string | null
           decrypted_secret?: never
+          deleted_at?: string | null
           expires_at?: string | null
           id?: number | null
           name?: string | null
           request_count?: number | null
           secret?: string | null
-          updated_at?: string | null
           user_id?: string | null
         }
         Relationships: [
