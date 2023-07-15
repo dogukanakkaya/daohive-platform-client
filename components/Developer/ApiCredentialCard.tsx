@@ -69,7 +69,7 @@ export default function ApiCredentialCard({ credential, permissions }: Props) {
           {
             remove === credential.id
               ? <Button onClick={handleRemove} className="bg-red-600">Confirm <i className="bi bi-check-lg text-lg"></i></Button>
-              : <Button onClick={handleRemove} className="bg-red-600">Delete <i className="bi bi-trash text-lg"></i></Button>
+              : <Button onClick={handleRemove} className="bg-red-600">Delete <i className="bi bi-trash3 text-lg"></i></Button>
           }
         </div>
       </div>

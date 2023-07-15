@@ -1,32 +1,31 @@
 'use client'
-import { ContractResponse, MergedContract } from '@/modules/contract'
+import { ContractResponse, OnChainContract } from '@/modules/contract'
 import Image from 'next/image'
 import Link from 'next/link'
 import Tooltip from '../Tooltip'
 import { useInView } from 'react-intersection-observer'
 import { useAbortableAsyncEffect } from '@/hooks'
 import { useState } from 'react'
-import { services } from '@/utils/api'
+import { apolloClient } from '@/utils/apollo'
+import { CONTRACT_QUERY } from '@/modules/contract/graphql'
 
 interface Props {
   address: string
 }
 
-type ContractData = ContractResponse<'address'> & Partial<MergedContract<'address'>>
-
 export default function ContractCard({ address }: Props) {
-  const [contract, setContract] = useState<ContractData>({ address })
+  const [contract, setContract] = useState<ContractResponse<'address'> & Partial<OnChainContract>>({ address })
   const { ref, inView } = useInView({ threshold: 0 })
 
   useAbortableAsyncEffect(async signal => {
     if (inView && !contract.name) {
-      const { data } = await services.blockchain.get<ContractData>(`/contracts/${contract.address}`, { signal })
-
-      setContract({
-        ...data,
-        totalProposals: 17,
-        activeProposals: 1
+      const { data: { contract } } = await apolloClient.query({
+        query: CONTRACT_QUERY,
+        variables: { address },
+        context: { fetchOptions: { signal } }
       })
+
+      setContract(contract)
     }
   }, [inView, contract])
 
@@ -65,7 +64,7 @@ export default function ContractCard({ address }: Props) {
                 <div className="w-1/2 xl:w-1/4 mb-2 xl:mb-0">
                   <h2>Total Proposals</h2>
                   <p className="text-sm bg-gray-300 dark:bg-gray-700 rounded-xl py-1 px-2 inline-block">
-                    <span className="font-medium">{contract.totalProposals}</span> / <span className="text-green-500">12</span> / <span className="text-red-500">5</span>
+                    <span className="font-medium">17</span> / <span className="text-green-500">12</span> / <span className="text-red-500">5</span>
                   </p>
                 </div>
                 <div className="w-1/2 xl:w-1/4 mb-2 xl:mb-0">
@@ -74,7 +73,7 @@ export default function ContractCard({ address }: Props) {
                 </div>
                 <div className="w-1/2 xl:w-1/4 mb-2 xl:mb-0">
                   <h2>Active Proposals</h2>
-                  <p className="text-sm bg-gray-300 dark:bg-gray-700 rounded-xl py-1 px-2 inline-block">{contract.activeProposals}</p>
+                  <p className="text-sm bg-gray-300 dark:bg-gray-700 rounded-xl py-1 px-2 inline-block">1</p>
                 </div>
               </div>
               <Link href={`/contracts/${contract.address}`} className="mt-2 text-indigo-500 flex items-center gap-2">
@@ -89,7 +88,7 @@ export default function ContractCard({ address }: Props) {
   )
 }
 
-function PlaceholderContent({ contract }: { contract: ContractData }) {
+function PlaceholderContent({ contract }: { contract: ContractResponse<'address'> }) {
   return (
     <div className="animate-pulse flex-grow md:text-left text-center mt-6 md:mt-0">
       <div className="md:w-72 h-5 bg-slate-500 dark:bg-slate-700 rounded mb-2"></div>
