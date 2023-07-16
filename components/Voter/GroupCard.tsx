@@ -3,9 +3,9 @@ import { VoterGroupResponse } from '@/modules/voter-group'
 
 interface Props {
   group: VoterGroupResponse<'id' | 'name'>
-  remove: number
-  handleRemove: (id: number) => void
-  handleEdit: (id: number) => void
+  remove: string
+  handleRemove: (id: string) => void
+  handleEdit: (id: string) => void
 }
 
 export default function GroupCard({ group, remove, handleRemove, handleEdit }: Props) {

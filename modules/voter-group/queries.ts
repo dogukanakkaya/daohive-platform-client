@@ -9,7 +9,7 @@ export function voterGroupQuery(supabaseClient?: SupabaseClient<Database>) {
     return supabase.from('voter_groups').select(select).order('created_at', { ascending: false }).throwOnError()
   }
 
-  const getVoterGroup = async <T extends string = '*'>(id: number, select: T = '*' as T) => {
+  const getVoterGroup = async <T extends string = '*'>(id: string, select: T = '*' as T) => {
     const { data: voterGroup, error } = await supabase.from('voter_groups').select(select).eq('id', id).throwOnError().single()
 
     // @todo(1)
@@ -32,7 +32,7 @@ export function voterGroupQuery(supabaseClient?: SupabaseClient<Database>) {
   }
 
   // @todo(2)
-  const updateVoterGroup = async (id: number, { name, voterIds }: VoterGroupPayload) => {
+  const updateVoterGroup = async (id: string, { name, voterIds }: VoterGroupPayload) => {
     await supabase.from('voter_groups').update({ name }).eq('id', id).throwOnError()
 
     // @todo: 'if' performance problems occur, compare old and new whitelist and update only the difference
@@ -41,7 +41,8 @@ export function voterGroupQuery(supabaseClient?: SupabaseClient<Database>) {
     await supabase.from('voter_group_voters').insert(whitelistGroup).throwOnError()
   }
 
-  const deleteVoterGroup = (id: number) => {
+  const deleteVoterGroup = async (id: string) => {
+    await supabase.from('voter_group_voters').delete().eq('voter_group_id', id).throwOnError()
     return supabase.from('voter_groups').delete().eq('id', id).throwOnError()
   }
 

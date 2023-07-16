@@ -11,17 +11,17 @@ export interface Database {
     Tables: {
       api_credential_api_permissions: {
         Row: {
-          api_credential_id: number
+          api_credential_id: string
           api_permission_id: number
           id: number
         }
         Insert: {
-          api_credential_id: number
+          api_credential_id: string
           api_permission_id: number
           id?: number
         }
         Update: {
-          api_credential_id?: number
+          api_credential_id?: string
           api_permission_id?: number
           id?: number
         }
@@ -51,7 +51,7 @@ export interface Database {
           created_at: string | null
           deleted_at: string | null
           expires_at: string | null
-          id: number
+          id: string
           name: string
           request_count: number
           secret: string
@@ -61,7 +61,7 @@ export interface Database {
           created_at?: string | null
           deleted_at?: string | null
           expires_at?: string | null
-          id?: number
+          id?: string
           name: string
           request_count?: number
           secret?: string
@@ -71,7 +71,7 @@ export interface Database {
           created_at?: string | null
           deleted_at?: string | null
           expires_at?: string | null
-          id?: number
+          id?: string
           name?: string
           request_count?: number
           secret?: string
@@ -88,19 +88,19 @@ export interface Database {
       }
       api_permissions: {
         Row: {
-          created_at: string | null
+          created_at: string
           description: string | null
           id: number
           name: string
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           description?: string | null
           id?: number
           name: string
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           description?: string | null
           id?: number
           name?: string
@@ -110,19 +110,19 @@ export interface Database {
       contracts: {
         Row: {
           address: string
-          created_at: string | null
+          created_at: string
           id: string
           user_id: string
         }
         Insert: {
           address: string
-          created_at?: string | null
+          created_at?: string
           id?: string
           user_id?: string
         }
         Update: {
           address?: string
-          created_at?: string | null
+          created_at?: string
           id?: string
           user_id?: string
         }
@@ -138,17 +138,17 @@ export interface Database {
       proposals: {
         Row: {
           contract_id: string
-          created_at: string | null
+          created_at: string
           id: string
         }
         Insert: {
           contract_id: string
-          created_at?: string | null
+          created_at?: string
           id?: string
         }
         Update: {
           contract_id?: string
-          created_at?: string | null
+          created_at?: string
           id?: string
         }
         Relationships: [
@@ -163,18 +163,18 @@ export interface Database {
       voter_group_voters: {
         Row: {
           id: number
-          voter_group_id: number
-          voter_id: number
+          voter_group_id: string
+          voter_id: string
         }
         Insert: {
           id?: number
-          voter_group_id: number
-          voter_id: number
+          voter_group_id: string
+          voter_id: string
         }
         Update: {
           id?: number
-          voter_group_id?: number
-          voter_id?: number
+          voter_group_id?: string
+          voter_id?: string
         }
         Relationships: [
           {
@@ -193,20 +193,20 @@ export interface Database {
       }
       voter_groups: {
         Row: {
-          created_at: string | null
-          id: number
+          created_at: string
+          id: string
           name: string
           user_id: string
         }
         Insert: {
-          created_at?: string | null
-          id?: number
+          created_at?: string
+          id?: string
           name: string
           user_id?: string
         }
         Update: {
-          created_at?: string | null
-          id?: number
+          created_at?: string
+          id?: string
           name?: string
           user_id?: string
         }
@@ -222,25 +222,25 @@ export interface Database {
       voters: {
         Row: {
           address: string
-          created_at: string | null
+          created_at: string
           email: string | null
-          id: number
+          id: string
           name: string | null
           user_id: string | null
         }
         Insert: {
           address: string
-          created_at?: string | null
+          created_at?: string
           email?: string | null
-          id?: number
+          id?: string
           name?: string | null
           user_id?: string | null
         }
         Update: {
           address?: string
-          created_at?: string | null
+          created_at?: string
           email?: string | null
-          id?: number
+          id?: string
           name?: string | null
           user_id?: string | null
         }
@@ -261,7 +261,7 @@ export interface Database {
           decrypted_secret: string | null
           deleted_at: string | null
           expires_at: string | null
-          id: number | null
+          id: string | null
           name: string | null
           request_count: number | null
           secret: string | null
@@ -272,7 +272,7 @@ export interface Database {
           decrypted_secret?: never
           deleted_at?: string | null
           expires_at?: string | null
-          id?: number | null
+          id?: string | null
           name?: string | null
           request_count?: number | null
           secret?: string | null
@@ -283,7 +283,7 @@ export interface Database {
           decrypted_secret?: never
           deleted_at?: string | null
           expires_at?: string | null
-          id?: number | null
+          id?: string | null
           name?: string | null
           request_count?: number | null
           secret?: string | null
@@ -300,7 +300,13 @@ export interface Database {
       }
     }
     Functions: {
-      [_ in never]: never
+      increment_request_count: {
+        Args: {
+          row_id: string
+          increment_by: number
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

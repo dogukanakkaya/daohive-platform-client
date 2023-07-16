@@ -85,7 +85,7 @@ export default function Table({ data: voters }: Props) {
   const supabase = createClientComponentClient()
   const [search, setSearch] = useState('')
   const globalFilter = useDeferredValue(search)
-  const [remove, setRemove] = useState(0)
+  const [remove, setRemove] = useState('')
   const [data, setData] = useEffectState(voters)
 
   const table = useReactTable({
@@ -104,8 +104,8 @@ export default function Table({ data: voters }: Props) {
     }
   })
 
-  const handleRemove = (id: number) => remove === id ? withLoadingToastr(async () => {
-    setRemove(0)
+  const handleRemove = (id: string) => remove === id ? withLoadingToastr(async () => {
+    setRemove('')
     await supabase.from('voters').delete().eq('id', id).throwOnError()
     setData(data.filter(voter => voter.id !== id))
   })() : setRemove(id)

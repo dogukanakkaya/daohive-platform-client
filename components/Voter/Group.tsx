@@ -29,21 +29,21 @@ export default function Group({ data: voterGroups, voters }: Props) {
     validateForm,
     isFormValid,
     reset
-  } = useFormValidation({ name: '', voterIds: [] as number[] }, VoterGroupSchema)
+  } = useFormValidation({ name: '', voterIds: [] as string[] }, VoterGroupSchema)
   const [data, setData] = useEffectState(voterGroups)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [action, setAction] = useState<{ id: number, type: ActionType }>({ id: 0, type: ActionType.Create })
+  const [action, setAction] = useState<{ id: string, type: ActionType }>({ id: '', type: ActionType.Create })
   const { getVoterGroup, createVoterGroup, updateVoterGroup, deleteVoterGroup } = voterGroupQuery()
 
   const handleCreate = () => {
     if (action.id) {
-      setAction({ id: 0, type: ActionType.Create })
+      setAction({ id: '', type: ActionType.Create })
       reset()
     }
     setIsDialogOpen(true)
   }
 
-  const handleEdit = async (id: number) => {
+  const handleEdit = async (id: string) => {
     const { name, voter_group_voters } = await getVoterGroup(id, `
       id,name,
       voter_group_voters (voter_id)
@@ -67,11 +67,11 @@ export default function Group({ data: voterGroups, voters }: Props) {
 
     setIsDialogOpen(false)
     reset()
-    setAction({ id: 0, type: ActionType.Create })
+    setAction({ id: '', type: ActionType.Create })
   })
 
-  const handleRemove = (id: number) => action.type === ActionType.Remove && action.id === id ? withLoadingToastr(async () => {
-    setAction({ id: 0, type: ActionType.Create })
+  const handleRemove = (id: string) => action.type === ActionType.Remove && action.id === id ? withLoadingToastr(async () => {
+    setAction({ id: '', type: ActionType.Create })
     await deleteVoterGroup(id)
     setData(data.filter(voter => voter.id !== id))
   })() : setAction({ id, type: ActionType.Remove })
@@ -90,7 +90,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
       <div className="flex items-center flex-wrap gap-4">
         {data.map(group => <GroupCard
           key={group.id}
-          remove={action.type === ActionType.Remove ? action.id : 0}
+          remove={action.type === ActionType.Remove ? action.id : ''}
           handleRemove={handleRemove}
           handleEdit={handleEdit}
           group={group}
@@ -104,7 +104,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
         </div>
         <div className="mb-4">
           <label className="form-label">Voters <span className="text-xs font-light">(Hold <b className="font-medium">CTRL</b> or <b className="font-medium">CMD</b> and click to select multiple)</span></label>
-          <select value={voterIds as unknown as string[]} onChange={handleChange} className="form-input h-[300px] overflow-y-scroll" multiple name="voterIds">
+          <select value={voterIds} onChange={handleChange} className="form-input h-[300px] overflow-y-scroll" multiple name="voterIds">
             {voters.map(voter => <option key={voter.id} value={voter.id}>{voter.address} {voter.name ? `- ${voter.name}` : ''}</option>)}
           </select>
           <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.voterIds}</small>
