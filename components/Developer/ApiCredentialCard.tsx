@@ -23,7 +23,7 @@ export default function ApiCredentialCard({ credential, permissions }: Props) {
   const [showSecret, setShowSecret] = useState(false)
   const [secret, setSecret] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const [remove, setRemove] = useState(0)
+  const [remove, setRemove] = useState('')
   const router = useRouter()
   const { getDecryptedApiCredentialSecret, deleteApiCredential } = developerQuery()
 
@@ -50,7 +50,7 @@ export default function ApiCredentialCard({ credential, permissions }: Props) {
   }
 
   const handleRemove = () => remove === credential.id ? withLoading(withLoadingToastr(async () => {
-    setRemove(0)
+    setRemove('')
     await deleteApiCredential(credential.id)
     router.refresh()
   }), setLoading)() : setRemove(credential.id)
