@@ -3,14 +3,14 @@ import Breadcrumb from '@/components/Breadcrumb'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/supabase.types'
 import Link from 'next/link'
-import { contractQuery } from '@/modules/contract'
+import { contractGql, contractQuery } from '@/modules/contract'
 import Refresh from '@/components/Refresh'
 import Button, { Variant } from '@/components/Button'
 import { ProposalCard } from '@/components/Contract/Proposal'
-import { services } from '@/utils/api'
 import Whitelist from '@/components/Contract/Whitelist'
 import InfoCard from '@/components/InfoCard'
 import ZeroRecord from '@/components/ZeroRecord'
+import { apolloClient } from '@/utils/apollo'
 
 interface Props {
   params: {
@@ -22,13 +22,22 @@ export default async function Contract({ params }: Props) {
   const supabase = createServerComponentClient<Database>({ cookies })
 
   const contract = await contractQuery(supabase).getContractByAddress(params.address, `
-    address,
     proposals (id)
   `)
 
-  const { data: { name, whitelist } } = await services.blockchain.get(`/contracts/${contract.address}`, {
-    headers: {
-      Cookie: cookies().toString()
+  const { data: { contract: { name, voters } } } = await apolloClient.query({
+    query: contractGql(`
+      name
+      voters {
+        address
+        name
+      }
+    `),
+    variables: { address: params.address },
+    context: {
+      headers: {
+        Cookie: cookies().toString()
+      }
     }
   })
 
@@ -64,7 +73,7 @@ export default async function Contract({ params }: Props) {
           ))}
         </div>
       </div>
-      <Whitelist whitelist={whitelist} contractAddress={contract.address} />
+      <Whitelist whitelist={voters} contractAddress={params.address} />
     </div>
   )
 }
