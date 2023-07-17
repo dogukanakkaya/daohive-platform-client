@@ -1,8 +1,8 @@
 'use client'
 import Tooltip from '@/components/Tooltip'
 import { useAbortableAsyncEffect } from '@/hooks'
-import { MergedProposal, ProposalResponse } from '@/modules/proposal'
-import { services } from '@/utils/api'
+import { MergedProposal, ProposalResponse, proposalGql } from '@/modules/proposal'
+import { apolloClient } from '@/utils/apollo'
 import { DateTime } from 'luxon'
 import Image from 'next/image'
 import { useCallback, useState } from 'react'
@@ -20,9 +20,24 @@ export default function ProposalCard({ id }: Props) {
 
   useAbortableAsyncEffect(async signal => {
     if (inView && !proposal.metadata) {
-      const { data } = await services.blockchain.get<ProposalData>(`/proposals/${id}`, { signal })
+      const { data: { proposal } } = await apolloClient.query({
+        query: proposalGql(`
+          approvalCount
+          disapprovalCount
+          neutralCount
+          startAt
+          endAt
+          metadata {
+            name
+            description
+            image
+          }
+        `),
+        variables: { id },
+        context: { fetchOptions: { signal } }
+      })
 
-      setProposal(data)
+      setProposal(proposal)
     }
   }, [inView, proposal])
 
