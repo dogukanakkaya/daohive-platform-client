@@ -4,5 +4,6 @@ import { ApolloClient, InMemoryCache } from '@apollo/client'
 export const apolloClient = new ApolloClient({
   uri: API_GRAPHQL_URL,
   credentials: 'include',
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  ssrMode: typeof window === 'undefined'
 })
