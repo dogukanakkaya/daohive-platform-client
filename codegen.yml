@@ -1,0 +1,15 @@
+schema:
+  - "${NEXT_PUBLIC_API_GRAPHQL_URL}":
+      headers:
+        Authorization: "Bearer ${PLATFORM_API_KEY}"
+documents:
+  - "./**/*.(ts|tsx)"
+  - "!./node_modules"
+generates:
+  "./__generated__/graphql/":
+    preset: "client"
+    plugins: []
+    presetConfig:
+      gqlTagName: "gql"
+      fragmentMasking: false
+ignoreNoDocuments: true
