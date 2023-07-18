@@ -1,8 +1,8 @@
 import Breadcrumb from '@/components/Breadcrumb'
 import InfoCard from '@/components/InfoCard'
 import { ProposalForm } from '@/components/Contract/Proposal'
-import { gql } from '@apollo/client'
 import { getApolloClient } from '@/utils/apollo/client'
+import { gql } from '@/__generated__/graphql'
 
 interface Props {
   params: {
@@ -12,13 +12,13 @@ interface Props {
 
 export default async function Create({ params }: Props) {
   const { data: { contract } } = await getApolloClient().query({
-    query: gql`
-      query Contract($address: String!) {
+    query: gql(`
+      query GetContractName($address: String!) {
         contract(address: $address) {
           name
         }
       }
-    `,
+    `),
     variables: { address: params.address }
   })
 

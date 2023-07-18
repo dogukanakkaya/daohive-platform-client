@@ -5,27 +5,31 @@ import Link from 'next/link'
 import InfoCard from '@/components/InfoCard'
 import Refresh from '@/components/Refresh'
 import { getApolloClient } from '@/utils/apollo/client'
-import { gql } from '@apollo/client'
+import { gql } from '@/__generated__/graphql'
 
 export default async function Voters() {
   const { data: { voters } } = await getApolloClient().query({
-    query: gql`{
-      voters {
-        id
-        address
-        name
-        email
+    query: gql(`
+      query GetVotersList {
+        voters {
+          id
+          address
+          name
+          email
+        }
       }
-    }`
+    `)
   })
 
   const { data: { voterGroups } } = await getApolloClient().query({
-    query: gql`{
-      voterGroups {
-        id
-        name
+    query: gql(`
+      query GetVoterGroupList {
+        voterGroups {
+          id
+          name
+        }
       }
-    }`
+    `)
   })
 
   return (

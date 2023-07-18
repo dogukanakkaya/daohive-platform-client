@@ -1,52 +1,42 @@
 'use client'
+import { gql } from '@/__generated__/graphql'
+import { ProposalQuery } from '@/__generated__/graphql/graphql'
 import Tooltip from '@/components/Tooltip'
-import { useAbortableAsyncEffect } from '@/hooks'
-import { MergedProposal, ProposalResponse } from '@/modules/proposal'
-import { apolloClient } from '@/utils/apollo'
-import { gql } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import { DateTime } from 'luxon'
 import Image from 'next/image'
-import { useCallback, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 interface Props {
   id: string
 }
 
-type ProposalData = ProposalResponse<'id'> & Partial<MergedProposal<'id'>>
-
 export default function ProposalCard({ id }: Props) {
-  const [proposal, setProposal] = useState<ProposalData>({ id })
   const { ref, inView } = useInView({ threshold: 0 })
 
-  useAbortableAsyncEffect(async signal => {
-    if (inView && !proposal.metadata) {
-      const { data: { proposal } } = await apolloClient.query({
-        query: gql`
-          query Proposal($id: String!){
-            proposal(id: $id) {
-              approvalCount
-              disapprovalCount
-              neutralCount
-              startAt
-              endAt
-              metadata {
-                name
-                description
-                image
-              }
-            }
-          }
-        `,
-        variables: { id },
-        context: { fetchOptions: { signal } }
-      })
-
-      setProposal(proposal)
+  const { data } = useQuery(gql(`
+    query Proposal($id: String!){
+      proposal(id: $id) {
+        approvalCount
+        disapprovalCount
+        neutralCount
+        startAt
+        endAt
+        metadata {
+          name
+          description
+          image
+        }
+      }
     }
-  }, [inView, proposal])
+  `), {
+    variables: { id },
+    skip: !inView
+  })
 
-  const renderStatusComponent = useCallback(() => {
+  const proposal = data?.proposal
+
+  const renderStatusComponent = (proposal: ProposalQuery['proposal']) => {
     const startAt = proposal.startAt || 0
     const endAt = proposal.endAt || 0
 
@@ -88,12 +78,12 @@ export default function ProposalCard({ id }: Props) {
         </span>
       </Tooltip>
     )
-  }, [proposal])
+  }
 
   return (
     <div ref={ref} className="relative flex flex-col gap-4 p-4 shadow-lg bg-white dark:bg-gray-900 rounded-xl">
       {
-        proposal.metadata ? (
+        proposal ? (
           <>
             <Image src={proposal.metadata.image} width={500} height={350} className="w-full h-[350px] object-cover rounded-xl" alt={proposal.metadata.name} />
             <div className="flex flex-col gap-4">
@@ -103,7 +93,7 @@ export default function ProposalCard({ id }: Props) {
                   <li><i className="bi bi-emoji-frown text-red-100"></i> <span className="font-bold">{proposal.disapprovalCount}</span></li>
                   <li><i className="bi bi-emoji-neutral"></i> {proposal.neutralCount}</li>
                 </ul>
-                {renderStatusComponent()}
+                {renderStatusComponent(proposal)}
               </div>
               <div className="break-all">
                 <h1 className="text-xl md:text-2xl font-extrabold mb-2">{proposal.metadata.name}</h1>

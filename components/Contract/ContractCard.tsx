@@ -1,42 +1,33 @@
 'use client'
-import { ContractResponse, OnChainContract } from '@/modules/contract'
 import Image from 'next/image'
 import Link from 'next/link'
 import Tooltip from '../Tooltip'
 import { useInView } from 'react-intersection-observer'
-import { useAbortableAsyncEffect } from '@/hooks'
-import { useState } from 'react'
-import { apolloClient } from '@/utils/apollo'
-import { gql } from '@apollo/client'
+import { useQuery } from '@apollo/client'
+import { gql } from '@/__generated__/graphql'
 
 interface Props {
   address: string
 }
 
 export default function ContractCard({ address }: Props) {
-  const [contract, setContract] = useState<ContractResponse<'address'> & Partial<OnChainContract>>({ address })
   const { ref, inView } = useInView({ threshold: 0 })
 
-  useAbortableAsyncEffect(async signal => {
-    if (inView && !contract.name) {
-      const { data: { contract } } = await apolloClient.query({
-        query: gql`
-          query Contract($address: String!) {
-            contract(address: $address) {
-              address
-              name
-              description
-              totalVoters
-            }
-          }
-        `,
-        variables: { address },
-        context: { fetchOptions: { signal } }
-      })
+  const { data } = useQuery(gql(`
+    query GetContractCard($address: String!) {
+        contract(address: $address) {
+          address
+          name
+          description
+          totalVoters
+        }
+      }
+    `), {
+    variables: { address },
+    skip: !inView
+  })
 
-      setContract(contract)
-    }
-  }, [inView, contract])
+  const contract = data?.contract
 
   return (
     <div ref={ref} className="bg-white dark:bg-gray-900 shadow-lg rounded-lg">
@@ -45,7 +36,7 @@ export default function ContractCard({ address }: Props) {
           <Image src="/images/smart-contract.png" width={250} height={250} className="w-full h-full object-contain" alt="Smart Contract" />
         </div>
         {
-          contract.name ? (
+          contract ? (
             <div className="flex-grow md:text-left text-center mt-6 md:mt-0">
               <h1 className="dark:text-gray-50 dark:hover:text-gray-200 text-2xl font-semibold mb-2">
                 <Link href={`/contracts/${contract.address}`}>{contract.name}</Link>
@@ -90,14 +81,14 @@ export default function ContractCard({ address }: Props) {
                 <i className="bi bi-box-arrow-up-right"></i>
               </Link>
             </div>
-          ) : <PlaceholderContent contract={contract} />
+          ) : <PlaceholderContent address={address} />
         }
       </div>
     </div>
   )
 }
 
-function PlaceholderContent({ contract }: { contract: ContractResponse<'address'> }) {
+function PlaceholderContent({ address }: { address: string }) {
   return (
     <div className="animate-pulse flex-grow md:text-left text-center mt-6 md:mt-0">
       <div className="md:w-72 h-5 bg-slate-500 dark:bg-slate-700 rounded mb-2"></div>
@@ -107,8 +98,8 @@ function PlaceholderContent({ contract }: { contract: ContractResponse<'address'
         <div className="w-1/2 xl:w-1/4 mb-2 xl:mb-0">
           <h2>Contract Address</h2>
           <Tooltip text="Copy Address" textAfterClick={<>Copied <i className="bi bi-check"></i></>}>
-            <p onClick={() => navigator.clipboard.writeText(contract.address)} className="cursor-pointer text-gray-700 dark:text-gray-200 text-sm bg-gray-300 dark:bg-gray-700 rounded-xl py-1 px-2 w-max">
-              {contract.address.slice(0, 6)}...{contract.address?.slice(contract.address.length - 4)}
+            <p onClick={() => navigator.clipboard.writeText(address)} className="cursor-pointer text-gray-700 dark:text-gray-200 text-sm bg-gray-300 dark:bg-gray-700 rounded-xl py-1 px-2 w-max">
+              {address.slice(0, 6)}...{address?.slice(address.length - 4)}
             </p>
           </Tooltip>
         </div>
@@ -125,7 +116,7 @@ function PlaceholderContent({ contract }: { contract: ContractResponse<'address'
           <div className="w-12 h-6 bg-slate-500 dark:bg-slate-700 rounded-xl py-1 px-2"></div>
         </div>
       </div>
-      <Link href={`/contracts/${contract.address}`} className="mt-2 text-indigo-500 flex items-center gap-2">
+      <Link href={`/contracts/${address}`} className="mt-2 text-indigo-500 flex items-center gap-2">
         Show More
         <i className="bi bi-box-arrow-up-right"></i>
       </Link>

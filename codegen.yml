@@ -12,4 +12,6 @@ generates:
     presetConfig:
       gqlTagName: "gql"
       fragmentMasking: false
+    config:
+      avoidOptionals: true
 ignoreNoDocuments: true

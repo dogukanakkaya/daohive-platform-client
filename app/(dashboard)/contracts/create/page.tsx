@@ -1,18 +1,19 @@
-import { cookies } from 'next/headers'
 import Breadcrumb from '@/components/Breadcrumb'
 import InfoCard from '@/components/InfoCard'
 import { ContractForm } from '@/components/Contract'
-import { gql } from '@apollo/client'
 import { getApolloClient } from '@/utils/apollo/client'
+import { gql } from '@/__generated__/graphql'
 
 export default async function Create() {
   const { data: { voterGroups } } = await getApolloClient().query({
-    query: gql`{
-      voterGroups {
-        id
-        name
+    query: gql(`
+      query GetVoterGroupList {
+        voterGroups {
+          id
+          name
+        }
       }
-    }`
+    `)
   })
 
   return (
