@@ -3,14 +3,15 @@ import Breadcrumb from '@/components/Breadcrumb'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/supabase.types'
 import Link from 'next/link'
-import { contractGql, contractQuery } from '@/modules/contract'
+import { contractQuery } from '@/modules/contract'
 import Refresh from '@/components/Refresh'
 import Button, { Variant } from '@/components/Button'
 import { ProposalCard } from '@/components/Contract/Proposal'
 import Whitelist from '@/components/Contract/Whitelist'
 import InfoCard from '@/components/InfoCard'
 import ZeroRecord from '@/components/ZeroRecord'
-import { apolloClient } from '@/utils/apollo'
+import { getApolloClient } from '@/utils/apollo/client'
+import { gql } from '@apollo/client'
 
 interface Props {
   params: {
@@ -25,20 +26,19 @@ export default async function Contract({ params }: Props) {
     proposals (id)
   `)
 
-  const { data: { contract: { name, voters } } } = await apolloClient.query({
-    query: contractGql(`
-      name
-      voters {
-        address
-        name
+  const { data: { contract: { name, voters } } } = await getApolloClient().query({
+    query: gql`
+      query Contract($address: String!) {
+        contract(address: $address) {
+          name
+          voters {
+            address
+            name
+          }
+        }
       }
-    `),
-    variables: { address: params.address },
-    context: {
-      headers: {
-        Cookie: cookies().toString()
-      }
-    }
+    `,
+    variables: { address: params.address }
   })
 
   return (

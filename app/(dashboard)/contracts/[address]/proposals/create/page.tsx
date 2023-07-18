@@ -1,9 +1,8 @@
-import { cookies } from 'next/headers'
 import Breadcrumb from '@/components/Breadcrumb'
 import InfoCard from '@/components/InfoCard'
 import { ProposalForm } from '@/components/Contract/Proposal'
-import { apolloClient } from '@/utils/apollo'
-import { contractGql } from '@/modules/contract'
+import { gql } from '@apollo/client'
+import { getApolloClient } from '@/utils/apollo/client'
 
 interface Props {
   params: {
@@ -12,16 +11,15 @@ interface Props {
 }
 
 export default async function Create({ params }: Props) {
-  const { data: { contract } } = await apolloClient.query({
-    query: contractGql(`
-      name
-    `),
-    variables: { address: params.address },
-    context: {
-      headers: {
-        Cookie: cookies().toString()
+  const { data: { contract } } = await getApolloClient().query({
+    query: gql`
+      query Contract($address: String!) {
+        contract(address: $address) {
+          name
+        }
       }
-    }
+    `,
+    variables: { address: params.address }
   })
 
   return (

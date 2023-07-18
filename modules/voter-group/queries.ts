@@ -5,10 +5,6 @@ import { VoterGroupPayload } from './types'
 export function voterGroupQuery(supabaseClient?: SupabaseClient<Database>) {
   const supabase = supabaseClient ?? createClientComponentClient<Database>()
 
-  const getVoterGroups = <T extends string = '*'>(select: T = '*' as T) => {
-    return supabase.from('voter_groups').select(select).order('created_at', { ascending: false }).throwOnError()
-  }
-
   const getVoterGroup = async <T extends string = '*'>(id: string, select: T = '*' as T) => {
     const { data: voterGroup, error } = await supabase.from('voter_groups').select(select).eq('id', id).throwOnError().single()
 
@@ -46,5 +42,5 @@ export function voterGroupQuery(supabaseClient?: SupabaseClient<Database>) {
     return supabase.from('voter_groups').delete().eq('id', id).throwOnError()
   }
 
-  return { getVoterGroups, getVoterGroup, createVoterGroup, updateVoterGroup, deleteVoterGroup }
+  return { getVoterGroup, createVoterGroup, updateVoterGroup, deleteVoterGroup }
 }

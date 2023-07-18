@@ -1,9 +1,13 @@
 import { API_GRAPHQL_URL } from '@/config'
-import { ApolloClient, InMemoryCache } from '@apollo/client'
+import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client'
+
+const httpLink = createHttpLink({
+  uri: API_GRAPHQL_URL,
+  credentials: 'include'
+})
 
 export const apolloClient = new ApolloClient({
-  uri: API_GRAPHQL_URL,
-  credentials: 'include',
+  link: httpLink,
   cache: new InMemoryCache(),
   ssrMode: typeof window === 'undefined'
 })

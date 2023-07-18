@@ -7,7 +7,7 @@ import { useInView } from 'react-intersection-observer'
 import { useAbortableAsyncEffect } from '@/hooks'
 import { useState } from 'react'
 import { apolloClient } from '@/utils/apollo'
-import { contractGql } from '@/modules/contract'
+import { gql } from '@apollo/client'
 
 interface Props {
   address: string
@@ -20,12 +20,16 @@ export default function ContractCard({ address }: Props) {
   useAbortableAsyncEffect(async signal => {
     if (inView && !contract.name) {
       const { data: { contract } } = await apolloClient.query({
-        query: contractGql(`
-          address
-          name
-          description
-          totalVoters
-        `),
+        query: gql`
+          query Contract($address: String!) {
+            contract(address: $address) {
+              address
+              name
+              description
+              totalVoters
+            }
+          }
+        `,
         variables: { address },
         context: { fetchOptions: { signal } }
       })
