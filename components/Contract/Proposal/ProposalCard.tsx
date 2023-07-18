@@ -15,7 +15,7 @@ export default function ProposalCard({ id }: Props) {
   const { ref, inView } = useInView({ threshold: 0 })
 
   const { data } = useQuery(gql(`
-    query Proposal($id: String!){
+    query Proposal($id: ID!){
       proposal(id: $id) {
         approvalCount
         disapprovalCount
