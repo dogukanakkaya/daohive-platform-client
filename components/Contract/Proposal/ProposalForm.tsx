@@ -47,7 +47,7 @@ export default function ProposalForm() {
     }
 
     const formData = new FormData()
-    formData.set('contractAddress', params.address)
+    formData.set('contractAddress', params.address as string)
     formData.set('name', name)
     formData.set('description', description)
     formData.set('content', content)
