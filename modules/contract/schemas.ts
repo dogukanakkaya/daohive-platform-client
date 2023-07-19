@@ -13,5 +13,5 @@ export const ContractSchema = z.object({
     })
     .max(255, 'Description must contain at most 255 character(s)')
     .default(''),
-  voterGroup: z.number().optional().default(0)
+  voterGroup: z.string().optional().default('')
 })

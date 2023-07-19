@@ -15,13 +15,13 @@ interface Props {
 
 export default function ContractForm({ voterGroups }: Props) {
   const [loading, setLoading] = useState(false)
-  const { state: { name, description, voterGroup }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ name: '', description: '', voterGroup: 0 }, ContractSchema)
+  const { state: { name, description, voterGroup }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ name: '', description: '', voterGroup: '' }, ContractSchema)
   const router = useRouter()
 
   const handleSubmit = withLoading(withLoadingToastr(async () => {
     let whitelist: string[] = []
 
-    if (voterGroup !== 0) {
+    if (voterGroup !== '') {
       const { voter_group_voters } = await voterGroupQuery().getVoterGroup(voterGroup, `
         voter_group_voters (
           voters (address)
