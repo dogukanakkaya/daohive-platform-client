@@ -74,7 +74,7 @@ export default function Login() {
                 priority
               />
               <div className="flex flex-col space-y-2 mt-5">
-                <Button variant={Variant.SignInWith} className="shadow-md flex items-center gap-4 rounded">
+                <Button variant={Variant.Tertiary} className="shadow-md flex items-center gap-4 rounded">
                   <Image
                     className="relative"
                     src="/images/metamask.svg"
@@ -85,7 +85,7 @@ export default function Login() {
                   />
                   Connect with MetaMask
                 </Button>
-                <Button onClick={signInWithGoogle} variant={Variant.SignInWith} className="shadow-md flex items-center gap-4 rounded">
+                <Button onClick={signInWithGoogle} variant={Variant.Tertiary} className="shadow-md flex items-center gap-4 rounded">
                   <Image
                     className="relative"
                     src="/images/google.svg"
@@ -96,7 +96,7 @@ export default function Login() {
                   />
                   Sign in with Google
                 </Button>
-                <Button variant={Variant.SignInWith} className="shadow-md flex items-center gap-4 rounded">
+                <Button variant={Variant.Tertiary} className="shadow-md flex items-center gap-4 rounded">
                   <Image
                     className="relative"
                     src="/images/github.svg"

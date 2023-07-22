@@ -3,7 +3,7 @@ import { clsx } from 'clsx'
 export enum Variant {
   Primary = 'bg-primary text-white',
   Secondary = 'bg-secondary text-black dark:text-white',
-  SignInWith = 'bg-white dark:bg-slate-800',
+  Tertiary = 'bg-white dark:bg-slate-800',
 }
 
 interface Props {
