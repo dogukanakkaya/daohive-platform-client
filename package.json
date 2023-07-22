@@ -9,7 +9,7 @@
     "lint": "next lint",
     "postinstall": "husky install",
     "supabase:generate-types": "npx supabase gen types typescript --project-id 'megepnblulncqjdcwrnd' --schema public > supabase.types.ts",
-    "graphql:codegen": "dotenv -e .env.local graphql-codegen --config codegen.yml"
+    "graphql:codegen": "dotenv -e .env -e .env.local graphql-codegen --config codegen.yml"
   },
   "dependencies": {
     "@apollo/client": "^3.8.0-rc.1",
