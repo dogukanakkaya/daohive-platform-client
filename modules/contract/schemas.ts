@@ -5,6 +5,7 @@ export const ContractSchema = z.object({
     .string({
       required_error: 'Name is required'
     })
+    .nonempty('Name is required')
     .max(255, 'Name must contain at most 255 character(s)'),
   description: z
     .string({
