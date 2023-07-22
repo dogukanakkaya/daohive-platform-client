@@ -74,14 +74,14 @@ export default function ContractForm({ voterGroups }: Props) {
         </select>
       </div>
       <div className="flex justify-between items-center">
-        <p className="flex flex-col relative p-2">
+        <div className="flex flex-col relative p-2">
           {preDeployLoading && <LoadingOverlay />}
           <span>
             Transaction fee:
             {preDeploydata && <><b className="font-semibold">{preDeploydata.preDeploy.transactionFee.usd.toFixed(6)}$</b> ({preDeploydata.preDeploy.transactionFee.matic.toFixed(6)} MATIC)</>}
           </span>
           <span className="text-xs">(Remember that these numbers are approximate and may vary at the time of deployment.)</span>
-        </p>
+        </div>
         <div className="flex gap-4">
           <Button onClick={handleCalculateFee} variant={Variant.Tertiary} className="flex items-center gap-2">Calculate Fee {preDeployLoading ? <i className="bi bi-arrow-repeat text-lg inline-block animate-spin"></i> : <i className="bi bi-calculator text-lg"></i>}</Button>
           <Button onClick={handleSubmit} isEnabled={isFormValid} className="flex items-center gap-2">Deploy Contract <i className="bi bi-cloud-upload text-lg"></i></Button>
