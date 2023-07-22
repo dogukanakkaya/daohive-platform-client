@@ -77,7 +77,7 @@ export default function ContractForm({ voterGroups }: Props) {
         <div className="flex flex-col relative p-2">
           {preDeployLoading && <LoadingOverlay />}
           <span>
-            Transaction fee:
+            Transaction fee:&nbsp;
             {preDeploydata && <><b className="font-semibold">{preDeploydata.preDeploy.transactionFee.usd.toFixed(6)}$</b> ({preDeploydata.preDeploy.transactionFee.matic.toFixed(6)} MATIC)</>}
           </span>
           <span className="text-xs">(Remember that these numbers are approximate and may vary at the time of deployment.)</span>
