@@ -8,7 +8,7 @@ import { services } from '@/utils/api'
 import { useRouter } from 'next/navigation'
 import { VoterGroupResponse, voterGroupQuery } from '@/modules/voter-group'
 import { ContractSchema } from '@/modules/contract'
-import { useLazyQuery } from '@apollo/client'
+import { useLazyQuery, useMutation } from '@apollo/client'
 import { gql } from '@/__generated__/graphql'
 
 interface Props {
@@ -17,29 +17,16 @@ interface Props {
 
 export default function ContractForm({ voterGroups }: Props) {
   const [loading, setLoading] = useState(false)
-  const { state: { name, description, voterGroup }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ name: '', description: '', voterGroup: '' }, ContractSchema)
+  const { state: { name, description, voterGroupId }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ name: '', description: '', voterGroupId: '' }, ContractSchema)
   const router = useRouter()
 
-  const handleSubmit = withLoading(withLoadingToastr(async () => {
-    let whitelist: string[] = []
-
-    // @todo: send voterGroup to backend and get whitelist from there
-    if (voterGroup !== '') {
-      const { voter_group_voters } = await voterGroupQuery().getVoterGroup(voterGroup, `
-        voter_group_voters (
-          voters (address)
-        )
-      `)
-
-      whitelist = voter_group_voters
-        .filter((group): group is { voters: NonNullable<typeof group['voters']> } => group.voters !== null)
-        .map(({ voters }) => voters?.address)
+  const [deployMutation] = useMutation(gql(`
+    mutation DeployContract ($input: ContractInput!) {
+      deploy(input: $input) {
+        address
+      }
     }
-
-    await services.blockchain.post<{ contractAddress: string }>('/contracts', { name, description, whitelist })
-
-    router.refresh(); router.replace('/contracts')
-  }), setLoading)
+  `))
 
   const [execPreDeploy, { data: preDeploydata, loading: preDeployLoading }] = useLazyQuery(gql(`
     query PreDeploy ($input: ContractInput!) {
@@ -54,9 +41,17 @@ export default function ContractForm({ voterGroups }: Props) {
 
   const handleCalculateFee = () => {
     execPreDeploy({
-      variables: { input: { name, description, voters: [] } }
+      variables: { input: { name, description, voterGroupId } }
     })
   }
+
+  const handleSubmit = withLoading(withLoadingToastr(async () => {
+    await deployMutation({
+      variables: { input: { name, description, voterGroupId } }
+    })
+
+    router.refresh(); router.replace('/contracts')
+  }), setLoading)
 
   return (
     <div className="relative bg-white dark:bg-gray-900 p-5 rounded-xl shadow">
@@ -73,7 +68,7 @@ export default function ContractForm({ voterGroups }: Props) {
       </div>
       <div className="mb-4">
         <label className="form-label">Whitelist Group</label>
-        <select value={voterGroup} onChange={handleChange} className="form-input" name="voterGroup">
+        <select value={voterGroupId} onChange={handleChange} className="form-input" name="voterGroupId">
           <option value="">Select group</option>
           {voterGroups.map(voterGroup => <option key={voterGroup.id} value={voterGroup.id}>{voterGroup.name}</option>)}
         </select>
