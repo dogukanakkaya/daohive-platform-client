@@ -2,17 +2,21 @@
 import { API_GRAPHQL_URL } from '@/config'
 import { ApolloLink, HttpLink } from '@apollo/client'
 import { RetryLink } from '@apollo/client/link/retry'
-import {
-  ApolloNextAppProvider,
-  NextSSRApolloClient,
-  NextSSRInMemoryCache,
-  SSRMultipartLink
-} from '@apollo/experimental-nextjs-app-support/ssr'
+import { ErrorLink } from '@apollo/client/link/error'
+import { ApolloNextAppProvider, NextSSRApolloClient, NextSSRInMemoryCache, SSRMultipartLink } from '@apollo/experimental-nextjs-app-support/ssr'
 
 function makeClient() {
   const httpLink = new HttpLink({
     uri: API_GRAPHQL_URL,
     credentials: 'include'
+  })
+
+  const errorLink = new ErrorLink(({ networkError }) => {
+    if (networkError && 'statusCode' in networkError) {
+      if (networkError.statusCode === 429) {
+        // @todo: show error page with too many requests
+      }
+    }
   })
 
   const retryStatuses = [429, 503]
@@ -30,6 +34,7 @@ function makeClient() {
 
   const links: ApolloLink[] = [
     retryLink,
+    errorLink,
     httpLink
   ]
 
@@ -39,7 +44,8 @@ function makeClient() {
 
   return new NextSSRApolloClient({
     cache: new NextSSRInMemoryCache(),
-    link: ApolloLink.from(links)
+    link: ApolloLink.from(links),
+    connectToDevTools: process.env.NODE_ENV === 'development'
   })
 }
 

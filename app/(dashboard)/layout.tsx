@@ -1,7 +1,6 @@
 import Sidebar from '@/components/Sidebar'
 import Header from '@/components/Header'
 import { ApolloWrapper } from '@/utils/apollo/wrapper'
-
 import { loadErrorMessages, loadDevMessages } from '@apollo/client/dev'
 
 if (process.env.NODE_ENV === 'development') {
