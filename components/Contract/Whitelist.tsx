@@ -44,14 +44,14 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
   const handleRemove = (address: string) => remove === address ? withLoading(withLoadingToastr(async () => {
     setRemove('')
     await removeFromWhitelistMutation({
-      variables: { input: { contractAddress, voterAddresses: [address] } }
+      variables: { input: { address: contractAddress, voterAddresses: [address] } }
     })
     setData(data.filter(voter => voter.address !== address))
   }), setLoading)() : setRemove(address)
 
   const handleSubmit = withLoading(withLoadingToastr(async () => {
     await addToWhitelistMutation({
-      variables: { input: { contractAddress, voterAddresses: [address] } }
+      variables: { input: { address: contractAddress, voterAddresses: [address] } }
     })
 
     setData([...data, { address, name: null }])

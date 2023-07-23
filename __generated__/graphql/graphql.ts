@@ -141,7 +141,7 @@ export type VoterGroup = {
 };
 
 export type WhitelistInput = {
-  contractAddress: Scalars['String']['input'];
+  address: Scalars['String']['input'];
   voterAddresses: Array<Scalars['String']['input']>;
 };
 
