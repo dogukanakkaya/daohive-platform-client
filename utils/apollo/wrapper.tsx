@@ -1,5 +1,5 @@
 'use client'
-import { API_GRAPHQL_URL } from '@/config'
+import { API_URL } from '@/config'
 import { ApolloLink, HttpLink } from '@apollo/client'
 import { RetryLink } from '@apollo/client/link/retry'
 import { ErrorLink } from '@apollo/client/link/error'
@@ -7,7 +7,7 @@ import { ApolloNextAppProvider, NextSSRApolloClient, NextSSRInMemoryCache, SSRMu
 
 function makeClient() {
   const httpLink = new HttpLink({
-    uri: API_GRAPHQL_URL,
+    uri: `${API_URL}/graphql`,
     credentials: 'include'
   })
 

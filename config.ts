@@ -1,4 +1,3 @@
-export const API_GRAPHQL_URL = process.env.NEXT_PUBLIC_API_GRAPHQL_URL!
-export const BLOCKCHAIN_SERVICE_URL = process.env.NEXT_PUBLIC_BLOCKCHAIN_SERVICE_URL!
+export const API_URL = process.env.NEXT_PUBLIC_API_URL!
 
 export const TOAST_AUTO_CLOSE = 3000

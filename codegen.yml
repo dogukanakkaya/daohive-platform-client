@@ -1,5 +1,5 @@
 schema:
-  - "${NEXT_PUBLIC_API_GRAPHQL_URL}":
+  - "${NEXT_PUBLIC_API_URL}/graphql":
       headers:
         Authorization: "Bearer ${PLATFORM_API_KEY}"
 documents:

@@ -7,12 +7,12 @@ import { DateTime } from 'luxon'
 import { useDropzone } from 'react-dropzone'
 import Image from 'next/image'
 import { toast } from 'react-toastify'
-import { services } from '@/utils/api'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
 import { useParams } from 'next/navigation'
 import { ProposalSchema } from '@/modules/proposal'
 import Editor from '@/components/Editor/Editor'
 import { useRouter } from 'next/navigation'
+import { api } from '@/utils/api'
 
 const DEFAULT_START_TIME = DateTime.now().plus({ minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
 const DEFAULT_END_TIME = DateTime.now().plus({ days: 7, minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
@@ -47,7 +47,7 @@ export default function ProposalForm() {
     }
 
     const formData = new FormData()
-    formData.set('contractAddress', params.address as string)
+    formData.set('address', params.address as string)
     formData.set('name', name)
     formData.set('description', description)
     formData.set('content', content)
@@ -55,7 +55,7 @@ export default function ProposalForm() {
     formData.set('endAt', endAt)
     formData.set('banner', file)
 
-    await services.blockchain.post('/proposals', formData, {
+    await api.post('/proposals', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
