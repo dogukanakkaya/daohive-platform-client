@@ -19,7 +19,7 @@ const DEFAULT_END_TIME = DateTime.now().plus({ days: 7, minutes: 5 }).toFormat('
 
 export default function ProposalForm() {
   const [loading, setLoading] = useState(false)
-  const [file, setFile] = useState<File & { preview: string }>()
+  const [file, setFile] = useState<File>()
   const {
     state: { name, description, content, startAt, endAt },
     setState: setProposalState,
@@ -32,11 +32,7 @@ export default function ProposalForm() {
   const router = useRouter()
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    const acceptedFile = Object.assign(acceptedFiles[0], {
-      preview: URL.createObjectURL(acceptedFiles[0])
-    })
-
-    setFile(acceptedFile)
+    setFile(acceptedFiles[0])
   }, [])
   const { getRootProps, getInputProps } = useDropzone({ onDrop, maxFiles: 1, accept: { 'image/*': [] } })
 
@@ -75,7 +71,7 @@ export default function ProposalForm() {
         >
           <input {...getInputProps()} />
           {
-            file ? <Image src={file.preview} width={720} height={720} className="max-h-full object-contain" alt="" /> : <p>Drag and drop some files here, or click to select files</p>
+            file ? <Image src={URL.createObjectURL(file)} width={720} height={720} className="max-h-full object-contain" alt="" /> : <p>Drag and drop some files here, or click to select files</p>
           }
         </div>
       </div>

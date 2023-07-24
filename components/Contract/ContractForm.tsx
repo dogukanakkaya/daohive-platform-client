@@ -20,16 +20,16 @@ export default function ContractForm({ voterGroups }: Props) {
   const router = useRouter()
 
   const [deployMutation] = useMutation(gql(`
-    mutation DeployContract ($input: ContractInput!) {
-      deploy(input: $input) {
+    mutation DeployContract ($input: DeployContractInput!) {
+      deployContract(input: $input) {
         address
       }
     }
   `))
 
-  const [execPreDeploy, { data: preDeploydata, loading: preDeployLoading }] = useLazyQuery(gql(`
-    query PreDeploy ($input: ContractInput!) {
-      preDeploy(input: $input) {
+  const [execPreDeploy, { data: preDeployData, loading: preDeployLoading }] = useLazyQuery(gql(`
+    query PreDeployContract ($input: DeployContractInput!) {
+      preDeployContract(input: $input) {
         transactionFee {
           usd
           matic
@@ -37,6 +37,7 @@ export default function ContractForm({ voterGroups }: Props) {
       }
     }
   `))
+  const transactionFee = preDeployData?.preDeployContract.transactionFee
 
   const handleCalculateFee = () => {
     execPreDeploy({
@@ -77,7 +78,7 @@ export default function ContractForm({ voterGroups }: Props) {
           {preDeployLoading && <LoadingOverlay />}
           <span>
             Transaction fee:&nbsp;
-            {preDeploydata && <><b className="font-semibold">{preDeploydata.preDeploy.transactionFee.usd.toFixed(6)}$</b> ({preDeploydata.preDeploy.transactionFee.matic.toFixed(6)} MATIC)</>}
+            {transactionFee && <><b className="font-semibold">{transactionFee.usd.toFixed(6)}$</b> ({transactionFee.matic.toFixed(6)} MATIC)</>}
           </span>
           <span className="text-xs">(Remember that these numbers are approximate and may vary at the time of deployment.)</span>
         </div>
