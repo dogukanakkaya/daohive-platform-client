@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 
-export default function LoadingOverlay({ ...rest }: React.HTMLAttributes<HTMLDivElement>) {
+export default function LoadingOverlay({ ...rest }: React.HTMLProps<HTMLDivElement>) {
   const { className, ...restAttributes } = rest
   const _className = clsx('overlay', className)
 

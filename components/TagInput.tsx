@@ -1,13 +1,12 @@
 'use client'
 import clsx from 'clsx'
-import { HTMLProps } from 'react'
 
 interface Props {
   tags: string[]
   setTags: (tags: string[]) => void
 }
 
-export default function TagInput({ tags, setTags, ...rest }: HTMLProps<HTMLInputElement> & Props) {
+export default function TagInput({ tags, setTags, ...rest }: React.HTMLProps<HTMLInputElement> & Props) {
   const { className, ...restAttributes } = rest
   const _className = clsx('form-input', className)
 
@@ -25,10 +24,10 @@ export default function TagInput({ tags, setTags, ...rest }: HTMLProps<HTMLInput
   return (
     <>
       <input className={_className} onKeyDown={handleKeyDown} {...restAttributes} />
-      <ul className="flex gap-2 mt-2">
+      <ul className="flex flex-wrap gap-2 mt-2">
         {
-          tags.map(t => <li key={t} className="block p-1 text-sm rounded bg-primary">
-            {t} <span onClick={() => setTags(tags.filter(_t => _t !== t))} className="cursor-pointer bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-800">
+          tags.map(tag => <li key={tag} className="block p-1 text-sm rounded bg-primary">
+            {tag} <span onClick={() => setTags(tags.filter(t => t !== tag))} className="cursor-pointer bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-800">
               <i className="bi bi-x"></i>
             </span>
           </li>

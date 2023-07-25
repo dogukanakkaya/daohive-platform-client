@@ -1,5 +1,5 @@
 'use client'
-import { VoterResponse, VoterSchema, voterQuery } from '@/modules/voter'
+import { AddToWhitelistSchema, VoterResponse, VoterSchema, voterQuery } from '@/modules/voter'
 import Tooltip from '../Tooltip'
 import { useState } from 'react'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
@@ -9,6 +9,7 @@ import { useEffectState, useFormValidation } from '@/hooks'
 import LoadingOverlay from '../LoadingOverlay'
 import { useMutation } from '@apollo/client'
 import { gql } from '@/__generated__/graphql'
+import TagInput from '../TagInput'
 
 interface Props {
   whitelist: VoterResponse<'address' | 'name'>[]
@@ -17,13 +18,13 @@ interface Props {
 
 export default function Whitelist({ whitelist, contractAddress }: Props) {
   const {
-    state: { address },
+    state: { addresses },
+    setState: setAddToWhitelistState,
     errors,
-    handleChange,
     validateForm,
     isFormValid,
     reset
-  } = useFormValidation({ address: '' }, VoterSchema.pick({ address: true }))
+  } = useFormValidation({ addresses: [] as string[] }, AddToWhitelistSchema)
   const [data, setData] = useEffectState(whitelist)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [remove, setRemove] = useState('')
@@ -44,17 +45,17 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
   const handleRemove = (address: string) => remove === address ? withLoading(withLoadingToastr(async () => {
     setRemove('')
     await removeFromWhitelistMutation({
-      variables: { input: { address: contractAddress, voterAddresses: [address] } }
+      variables: { input: { address: contractAddress, voterAddresses: addresses } }
     })
     setData(data.filter(voter => voter.address !== address))
   }), setLoading)() : setRemove(address)
 
   const handleSubmit = withLoading(withLoadingToastr(async () => {
     await addToWhitelistMutation({
-      variables: { input: { address: contractAddress, voterAddresses: [address] } }
+      variables: { input: { address: contractAddress, voterAddresses: addresses } }
     })
 
-    setData([...data, { address, name: null }])
+    setData([...data, ...addresses.map(address => ({ address, name: null }))])
     setIsDialogOpen(false)
     reset()
   }), setLoading)
@@ -81,8 +82,8 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
         {loading && <LoadingOverlay />}
         <div className="mb-4">
           <label className="form-label">Voter Address <span className="text-xs text-red-500">*</span></label>
-          <input value={address} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="address" placeholder="Enter voter address" autoFocus />
-          <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.address}</small>
+          <TagInput tags={addresses} setTags={tags => setAddToWhitelistState({ addresses: tags })} onBlur={validateForm} name="addresses" placeholder="Type and press 'enter', 'tab' or ',' to add multiple" autoFocus />
+          <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.addresses}</small>
         </div>
         <div className="flex items-center justify-end gap-2">
           <Button onClick={() => setIsDialogOpen(false)} variant={Variant.Secondary}>Cancel</Button>

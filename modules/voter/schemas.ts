@@ -18,3 +18,7 @@ export const VoterSchema = z.object({
     .optional()
     .or(z.literal(''))
 })
+
+export const AddToWhitelistSchema = z.object({
+  addresses: z.array(z.string().length(42, 'Address must contain exactly 42 character(s)'))
+})

@@ -14,8 +14,8 @@ export default function useFormValidation<T = Record<string, unknown>>(initialSt
       await schema.parseAsync(state)
       setErrors(INITIAL_ERROR_STATE)
     } catch (error: any) {
-      const formattedErrors = error.format()
-      setErrors({ ...errors, [e.target.name]: formattedErrors[e.target.name]?._errors[0] || '' })
+      const { fieldErrors } = (error as z.ZodError).flatten()
+      setErrors({ ...errors, [e.target.name]: fieldErrors[e.target.name]?.[0] || '' })
     }
   }
 
