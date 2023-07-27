@@ -107,6 +107,37 @@ export interface Database {
         }
         Relationships: []
       }
+      api_quotas: {
+        Row: {
+          current_request_count: number
+          id: string
+          max_request_count: number
+          total_request_count: number
+          user_id: string
+        }
+        Insert: {
+          current_request_count?: number
+          id?: string
+          max_request_count?: number
+          total_request_count?: number
+          user_id: string
+        }
+        Update: {
+          current_request_count?: number
+          id?: string
+          max_request_count?: number
+          total_request_count?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_quotas_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       contracts: {
         Row: {
           address: string
@@ -302,7 +333,7 @@ export interface Database {
     Functions: {
       increment_request_count: {
         Args: {
-          row_id: string
+          _user_id: string
           increment_by: number
         }
         Returns: undefined

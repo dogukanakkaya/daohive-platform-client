@@ -1,4 +1,0 @@
-- Contract whitelist add more inputs to add more voter address
-- move all @todo(1) things to the queries, there shouldn't be any if error check in other places
-- merge voter and voter group modules as one
-- remove useAbortableAsyncEffect hook if not used in the future as well
