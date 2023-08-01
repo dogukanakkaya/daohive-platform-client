@@ -27,12 +27,14 @@ export type Contract = {
   name: Scalars['String']['output'];
   proposals: Array<Proposal>;
   totalVoters: Scalars['Int']['output'];
+  type: Scalars['String']['output'];
   voters: Array<PairedVoter>;
 };
 
 export type DeployContractInput = {
   description: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
+  restriction: Scalars['String']['input'];
   voterGroupId: InputMaybe<Scalars['ID']['input']>;
 };
 

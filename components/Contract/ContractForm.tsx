@@ -16,7 +16,13 @@ interface Props {
 
 export default function ContractForm({ voterGroups }: Props) {
   const [loading, setLoading] = useState(false)
-  const { state: { name, description, voterGroupId }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ name: '', description: '', voterGroupId: '' }, ContractSchema)
+  const {
+    state: { name, description, voterGroupId, restriction },
+    errors,
+    handleChange,
+    validateForm,
+    isFormValid
+  } = useFormValidation({ name: '', description: '', voterGroupId: '', restriction: 'public' }, ContractSchema)
   const router = useRouter()
 
   const [deployMutation] = useMutation(gql(`
@@ -41,13 +47,13 @@ export default function ContractForm({ voterGroups }: Props) {
 
   const handleCalculateFee = () => {
     execPreDeploy({
-      variables: { input: { name, description, voterGroupId } }
+      variables: { input: { name, description, voterGroupId, restriction } }
     })
   }
 
   const handleSubmit = withLoading(withLoadingToastr(async () => {
     await deployMutation({
-      variables: { input: { name, description, voterGroupId } }
+      variables: { input: { name, description, voterGroupId, restriction } }
     })
 
     router.refresh(); router.replace('/contracts')
@@ -66,12 +72,34 @@ export default function ContractForm({ voterGroups }: Props) {
         <textarea value={description} onChange={handleChange} onBlur={validateForm} className="form-input" rows={3} name="description" placeholder="Enter contract description" />
         <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.description}</small>
       </div>
-      <div className="mb-4">
-        <label className="form-label">Whitelist Group</label>
-        <select value={voterGroupId} onChange={handleChange} className="form-input" name="voterGroupId">
-          <option value="">Select group</option>
-          {voterGroups.map(voterGroup => <option key={voterGroup.id} value={voterGroup.id}>{voterGroup.name}</option>)}
-        </select>
+      <div className="grid grid-cols-3 gap-4">
+        <div className={`mb-4 ${restriction === 'private' ? 'col-span-1' : 'col-span-3'}`}>
+          <label className="form-label">Voting Restriction</label>
+          <select value={restriction} onChange={handleChange} onBlur={validateForm} className="form-input" name="restriction">
+            <option value="private">Private</option>
+            <option value="public">Public</option>
+          </select>
+          <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.restriction}</small>
+        </div>
+        {/* <div className="mb-4">
+          <label className="form-label">Immutability</label>
+          <select value={voterGroupId} onChange={handleChange} className="form-input" name="voterGroupId">
+            <option value="Fuly ">Private</option>
+            <option value="public">Private</option>
+          </select>
+        </div> */}
+        {
+          restriction === 'private' && (
+            <div className="mb-4 col-span-2">
+              <label className="form-label">Whitelist Group</label>
+              <select value={voterGroupId} onChange={handleChange} onBlur={validateForm} className="form-input" name="voterGroupId">
+                <option value="">Select group</option>
+                {voterGroups.map(voterGroup => <option key={voterGroup.id} value={voterGroup.id}>{voterGroup.name}</option>)}
+              </select>
+              <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.voterGroupId}</small>
+            </div>
+          )
+        }
       </div>
       <div className="flex justify-between items-center">
         <div className="flex flex-col relative p-2">
