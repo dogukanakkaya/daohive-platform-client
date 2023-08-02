@@ -12,7 +12,7 @@ import { gql } from '@/__generated__/graphql'
 import TagInput from '../TagInput'
 
 interface Props {
-  whitelist: VoterResponse<'address' | 'name'>[]
+  whitelist: string[]
   contractAddress: string
 }
 
@@ -47,7 +47,7 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
     await removeFromWhitelistMutation({
       variables: { input: { address: contractAddress, voterAddresses: addresses } }
     })
-    setData(data.filter(voter => voter.address !== address))
+    setData(data.filter(voter => voter !== address))
   }), setLoading)() : setRemove(address)
 
   const handleSubmit = withLoading(withLoadingToastr(async () => {
@@ -55,7 +55,7 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
       variables: { input: { address: contractAddress, voterAddresses: addresses } }
     })
 
-    setData([...data, ...addresses.map(address => ({ address, name: null }))])
+    setData([...data, ...addresses])
     setIsDialogOpen(false)
     reset()
   }), setLoading)
@@ -68,11 +68,11 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
       </div>
       <ul className="flex flex-wrap gap-x-4 gap-y-6">
         {data.map(voter => (
-          <li key={voter.address} className="bg-gray-300 dark:bg-gray-700 text-sm px-2 py-1 rounded-full">
-            <span className="mr-2">{voter.address} {voter.name ? `- ${voter.name}` : ''}</span>
-            <Tooltip text={remove === voter.address ? 'Confirm' : 'Delete'}>
-              <span onClick={() => handleRemove(voter.address)} className="text-red-500 hover:text-red-600 cursor-pointer">
-                {remove === voter.address ? <i className="bi bi-check-lg"></i> : <i className="bi bi-trash3"></i>}
+          <li key={voter} className="bg-gray-300 dark:bg-gray-700 text-sm px-2 py-1 rounded-full">
+            <span className="mr-2">{voter}</span>
+            <Tooltip text={remove === voter ? 'Confirm' : 'Delete'}>
+              <span onClick={() => handleRemove(voter)} className="text-red-500 hover:text-red-600 cursor-pointer">
+                {remove === voter ? <i className="bi bi-check-lg"></i> : <i className="bi bi-trash3"></i>}
               </span>
             </Tooltip>
           </li>

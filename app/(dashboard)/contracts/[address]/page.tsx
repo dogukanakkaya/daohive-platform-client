@@ -8,6 +8,7 @@ import InfoCard from '@/components/InfoCard'
 import ZeroRecord from '@/components/ZeroRecord'
 import { getApolloClient } from '@/utils/apollo/client'
 import { gql } from '@/__generated__/graphql'
+import { ContractType } from '@/modules/contract'
 
 interface Props {
   params: {
@@ -16,15 +17,13 @@ interface Props {
 }
 
 export default async function Contract({ params }: Props) {
-  const { data: { contract: { name, voters, proposals } } } = await getApolloClient().query({
+  const { data: { contract: { name, type, voters, proposals } } } = await getApolloClient().query({
     query: gql(`
       query GetContractDetail($address: String!) {
         contract(address: $address) {
           name
-          voters {
-            address
-            name
-          }
+          type
+          voters
           proposals {
             id
           }
@@ -66,7 +65,7 @@ export default async function Contract({ params }: Props) {
           ))}
         </div>
       </div>
-      <Whitelist whitelist={voters} contractAddress={params.address} />
+      {type === ContractType.VotingPrivate && <Whitelist whitelist={voters} contractAddress={params.address} />}
     </div>
   )
 }

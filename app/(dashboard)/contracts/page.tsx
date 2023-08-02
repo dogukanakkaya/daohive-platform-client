@@ -12,7 +12,7 @@ import ZeroRecord from '@/components/ZeroRecord'
 export default async function Contracts() {
   const supabase = createServerComponentClient<Database>({ cookies })
 
-  const { data: contracts } = await contractQuery(supabase).getContracts('address') // proposals(count)
+  const { data: contracts } = await contractQuery(supabase).getContracts('address,type') // proposals(count)
 
   return (
     <div className="space-y-6">
@@ -33,7 +33,7 @@ export default async function Contracts() {
         </ZeroRecord>
       )}
       {contracts?.map(contract => (
-        <ContractCard key={contract.address} address={contract.address} />
+        <ContractCard key={contract.address} contract={contract} />
       ))}
     </div>
   )
