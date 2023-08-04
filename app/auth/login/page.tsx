@@ -9,6 +9,8 @@ import LoadingOverlay from '@/components/LoadingOverlay'
 import { withLoading } from '@/utils/hof'
 import { useFormValidation } from '@/hooks'
 import { CredentialsSchema } from '@/modules/auth'
+import { MetamaskProvider } from '@/hooks/useMetamask'
+import ConnectMetamask from '@/components/ConnectMetamask'
 
 export default function Login() {
   const supabase = createClientComponentClient()
@@ -74,17 +76,9 @@ export default function Login() {
                 priority
               />
               <div className="flex flex-col space-y-2 mt-5">
-                <Button variant={Variant.Tertiary} className="shadow-md flex items-center gap-4 rounded">
-                  <Image
-                    className="relative"
-                    src="/images/metamask.svg"
-                    alt="Sign in with GitHub"
-                    width={32}
-                    height={32}
-                    priority
-                  />
-                  Connect with MetaMask
-                </Button>
+                <MetamaskProvider>
+                  <ConnectMetamask />
+                </MetamaskProvider>
                 <Button onClick={signInWithGoogle} variant={Variant.Tertiary} className="shadow-md flex items-center gap-4 rounded">
                   <Image
                     className="relative"
@@ -95,17 +89,6 @@ export default function Login() {
                     priority
                   />
                   Sign in with Google
-                </Button>
-                <Button variant={Variant.Tertiary} className="shadow-md flex items-center gap-4 rounded">
-                  <Image
-                    className="relative"
-                    src="/images/github.svg"
-                    alt="Sign in with GitHub"
-                    width={32}
-                    height={32}
-                    priority
-                  />
-                  Sign in with GitHub
                 </Button>
               </div>
             </div>

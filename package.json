@@ -27,6 +27,7 @@
     "clsx": "^1.2.1",
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.5",
+    "ethers": "^6.7.0",
     "graphql": "^16.7.1",
     "husky": "^8.0.3",
     "luxon": "^3.3.0",

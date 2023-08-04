@@ -12,7 +12,7 @@ import { useParams } from 'next/navigation'
 import { ProposalSchema } from '@/modules/proposal'
 import Editor from '@/components/Editor/Editor'
 import { useRouter } from 'next/navigation'
-import { api } from '@/utils/api'
+import { legacyApi } from '@/utils/api'
 
 const DEFAULT_START_TIME = DateTime.now().plus({ minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
 const DEFAULT_END_TIME = DateTime.now().plus({ days: 7, minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
@@ -51,7 +51,7 @@ export default function ProposalForm() {
     formData.set('endAt', endAt)
     formData.set('banner', file)
 
-    await api.post('/proposals', formData, {
+    await legacyApi.post('/proposals', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
