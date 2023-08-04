@@ -3,17 +3,31 @@ import Image from 'next/image'
 import Button, { Variant } from './Button'
 import { useMetamask } from '@/hooks/useMetamask'
 import { api } from '@/utils/api'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { withLoading } from '@/utils/hof'
 
-export default function ConnectMetamask() {
+interface Props {
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export default function ConnectMetamask({ setLoading }: Props) {
+  const supabase = createClientComponentClient()
   const { isMetamaskConnected, connectToMetamask } = useMetamask()
 
-  const connectWithMetamask = async () => {
+  const connectWithMetamask = withLoading(async () => {
     if (!isMetamaskConnected) return connectToMetamask()
 
     const selectedAddress = window.ethereum.selectedAddress
 
     const { data: { nonce } } = await api.get(`/auth/metamask/nonce?address=${selectedAddress}`)
-  }
+    const signature = await window.ethereum.request({
+      method: 'personal_sign',
+      params: [nonce, selectedAddress]
+    })
+
+    const { data: { email, password } } = await api.post(`/auth/metamask/login?address=${selectedAddress}`, { signature })
+    await supabase.auth.signInWithPassword({ email, password })
+  }, setLoading)
 
   return (
     <Button onClick={connectWithMetamask} variant={Variant.Tertiary} className="shadow-md flex items-center gap-4 rounded">

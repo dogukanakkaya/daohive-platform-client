@@ -7,6 +7,9 @@ export default async function Header() {
   const supabase = createServerComponentClient({ cookies })
   const { data: { user } } = await supabase.auth.getUser()
 
+  const profileImage = user?.user_metadata.picture || '/images/default-profile.png'
+  const username = user?.user_metadata.address || user?.user_metadata.name || user?.email
+
   return (
     <div className="sticky z-20 top-0 md:border-l w-full h-16 px-4 flex items-center justify-between gap-5 shadow-lg bg-white dark:bg-gray-900 border-b dark:border-gray-700">
       <div className="block md:hidden">
@@ -26,8 +29,8 @@ export default async function Header() {
       </div>
       <div className="relative group/profile" tabIndex={1}>
         <div className="flex items-center gap-4 cursor-pointer group/picture">
-          <Image src={user?.user_metadata.picture} width={48} height={48} className="rounded-full transition group-hover/picture:ring-2 ring-primary ring-offset-2 ring-offset-white dark:ring-offset-gray-900" alt="Avatar" />
-          <h3>{user?.user_metadata.name || user?.email} <i className="bi bi-chevron-down text-sm"></i></h3>
+          <Image src={profileImage} width={48} height={48} className="rounded-full transition group-hover/picture:ring-2 ring-primary ring-offset-2 ring-offset-white dark:ring-offset-gray-900" alt="Avatar" />
+          <h3>{username} <i className="bi bi-chevron-down text-sm"></i></h3>
         </div>
         <ul className="absolute right-0 top-16 w-full rounded-xl shadow bg-white dark:bg-gray-900 hidden group-focus-within/profile:block">
           <li>

@@ -77,7 +77,7 @@ export default function Login() {
               />
               <div className="flex flex-col space-y-2 mt-5">
                 <MetamaskProvider>
-                  <ConnectMetamask />
+                  <ConnectMetamask setLoading={setLoading} />
                 </MetamaskProvider>
                 <Button onClick={signInWithGoogle} variant={Variant.Tertiary} className="shadow-md flex items-center gap-4 rounded">
                   <Image
