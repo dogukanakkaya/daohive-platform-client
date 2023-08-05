@@ -9,6 +9,7 @@ import ZeroRecord from '@/components/ZeroRecord'
 import { getApolloClient } from '@/utils/apollo/client'
 import { gql } from '@/__generated__/graphql'
 import { ContractType } from '@/modules/contract'
+import { Table } from '@/components/Voter'
 
 interface Props {
   params: {

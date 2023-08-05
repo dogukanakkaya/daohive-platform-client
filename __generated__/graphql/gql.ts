@@ -22,7 +22,9 @@ const documents = {
     "\n    query PreDeployContract ($input: DeployContractInput!) {\n      preDeployContract(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  ": types.PreDeployContractDocument,
     "\n    query Proposal($id: ID!){\n      proposal(id: $id) {\n        approvalCount\n        disapprovalCount\n        neutralCount\n        startAt\n        endAt\n        metadata {\n          name\n          description\n          image\n        }\n      }\n    }\n  ": types.ProposalDocument,
     "\n    mutation AddToWhitelist ($input: WhitelistInput!) {\n      addToWhitelist(input: $input)\n    }\n  ": types.AddToWhitelistDocument,
+    "\n    query PreAddToWhitelist ($input: WhitelistInput!) {\n      preAddToWhitelist(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  ": types.PreAddToWhitelistDocument,
     "\n    mutation RemoveFromWhitelist ($input: WhitelistInput!) {\n      removeFromWhitelist(input: $input)\n    }\n  ": types.RemoveFromWhitelistDocument,
+    "\n    query PreRemoveFromWhitelist ($input: WhitelistInput!) {\n      preRemoveFromWhitelist(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  ": types.PreRemoveFromWhitelistDocument,
 };
 
 /**
@@ -78,7 +80,15 @@ export function gql(source: "\n    mutation AddToWhitelist ($input: WhitelistInp
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function gql(source: "\n    query PreAddToWhitelist ($input: WhitelistInput!) {\n      preAddToWhitelist(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  "): (typeof documents)["\n    query PreAddToWhitelist ($input: WhitelistInput!) {\n      preAddToWhitelist(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  "];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function gql(source: "\n    mutation RemoveFromWhitelist ($input: WhitelistInput!) {\n      removeFromWhitelist(input: $input)\n    }\n  "): (typeof documents)["\n    mutation RemoveFromWhitelist ($input: WhitelistInput!) {\n      removeFromWhitelist(input: $input)\n    }\n  "];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n    query PreRemoveFromWhitelist ($input: WhitelistInput!) {\n      preRemoveFromWhitelist(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  "): (typeof documents)["\n    query PreRemoveFromWhitelist ($input: WhitelistInput!) {\n      preRemoveFromWhitelist(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  "];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};
