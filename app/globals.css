@@ -36,7 +36,7 @@ body {
   }
 
   .form-input[type="checkbox"] {
-    @apply w-auto;
+    @apply w-auto focus:ring-0;
   }
 
   .sidebar-link {

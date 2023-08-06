@@ -119,7 +119,7 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
         {data.map(voter => (
           <li key={voter} className="bg-gray-300 dark:bg-gray-700 text-sm px-2 py-1 rounded-full">
             <span className="mr-2">{voter}</span>
-            <span onClick={() => setRemove(remove.includes(voter) ? remove.filter(v => v !== voter) : [...remove, voter])} className="text-red-500 hover:text-red-600 cursor-pointer">
+            <span onClick={() => setRemove(remove.includes(voter) ? remove.filter(r => r !== voter) : [...remove, voter])} className="text-red-500 hover:text-red-600 cursor-pointer">
               {remove.includes(voter) ? <i className="bi bi-check-lg"></i> : <i className="bi bi-trash3"></i>}
             </span>
           </li>

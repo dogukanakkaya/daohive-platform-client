@@ -14,10 +14,10 @@ import { useDeferredValue, useState } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { toast } from 'react-toastify'
 import { z } from 'zod'
-import { useRouter } from 'next/navigation'
 import { useEffectState } from '@/hooks'
 import { withLoadingToastr } from '@/utils/hof'
 import { VoterSchema, VoterResponse as VoterResponseGeneric } from '@/modules/voter'
+import Button from '../Button'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -85,7 +85,7 @@ export default function Table({ data: voters }: Props) {
   const supabase = createClientComponentClient()
   const [search, setSearch] = useState('')
   const globalFilter = useDeferredValue(search)
-  const [remove, setRemove] = useState('')
+  const [remove, setRemove] = useState<string[]>([])
   const [data, setData] = useEffectState(voters)
 
   const table = useReactTable({
@@ -104,33 +104,40 @@ export default function Table({ data: voters }: Props) {
     }
   })
 
-  const handleRemove = (id: string) => remove === id ? withLoadingToastr(async () => {
-    setRemove('')
-    await supabase.from('voters').delete().eq('id', id).throwOnError()
-    setData(data.filter(voter => voter.id !== id))
-  })() : setRemove(id)
+  const handleRemove = withLoadingToastr(async () => {
+    await supabase.from('voters').delete().in('id', remove).throwOnError()
+    setRemove([])
+    setData(data.filter(voter => !remove.includes(voter.id)))
+  })
 
-  const router = useRouter()
+  const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { checked, id, value } = e.target
+    if (id === 'checkbox-all') setRemove(checked ? table.getRowModel().rows.map(row => row.original.id) : [])
+    else setRemove(checked ? [...remove, value] : remove.filter(r => r !== value))
+  }
 
   return (
     <>
-      <div className="flex justify-between">
-        <div className="flex items-center gap-2" onClick={() => router.refresh()}>
-          Show
-          <select
-            className="form-input"
-            value={table.getState().pagination.pageSize}
-            onChange={e => {
-              table.setPageSize(Number(e.target.value))
-            }}
-          >
-            {[10, 20, 30, 40, 50].map(pageSize => (
-              <option key={pageSize} value={pageSize}>
-                {pageSize}
-              </option>
-            ))}
-          </select>
-          records
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            Show
+            <select
+              className="form-input"
+              value={table.getState().pagination.pageSize}
+              onChange={e => {
+                table.setPageSize(Number(e.target.value))
+              }}
+            >
+              {[1, 10, 20, 30, 40, 50].map(pageSize => <option key={pageSize} value={pageSize}>{pageSize}</option>)}
+            </select>
+            records
+          </div>
+          {remove.length > 0 && (
+            <Tooltip text="Delete selected">
+              <Button onClick={handleRemove} className="!py-1 !px-2 bg-red-600"><i className="bi bi-trash3"></i></Button>
+            </Tooltip>
+          )}
         </div>
         <div>
           <label htmlFor="search" className="sr-only">Search</label>
@@ -144,8 +151,8 @@ export default function Table({ data: voters }: Props) {
               <tr key={headerGroup.id}>
                 <th scope="col" className="p-4">
                   <div className="flex items-center">
-                    <input id="checkbox-table-all" type="checkbox" className="w-4 h-4 form-input" />
-                    <label htmlFor="checkbox-table-all" className="sr-only">checkbox</label>
+                    <input onChange={handleCheck} id="checkbox-all" type="checkbox" className="w-4 h-4 form-input" />
+                    <label htmlFor="checkbox-all" className="sr-only">checkbox</label>
                   </div>
                 </th>
                 {headerGroup.headers.map(header => (
@@ -158,21 +165,16 @@ export default function Table({ data: voters }: Props) {
           </thead>
           <tbody>
             {table.getRowModel().rows.map(row => (
-              <tr key={row.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <tr key={row.original.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <td className="w-6 p-4">
                   <div className="flex items-center gap-2">
                     <div className="flex items-center">
-                      <input id={`checkbox-table-${row.id}`} type="checkbox" className="w-4 h-4 form-input" />
-                      <label htmlFor={`checkbox-table-${row.id}`} className="sr-only">checkbox</label>
+                      <input onChange={handleCheck} value={row.original.id} checked={remove.includes(row.original.id)} id={`checkbox-${row.original.id}`} type="checkbox" className="w-4 h-4 form-input" />
+                      <label htmlFor={`checkbox-${row.original.id}`} className="sr-only">checkbox</label>
                     </div>
                     <Tooltip text="Copy Address" textAfterClick={<>Copied <i className="bi bi-check"></i></>}>
                       <span onClick={() => navigator.clipboard.writeText(data[row.index].address)} className="cursor-pointer">
                         <i className="bi bi-clipboard"></i>
-                      </span>
-                    </Tooltip>
-                    <Tooltip text={remove === data[row.index].id ? 'Confirm' : 'Delete'}>
-                      <span onClick={() => handleRemove(data[row.index].id)} className="text-red-500 hover:text-red-500 cursor-pointer">
-                        {remove === data[row.index].id ? <i className="bi bi-check-lg"></i> : <i className="bi bi-trash3"></i>}
                       </span>
                     </Tooltip>
                   </div>
