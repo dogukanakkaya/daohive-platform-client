@@ -32,11 +32,15 @@ export default function PersonalInformation({ user }: { user: User }) {
         <input value={name} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="name" placeholder="Enter name" autoFocus />
         <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.name}</small>
       </div>
-      <div className="mb-4">
-        <label className="form-label">E-Mail <span className="text-xs text-red-500">*</span> <span className="text-xs">(Changing email will require verification)</span></label>
-        <input value={email} onChange={handleChange} onBlur={validateForm} className="form-input" type="email" name="email" placeholder="Enter email" />
-        <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.email}</small>
-      </div>
+      {
+        !user.user_metadata.address && (
+          <div className="mb-4">
+            <label className="form-label">E-Mail <span className="text-xs text-red-500">*</span> <span className="text-xs">(Changing email will require verification)</span></label>
+            <input value={email} onChange={handleChange} onBlur={validateForm} className="form-input" type="email" name="email" placeholder="Enter email" />
+            <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.email}</small>
+          </div>
+        )
+      }
       <div className="flex justify-end items-center">
         <Button onClick={handleSubmit} isEnabled={isFormValid} className="flex items-center gap-2">Save <i className="bi bi-save text-lg"></i></Button>
       </div>
