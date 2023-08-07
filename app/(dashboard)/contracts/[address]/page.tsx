@@ -3,13 +3,12 @@ import Link from 'next/link'
 import Refresh from '@/components/Refresh'
 import Button, { Variant } from '@/components/Button'
 import { ProposalCard } from '@/components/Contract/Proposal'
-import Whitelist from '@/components/Contract/Whitelist'
+import { Whitelist } from '@/components/Contract'
 import InfoCard from '@/components/InfoCard'
 import ZeroRecord from '@/components/ZeroRecord'
 import { getApolloClient } from '@/utils/apollo/client'
 import { gql } from '@/__generated__/graphql'
 import { ContractType } from '@/modules/contract'
-import { Table } from '@/components/Voter'
 
 interface Props {
   params: {

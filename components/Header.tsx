@@ -5,8 +5,8 @@ import Link from 'next/link'
 
 export default async function Header() {
   const supabase = createServerComponentClient({ cookies })
+  
   const { data: { user } } = await supabase.auth.getUser()
-
   const profileImage = user?.user_metadata.picture || '/images/default-profile.png'
   const username = user?.user_metadata.address || user?.user_metadata.name || user?.email
 

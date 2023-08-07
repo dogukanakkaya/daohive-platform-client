@@ -11,3 +11,8 @@ export const CredentialsSchema = z.object({
     .min(8, 'Password must contain at least 8 character(s)')
     .max(255, 'Password must contain at most 255 character(s)')
 })
+
+export const PersonalInformationSchema = z.object({
+  name: z.string().optional(),
+  email: z.string().email()
+})
