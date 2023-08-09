@@ -83,6 +83,12 @@ export interface Database {
             columns: ["user_id"]
             referencedRelation: "users"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_credentials_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "v_users"
+            referencedColumns: ["id"]
           }
         ]
       }
@@ -135,6 +141,12 @@ export interface Database {
             columns: ["user_id"]
             referencedRelation: "users"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_quotas_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "v_users"
+            referencedColumns: ["id"]
           }
         ]
       }
@@ -166,6 +178,12 @@ export interface Database {
             columns: ["user_id"]
             referencedRelation: "users"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contracts_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "v_users"
+            referencedColumns: ["id"]
           }
         ]
       }
@@ -190,6 +208,34 @@ export interface Database {
             foreignKeyName: "proposals_contract_id_fkey"
             columns: ["contract_id"]
             referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      users: {
+        Row: {
+          balance: number
+          id: string
+        }
+        Insert: {
+          balance: number
+          id: string
+        }
+        Update: {
+          balance?: number
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "users_id_fkey"
+            columns: ["id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "users_id_fkey"
+            columns: ["id"]
+            referencedRelation: "v_users"
             referencedColumns: ["id"]
           }
         ]
@@ -250,6 +296,12 @@ export interface Database {
             columns: ["user_id"]
             referencedRelation: "users"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "voter_groups_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "v_users"
+            referencedColumns: ["id"]
           }
         ]
       }
@@ -283,6 +335,12 @@ export interface Database {
             foreignKeyName: "voters_user_id_fkey"
             columns: ["user_id"]
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "voters_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "v_users"
             referencedColumns: ["id"]
           }
         ]
@@ -329,8 +387,32 @@ export interface Database {
             columns: ["user_id"]
             referencedRelation: "users"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_credentials_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "v_users"
+            referencedColumns: ["id"]
           }
         ]
+      }
+      v_users: {
+        Row: {
+          email: string | null
+          id: string | null
+          raw_user_meta_data: Json | null
+        }
+        Insert: {
+          email?: string | null
+          id?: string | null
+          raw_user_meta_data?: Json | null
+        }
+        Update: {
+          email?: string | null
+          id?: string | null
+          raw_user_meta_data?: Json | null
+        }
+        Relationships: []
       }
     }
     Functions: {

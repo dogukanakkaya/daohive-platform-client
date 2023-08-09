@@ -34,7 +34,7 @@ export default function ConnectMetamask({ setLoading }: Props) {
       <Image
         className="relative"
         src="/images/metamask.svg"
-        alt="Sign in with GitHub"
+        alt="Sign in with MetaMask"
         width={32}
         height={32}
         priority

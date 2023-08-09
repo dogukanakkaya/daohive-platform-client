@@ -24,7 +24,6 @@ export function MetamaskProvider({ children }: { children: ReactNode }) {
   const [accounts, setAccounts] = useState<MetamaskContextProps['accounts']>([])
   const [provider, setProvider] = useState<MetamaskContextProps['provider']>()
 
-  // Check if Metamask is installed on component mount
   useEffect(() => {
     !async function () {
       if (window.ethereum) {
