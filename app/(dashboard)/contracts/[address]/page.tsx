@@ -50,7 +50,7 @@ export default async function Contract({ params }: Props) {
         <span key="delete-warning">Deleting any whitelisted voter from this page <span className="text-red-500">won&apos;t</span> be mirrored in voters or voter groups. It will also <span className="text-red-500">not</span> affect any other contract.</span>
       ]} />
       <div>
-        <h1 className="section-title">Proposals</h1>
+        <h1 className="section-text">Proposals</h1>
         {proposals.length === 0 && (
           <ZeroRecord title="No proposal found">
             <p>Seems like you don&apos;t have any proposal created yet. <Link href={`/contracts/${params.address}/proposals/create`} className="underline text-primary">Click here</Link> to create one.</p>

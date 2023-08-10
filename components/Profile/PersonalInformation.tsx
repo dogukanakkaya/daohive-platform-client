@@ -7,9 +7,9 @@ import { Database } from '@/supabase.types'
 import { useState } from 'react'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
 import LoadingOverlay from '../LoadingOverlay'
-import { PersonalInformationSchema } from '@/modules/auth'
+import { PersonalInformationSchema, UserResponse } from '@/modules/auth'
 
-export default function PersonalInformation({ user }: { user: User }) {
+export default function PersonalInformation({ user }: { user: User & UserResponse<'balance'> }) {
   const supabase = createClientComponentClient<Database>()
   const [loading, setLoading] = useState(false)
   const {

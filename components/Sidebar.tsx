@@ -43,7 +43,7 @@ export default function Sidebar() {
                   <Link href="/developer/api" className="sidebar-link"><i className="bi bi-code"></i> API Settings</Link>
                 </li>
                 <li>
-                  <Link href="#" className="sidebar-link"><i className="bi bi-globe2"></i> Webhooks <span className="uppercase text-xs text-white bg-primary p-1 rounded">Soon</span></Link>
+                  <Link href="#" className="sidebar-link"><i className="bi bi-globe2"></i> Webhooks <span className="badge">Soon</span></Link>
                 </li>
               </ul>
             </div>

@@ -57,8 +57,12 @@
     @apply absolute inset-0 bg-gray-300 bg-opacity-50 dark:bg-gray-700 dark:bg-opacity-50 z-10 flex-center;
   }
 
-  .section-title {
-    @apply uppercase text-2xl tracking-wider my-6 font-semibold text-gray-400;
+  .section-text {
+    @apply uppercase text-2xl tracking-wider my-4 font-semibold text-transparent bg-clip-text bg-gradient-to-r from-primary to-indigo-500;
+  }
+
+  .badge {
+    @apply uppercase text-xs text-white bg-primary p-1 rounded;
   }
  
   .react-tabs ul li {

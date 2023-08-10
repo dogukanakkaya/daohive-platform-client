@@ -110,7 +110,7 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
   return (
     <div className="border-t-4 dark:border-gray-700">
       <div className="flex items-center gap-2">
-        <h1 className="section-title">Whitelisted Voters</h1>
+        <h1 className="section-text">Whitelisted Voters</h1>
         <Button onClick={() => setIsDialogOpen(true)} variant={Variant.Secondary} className="!py-1 !px-2"><i className="bi bi-plus text-lg"></i></Button>
         {remove.length > 0 && <Button onClick={handlePreRemove} className="!py-1 !px-2 bg-red-600"><i className="bi bi-trash3"></i></Button>}
       </div>

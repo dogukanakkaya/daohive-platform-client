@@ -53,7 +53,7 @@ export default function DeveloperForm({ permissions }: Props) {
         <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.expiresAt}</small>
       </div>
       <div className="mb-4">
-        <h3 className="section-title text-xl mb-2">Permissions</h3>
+        <h3 className="section-text text-xl mb-2">Permissions</h3>
         <div className="md:flex items-center flex-wrap">
           {permissions.map(permission => (
             <div key={permission.name} className="w-1/2 xl:w-1/4">

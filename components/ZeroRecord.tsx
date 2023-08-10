@@ -14,7 +14,7 @@ export default function ZeroRecord({ children, title, src = '/images/zero-record
         <Image src={src} width={200} height={200} alt="No record" />
       </div>
       <div className="flex-center flex-col text-center md:max-w-[500px]">
-        <h1 className="section-title my-2 tracking-widest">{title}</h1>
+        <h1 className="section-text my-2 tracking-widest">{title}</h1>
         {children}
       </div>
     </div>

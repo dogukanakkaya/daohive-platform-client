@@ -79,7 +79,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
   return (
     <div className="border-t-4 dark:border-gray-700">
       <div className="flex items-center gap-2">
-        <h2 className="section-title">Whitelist Groups</h2>
+        <h2 className="section-text">Whitelist Groups</h2>
         <Button onClick={handleCreate} variant={Variant.Secondary} className="!py-1 !px-2"><i className="bi bi-plus text-lg"></i></Button>
       </div>
       {data.length === 0 && (
