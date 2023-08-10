@@ -8,6 +8,7 @@ import GroupCard from './GroupCard'
 import { VoterGroupResponse, VoterGroupSchema, voterGroupQuery } from '@/modules/voter-group'
 import { VoterResponse } from '@/modules/voter'
 import ZeroRecord from '../ZeroRecord'
+import SectionDivider from '../SectionDivider'
 
 interface Props {
   data: VoterGroupResponse<'id' | 'name'>[]
@@ -77,11 +78,11 @@ export default function Group({ data: voterGroups, voters }: Props) {
   })() : setAction({ id, type: ActionType.Remove })
 
   return (
-    <div className="border-t-4 dark:border-gray-700">
-      <div className="flex items-center gap-2">
-        <h2 className="section-text">Whitelist Groups</h2>
+    <div>
+      <SectionDivider>
+        <h1 className="section-text">Groups</h1>
         <Button onClick={handleCreate} variant={Variant.Secondary} className="!py-1 !px-2"><i className="bi bi-plus text-lg"></i></Button>
-      </div>
+      </SectionDivider>
       {data.length === 0 && (
         <ZeroRecord title="No voter group found">
           <p>Seems like you don&apos;t have any voter group created yet. <span onClick={handleCreate} className="underline text-primary">Click here</span> to create one.</p>

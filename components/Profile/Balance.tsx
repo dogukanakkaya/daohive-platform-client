@@ -5,7 +5,9 @@ export default function Balance({ user }: { user: any }) {
     <div>
       <h2 className="text-lg -mt-0.5">Your balance is <span className="badge text-base">{user.balance}$</span> <a href="#" className="text-indigo-500">click here to add more!</a></h2>
       <div>
-        <SectionDivider className="mt-2">Balance History</SectionDivider>
+        <SectionDivider className="mt-2">
+          <h1 className="section-text">Balance History</h1>
+        </SectionDivider>
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>

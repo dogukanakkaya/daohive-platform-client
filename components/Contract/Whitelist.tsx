@@ -1,6 +1,5 @@
 'use client'
-import { AddToWhitelistSchema, VoterResponse, VoterSchema, voterQuery } from '@/modules/voter'
-import Tooltip from '../Tooltip'
+import { AddToWhitelistSchema } from '@/modules/voter'
 import { useState } from 'react'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
 import Button, { Variant } from '../Button'
@@ -11,6 +10,7 @@ import { useLazyQuery, useMutation } from '@apollo/client'
 import { gql } from '@/__generated__/graphql'
 import TagInput from '../TagInput'
 import { TransactionFee } from '@/__generated__/graphql/graphql'
+import SectionDivider from '../SectionDivider'
 
 interface Props {
   whitelist: string[]
@@ -108,12 +108,12 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
   }), setLoading)
 
   return (
-    <div className="border-t-4 dark:border-gray-700">
-      <div className="flex items-center gap-2">
-        <h1 className="section-text">Whitelisted Voters</h1>
+    <div>
+      <SectionDivider>
+        <h1 className="section-text">Whitelist</h1>
         <Button onClick={() => setIsDialogOpen(true)} variant={Variant.Secondary} className="!py-1 !px-2"><i className="bi bi-plus text-lg"></i></Button>
         {remove.length > 0 && <Button onClick={handlePreRemove} className="!py-1 !px-2 bg-red-600"><i className="bi bi-trash3"></i></Button>}
-      </div>
+      </SectionDivider>
       <ul className="flex flex-wrap gap-4 relative">
         {loading && <LoadingOverlay />}
         {data.map(voter => (
