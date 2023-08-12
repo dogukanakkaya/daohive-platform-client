@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
 import Button, { Variant } from './Button'
-import { useMetamask } from '@/hooks/useMetamask'
+import { useMetamask } from '@/hooks'
 import { api } from '@/utils/api'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { withLoading } from '@/utils/hof'

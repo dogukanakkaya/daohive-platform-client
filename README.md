@@ -1,7 +1,7 @@
-# daohive-platform
+# daohive-platform-client
 
 ## Project Setup
-- Run `cp .env.example .env.local` and fill the necessary environment variables in `.env.local` file
+- Run `cp .env.local.example .env.local` and fill the necessary environment variables in `.env.local` file
 - Run `npm i` at the root of the repository
 - Run `npm run supabase:generate-types` to generate supabase types
 - Run `npm run graphql:codegen` to generate graphql types
@@ -36,20 +36,18 @@ export default function Component({ data }: Props) {
 
 <br>
 
-### useAbortableAsyncEffect
-This hook helps to run async functions directly within the effect callback. Also provides a `signal` which can be passed to `fetch` and `axios` requests or `supabase` queries etc.
+### useMetamask
+This hook helps to use Metamask in a more robust way
 
 ```ts
 export default function Component() {
-  useAbortableAsyncEffect(async signal => {
-    // for extra cleanups you can listen abort event of signal
-    signal.addEventListener('abort', () => {
-      console.log('Aborted, which means component unmounted')
-    })
-
-    const response = await fetch('/', { signal })
-
-    // will automatically call `abortController.abort()` on unmount
-  }, [])
+  const {
+    isMetamaskInstalled,
+    isMetamaskLoading,
+    isMetamaskConnected,
+    accounts,
+    provider,
+    connectToMetamask
+  } = useMetamask()
 }
 ```

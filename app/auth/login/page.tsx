@@ -7,9 +7,8 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { toast } from 'react-toastify'
 import LoadingOverlay from '@/components/LoadingOverlay'
 import { withLoading } from '@/utils/hof'
-import { useFormValidation } from '@/hooks'
+import { MetamaskProvider, useFormValidation } from '@/hooks'
 import { CredentialsSchema } from '@/modules/auth'
-import { MetamaskProvider } from '@/hooks/useMetamask'
 import ConnectMetamask from '@/components/ConnectMetamask'
 
 export default function Login() {
