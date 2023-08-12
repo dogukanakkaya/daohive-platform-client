@@ -1,5 +1,4 @@
 import Image, { StaticImageData } from 'next/image'
-import Button from './Button'
 
 interface Props {
   children?: React.ReactNode

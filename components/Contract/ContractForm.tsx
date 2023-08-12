@@ -17,12 +17,12 @@ interface Props {
 
 export default function ContractForm({ voterGroups }: Props) {
   const {
-    state: { name, description, voterGroupId, restriction },
+    state: { name, description, voterGroupId, type },
     errors,
     handleChange,
     validateForm,
     isFormValid
-  } = useFormValidation({ name: '', description: '', voterGroupId: '', restriction: 'public' }, ContractSchema)
+  } = useFormValidation({ name: '', description: '', voterGroupId: '', type: 'VotingPrivate' }, ContractSchema)
   const [loading, setLoading] = useState(false)
   const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false)
   const router = useRouter()
@@ -49,14 +49,14 @@ export default function ContractForm({ voterGroups }: Props) {
 
   const handlePreSubmit = withLoading(async () => {
     await execPreDeploy({
-      variables: { input: { name, description, voterGroupId, restriction } }
+      variables: { input: { name, description, voterGroupId, type } }
     })
     setIsConfirmationDialogOpen(true)
   }, setLoading)
 
   const handleSubmit = withLoading(withLoadingToastr(async () => {
     await deployMutation({
-      variables: { input: { name, description, voterGroupId, restriction } }
+      variables: { input: { name, description, voterGroupId, type } }
     })
 
     router.refresh(); router.replace('/contracts')
@@ -76,16 +76,16 @@ export default function ContractForm({ voterGroups }: Props) {
         <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.description}</small>
       </div>
       <div className="grid grid-cols-3 gap-4">
-        <div className={`mb-4 ${restriction === 'private' ? 'col-span-1' : 'col-span-3'}`}>
+        <div className={`mb-4 ${type === 'private' ? 'col-span-1' : 'col-span-3'}`}>
           <label className="form-label">Voting Restriction</label>
-          <select value={restriction} onChange={handleChange} onBlur={validateForm} className="form-input" name="restriction">
+          <select value={type} onChange={handleChange} onBlur={validateForm} className="form-input" name="restriction">
             <option value="private">Private</option>
             <option value="public">Public</option>
           </select>
-          <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.restriction}</small>
+          <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.type}</small>
         </div>
         {
-          restriction === 'private' && (
+          type === 'VotingPrivate' && (
             <div className="mb-4 col-span-2">
               <label className="form-label">Whitelist Group</label>
               <select value={voterGroupId} onChange={handleChange} onBlur={validateForm} className="form-input" name="voterGroupId">

@@ -84,7 +84,6 @@ const columns = [
 ]
 
 export default function Table({ data: voters }: Props) {
-  const supabase = createClientComponentClient()
   const [search, setSearch] = useState('')
   const globalFilter = useDeferredValue(search)
   const [remove, setRemove] = useState<string[]>([])

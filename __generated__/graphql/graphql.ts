@@ -40,7 +40,7 @@ export type CreateVoterInput = {
 export type DeployContractInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
-  restriction: Scalars['String']['input'];
+  type: Scalars['String']['input'];
   voterGroupId?: InputMaybe<Scalars['ID']['input']>;
 };
 
