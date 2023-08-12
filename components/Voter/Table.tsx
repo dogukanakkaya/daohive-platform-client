@@ -18,6 +18,8 @@ import { useEffectState } from '@/hooks'
 import { withLoadingToastr } from '@/utils/hof'
 import { VoterSchema, VoterResponse as VoterResponseGeneric } from '@/modules/voter'
 import Button from '../Button'
+import { useMutation } from '@apollo/client'
+import { gql } from '@/__generated__/graphql'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -88,6 +90,14 @@ export default function Table({ data: voters }: Props) {
   const [remove, setRemove] = useState<string[]>([])
   const [data, setData] = useEffectState(voters)
 
+  const [updateMutation] = useMutation(gql(`
+    mutation UpdateMutation ($id: ID!, $input: UpdateVoterInput!) {
+      updateVoter(id: $id, input: $input) {
+        id
+      }
+    }
+  `))
+
   const table = useReactTable({
     data,
     columns,
@@ -98,14 +108,21 @@ export default function Table({ data: voters }: Props) {
     getPaginationRowModel: getPaginationRowModel(),
     meta: {
       updateData: async (rowIndex: number, columnId: string, value: unknown) => {
-        const { error } = await supabase.from('voters').update({ [columnId]: value }).eq('id', data[rowIndex].id)
-        if (error) throw Error(error.message)
+        await updateMutation({
+          variables: { id: data[rowIndex].id, input: { [columnId]: value } }
+        })
       }
     }
   })
 
+  const [deleteMutation] = useMutation(gql(`
+    mutation DeleteVoter ($id: [ID!]!) {
+      deleteVoter(id: $id)
+    }
+  `))
+
   const handleRemove = withLoadingToastr(async () => {
-    await supabase.from('voters').delete().in('id', remove).throwOnError()
+    await deleteMutation({ variables: { id: remove } })
     setRemove([])
     setData(data.filter(voter => !remove.includes(voter.id)))
   })

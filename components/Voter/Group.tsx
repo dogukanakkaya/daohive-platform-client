@@ -5,10 +5,12 @@ import { useFormValidation, useEffectState } from '@/hooks'
 import Dialog from '../Dialog'
 import { withLoadingToastr } from '@/utils/hof'
 import GroupCard from './GroupCard'
-import { VoterGroupResponse, VoterGroupSchema, voterGroupQuery } from '@/modules/voter-group'
+import { VoterGroupResponse, VoterGroupSchema } from '@/modules/voter-group'
 import { VoterResponse } from '@/modules/voter'
 import ZeroRecord from '../ZeroRecord'
 import SectionDivider from '../SectionDivider'
+import { useLazyQuery, useMutation } from '@apollo/client'
+import { gql } from '@/__generated__/graphql'
 
 interface Props {
   data: VoterGroupResponse<'id' | 'name'>[]
@@ -34,7 +36,39 @@ export default function Group({ data: voterGroups, voters }: Props) {
   const [data, setData] = useEffectState(voterGroups)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [action, setAction] = useState<{ id: string, type: ActionType }>({ id: '', type: ActionType.Create })
-  const { getVoterGroup, createVoterGroup, updateVoterGroup, deleteVoterGroup } = voterGroupQuery()
+
+  const [execVoterGroup] = useLazyQuery(gql(`
+    query GetVoterGroup ($id: ID!) {
+      voterGroup(id: $id) {
+        name,
+        voters {
+          id
+        }
+      }
+    }
+  `))
+
+  const [createMutation] = useMutation(gql(`
+    mutation CreateVoterGroup ($input: VoterGroupInput!) {
+      createVoterGroup(input: $input) {
+        id
+      }
+    }
+  `))
+
+  const [deleteMutation] = useMutation(gql(`
+    mutation DeleteVoterGroup ($id: ID!) {
+      deleteVoterGroup(id: $id)
+    }
+  `))
+
+  const [updateMutation] = useMutation(gql(`
+    mutation UpdateVoterGroup ($id: ID!, $input: VoterGroupInput!) {
+      updateVoterGroup(id: $id, input: $input) {
+        id
+      }
+    }
+  `))
 
   const handleCreate = () => {
     if (action.id) {
@@ -45,25 +79,29 @@ export default function Group({ data: voterGroups, voters }: Props) {
   }
 
   const handleEdit = async (id: string) => {
-    const { name, voter_group_voters } = await getVoterGroup(id, `
-      id,name,
-      voter_group_voters (voter_id)
-    `)
+    const { data } = await execVoterGroup({ variables: { id } })
+    if (!data) return
+    const { name, voters } = data.voterGroup
 
-    setGroupState({ name, voterIds: voter_group_voters.map(v => v.voter_id) })
+    setGroupState({ name, voterIds: voters.map(v => v.id) })
     setAction({ id, type: ActionType.Edit })
     setIsDialogOpen(true)
   }
 
   const handleSubmit = withLoadingToastr(async () => {
     if (action.id) {
-      await updateVoterGroup(action.id, { name, voterIds })
-
-      setData(data.map(voterGroup => voterGroup.id === action.id ? { ...voterGroup, name } : voterGroup))
+      // await updateVoterGroup(action.id, { name, voterIds })
+      const { data: update } = await updateMutation({
+        variables: { id: action.id, input: { name, voters: voterIds } }
+      })
+      if (!update) return
+      setData(data.map(voterGroup => update.updateVoterGroup.id === action.id ? { ...voterGroup, name } : voterGroup))
     } else {
-      const voterGroup = await createVoterGroup({ name, voterIds })
-
-      setData([...data, { ...voterGroup, name }])
+      const { data: create } = await createMutation({
+        variables: { input: { name, voters: voterIds } }
+      })
+      if (!create) return
+      setData([...data, { id: create.createVoterGroup.id, name }])
     }
 
     setIsDialogOpen(false)
@@ -73,7 +111,7 @@ export default function Group({ data: voterGroups, voters }: Props) {
 
   const handleRemove = (id: string) => action.type === ActionType.Remove && action.id === id ? withLoadingToastr(async () => {
     setAction({ id: '', type: ActionType.Create })
-    await deleteVoterGroup(id)
+    await deleteMutation({ variables: { id } })
     setData(data.filter(voter => voter.id !== id))
   })() : setAction({ id, type: ActionType.Remove })
 

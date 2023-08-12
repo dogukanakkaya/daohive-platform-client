@@ -4,14 +4,26 @@ import { useFormValidation } from '@/hooks'
 import { withLoadingToastr } from '@/utils/hof'
 import { useRouter } from 'next/navigation'
 import { nullifyEmpty } from '@/utils/parser'
-import { VoterSchema, voterQuery } from '@/modules/voter'
+import { VoterSchema } from '@/modules/voter'
+import { useMutation } from '@apollo/client'
+import { gql } from '@/__generated__/graphql'
 
 export default function VoterForm() {
   const { state: { address, name, email }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ address: '', name: '', email: '' }, VoterSchema)
   const router = useRouter()
 
+  const [createMutation] = useMutation(gql(`
+    mutation CreateVoter ($input: CreateVoterInput!) {
+      createVoter(input: $input) {
+        id
+      }
+    }
+  `))
+
   const handleSubmit = withLoadingToastr(async () => {
-    await voterQuery().createVoter({ address, name: nullifyEmpty(name), email: nullifyEmpty(email) })
+    await createMutation({
+      variables: { input: { address, name: nullifyEmpty(name), email: nullifyEmpty(email) } }
+    })
     router.refresh(); router.replace('/voters')
   })
 

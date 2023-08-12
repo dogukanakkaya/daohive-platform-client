@@ -31,11 +31,17 @@ export type Contract = {
   voters: Array<Scalars['String']['output']>;
 };
 
+export type CreateVoterInput = {
+  address: Scalars['String']['input'];
+  email?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type DeployContractInput = {
-  description: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
   restriction: Scalars['String']['input'];
-  voterGroupId: InputMaybe<Scalars['ID']['input']>;
+  voterGroupId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type Metadata = {
@@ -49,13 +55,39 @@ export type Metadata = {
 export type Mutation = {
   __typename?: 'Mutation';
   addToWhitelist: Scalars['Boolean']['output'];
+  createVoter: Voter;
+  createVoterGroup: VoterGroup;
+  deleteVoter: Scalars['Boolean']['output'];
+  deleteVoterGroup: Scalars['Boolean']['output'];
   deployContract: Contract;
   removeFromWhitelist: Scalars['Boolean']['output'];
+  updateVoter: Voter;
+  updateVoterGroup: VoterGroup;
 };
 
 
 export type MutationAddToWhitelistArgs = {
   input: WhitelistInput;
+};
+
+
+export type MutationCreateVoterArgs = {
+  input: CreateVoterInput;
+};
+
+
+export type MutationCreateVoterGroupArgs = {
+  input: VoterGroupInput;
+};
+
+
+export type MutationDeleteVoterArgs = {
+  id: Array<Scalars['ID']['input']>;
+};
+
+
+export type MutationDeleteVoterGroupArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -66,6 +98,18 @@ export type MutationDeployContractArgs = {
 
 export type MutationRemoveFromWhitelistArgs = {
   input: WhitelistInput;
+};
+
+
+export type MutationUpdateVoterArgs = {
+  id: Scalars['ID']['input'];
+  input: UpdateVoterInput;
+};
+
+
+export type MutationUpdateVoterGroupArgs = {
+  id: Scalars['ID']['input'];
+  input: VoterGroupInput;
 };
 
 export type PreCalculation = {
@@ -93,6 +137,8 @@ export type Query = {
   preDeployContract: PreCalculation;
   preRemoveFromWhitelist: PreCalculation;
   proposal: Proposal;
+  voter: Voter;
+  voterGroup: VoterGroup;
   voterGroups: Array<VoterGroup>;
   voters: Array<Voter>;
 };
@@ -122,10 +168,26 @@ export type QueryProposalArgs = {
   id: Scalars['ID']['input'];
 };
 
+
+export type QueryVoterArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryVoterGroupArgs = {
+  id: Scalars['ID']['input'];
+};
+
 export type TransactionFee = {
   __typename?: 'TransactionFee';
   matic: Scalars['Float']['output'];
   usd: Scalars['Float']['output'];
+};
+
+export type UpdateVoterInput = {
+  address?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Voter = {
@@ -143,6 +205,11 @@ export type VoterGroup = {
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   voters: Array<Voter>;
+};
+
+export type VoterGroupInput = {
+  name: Scalars['String']['input'];
+  voters?: InputMaybe<Array<Scalars['ID']['input']>>;
 };
 
 export type WhitelistInput = {
@@ -209,13 +276,6 @@ export type AddToWhitelistMutationVariables = Exact<{
 
 export type AddToWhitelistMutation = { __typename?: 'Mutation', addToWhitelist: boolean };
 
-export type PreAddToWhitelistQueryVariables = Exact<{
-  input: WhitelistInput;
-}>;
-
-
-export type PreAddToWhitelistQuery = { __typename?: 'Query', preAddToWhitelist: { __typename?: 'PreCalculation', transactionFee: { __typename?: 'TransactionFee', usd: number, matic: number } } };
-
 export type RemoveFromWhitelistMutationVariables = Exact<{
   input: WhitelistInput;
 }>;
@@ -223,12 +283,70 @@ export type RemoveFromWhitelistMutationVariables = Exact<{
 
 export type RemoveFromWhitelistMutation = { __typename?: 'Mutation', removeFromWhitelist: boolean };
 
+export type PreAddToWhitelistQueryVariables = Exact<{
+  input: WhitelistInput;
+}>;
+
+
+export type PreAddToWhitelistQuery = { __typename?: 'Query', preAddToWhitelist: { __typename?: 'PreCalculation', transactionFee: { __typename?: 'TransactionFee', usd: number, matic: number } } };
+
 export type PreRemoveFromWhitelistQueryVariables = Exact<{
   input: WhitelistInput;
 }>;
 
 
 export type PreRemoveFromWhitelistQuery = { __typename?: 'Query', preRemoveFromWhitelist: { __typename?: 'PreCalculation', transactionFee: { __typename?: 'TransactionFee', usd: number, matic: number } } };
+
+export type GetVoterGroupQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetVoterGroupQuery = { __typename?: 'Query', voterGroup: { __typename?: 'VoterGroup', name: string, voters: Array<{ __typename?: 'Voter', id: string }> } };
+
+export type CreateVoterGroupMutationVariables = Exact<{
+  input: VoterGroupInput;
+}>;
+
+
+export type CreateVoterGroupMutation = { __typename?: 'Mutation', createVoterGroup: { __typename?: 'VoterGroup', id: string } };
+
+export type DeleteVoterGroupMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteVoterGroupMutation = { __typename?: 'Mutation', deleteVoterGroup: boolean };
+
+export type UpdateVoterGroupMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  input: VoterGroupInput;
+}>;
+
+
+export type UpdateVoterGroupMutation = { __typename?: 'Mutation', updateVoterGroup: { __typename?: 'VoterGroup', id: string } };
+
+export type UpdateMutationMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  input: UpdateVoterInput;
+}>;
+
+
+export type UpdateMutationMutation = { __typename?: 'Mutation', updateVoter: { __typename?: 'Voter', id: string } };
+
+export type DeleteVoterMutationVariables = Exact<{
+  id: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
+}>;
+
+
+export type DeleteVoterMutation = { __typename?: 'Mutation', deleteVoter: boolean };
+
+export type CreateVoterMutationVariables = Exact<{
+  input: CreateVoterInput;
+}>;
+
+
+export type CreateVoterMutation = { __typename?: 'Mutation', createVoter: { __typename?: 'Voter', id: string } };
 
 
 export const GetContractDetailDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetContractDetail"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"address"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"contract"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"address"},"value":{"kind":"Variable","name":{"kind":"Name","value":"address"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"voters"}},{"kind":"Field","name":{"kind":"Name","value":"proposals"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<GetContractDetailQuery, GetContractDetailQueryVariables>;
@@ -240,6 +358,13 @@ export const DeployContractDocument = {"kind":"Document","definitions":[{"kind":
 export const PreDeployContractDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PreDeployContract"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeployContractInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"preDeployContract"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"transactionFee"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"usd"}},{"kind":"Field","name":{"kind":"Name","value":"matic"}}]}}]}}]}}]} as unknown as DocumentNode<PreDeployContractQuery, PreDeployContractQueryVariables>;
 export const ProposalDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Proposal"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"proposal"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"approvalCount"}},{"kind":"Field","name":{"kind":"Name","value":"disapprovalCount"}},{"kind":"Field","name":{"kind":"Name","value":"neutralCount"}},{"kind":"Field","name":{"kind":"Name","value":"startAt"}},{"kind":"Field","name":{"kind":"Name","value":"endAt"}},{"kind":"Field","name":{"kind":"Name","value":"metadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"image"}}]}}]}}]}}]} as unknown as DocumentNode<ProposalQuery, ProposalQueryVariables>;
 export const AddToWhitelistDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddToWhitelist"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"WhitelistInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addToWhitelist"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}]}]}}]} as unknown as DocumentNode<AddToWhitelistMutation, AddToWhitelistMutationVariables>;
-export const PreAddToWhitelistDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PreAddToWhitelist"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"WhitelistInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"preAddToWhitelist"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"transactionFee"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"usd"}},{"kind":"Field","name":{"kind":"Name","value":"matic"}}]}}]}}]}}]} as unknown as DocumentNode<PreAddToWhitelistQuery, PreAddToWhitelistQueryVariables>;
 export const RemoveFromWhitelistDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RemoveFromWhitelist"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"WhitelistInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"removeFromWhitelist"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}]}]}}]} as unknown as DocumentNode<RemoveFromWhitelistMutation, RemoveFromWhitelistMutationVariables>;
+export const PreAddToWhitelistDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PreAddToWhitelist"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"WhitelistInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"preAddToWhitelist"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"transactionFee"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"usd"}},{"kind":"Field","name":{"kind":"Name","value":"matic"}}]}}]}}]}}]} as unknown as DocumentNode<PreAddToWhitelistQuery, PreAddToWhitelistQueryVariables>;
 export const PreRemoveFromWhitelistDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PreRemoveFromWhitelist"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"WhitelistInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"preRemoveFromWhitelist"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"transactionFee"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"usd"}},{"kind":"Field","name":{"kind":"Name","value":"matic"}}]}}]}}]}}]} as unknown as DocumentNode<PreRemoveFromWhitelistQuery, PreRemoveFromWhitelistQueryVariables>;
+export const GetVoterGroupDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetVoterGroup"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"voterGroup"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"voters"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<GetVoterGroupQuery, GetVoterGroupQueryVariables>;
+export const CreateVoterGroupDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateVoterGroup"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"VoterGroupInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createVoterGroup"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<CreateVoterGroupMutation, CreateVoterGroupMutationVariables>;
+export const DeleteVoterGroupDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteVoterGroup"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteVoterGroup"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<DeleteVoterGroupMutation, DeleteVoterGroupMutationVariables>;
+export const UpdateVoterGroupDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateVoterGroup"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"VoterGroupInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateVoterGroup"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<UpdateVoterGroupMutation, UpdateVoterGroupMutationVariables>;
+export const UpdateMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateVoterInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateVoter"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<UpdateMutationMutation, UpdateMutationMutationVariables>;
+export const DeleteVoterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteVoter"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteVoter"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<DeleteVoterMutation, DeleteVoterMutationVariables>;
+export const CreateVoterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateVoter"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateVoterInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createVoter"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<CreateVoterMutation, CreateVoterMutationVariables>;

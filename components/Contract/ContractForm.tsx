@@ -5,7 +5,7 @@ import { useState } from 'react'
 import LoadingOverlay from '@/components/LoadingOverlay'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
 import { useRouter } from 'next/navigation'
-import { VoterGroupResponse, voterGroupQuery } from '@/modules/voter-group'
+import { VoterGroupResponse } from '@/modules/voter-group'
 import { ContractSchema } from '@/modules/contract'
 import { useLazyQuery, useMutation } from '@apollo/client'
 import { gql } from '@/__generated__/graphql'
@@ -35,7 +35,7 @@ export default function ContractForm({ voterGroups }: Props) {
     }
   `))
 
-  const [execPreDeploy, { data: preDeploy, loading: preDeployLoading }] = useLazyQuery(gql(`
+  const [execPreDeploy, { data: preDeploy }] = useLazyQuery(gql(`
     query PreDeployContract ($input: DeployContractInput!) {
       preDeployContract(input: $input) {
         transactionFee {
