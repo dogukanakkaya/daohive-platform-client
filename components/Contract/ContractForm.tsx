@@ -76,11 +76,11 @@ export default function ContractForm({ voterGroups }: Props) {
         <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.description}</small>
       </div>
       <div className="grid grid-cols-3 gap-4">
-        <div className={`mb-4 ${type === 'private' ? 'col-span-1' : 'col-span-3'}`}>
+        <div className={`mb-4 ${type === 'VotingPrivate' ? 'col-span-1' : 'col-span-3'}`}>
           <label className="form-label">Voting Restriction</label>
           <select value={type} onChange={handleChange} onBlur={validateForm} className="form-input" name="restriction">
-            <option value="private">Private</option>
-            <option value="public">Public</option>
+            <option value="VotingPrivate">Private</option>
+            <option value="VotingPublic">Public</option>
           </select>
           <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.type}</small>
         </div>
