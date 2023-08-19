@@ -65,7 +65,7 @@ export interface Database {
           name: string
           request_count?: number
           secret?: string
-          user_id: string
+          user_id?: string
         }
         Update: {
           created_at?: string | null
