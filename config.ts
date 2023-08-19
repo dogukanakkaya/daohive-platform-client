@@ -5,4 +5,6 @@ export const LEGACY_API_URL = process.env.NEXT_PUBLIC_LEGACY_API_URL!
 
 export const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID!
 
+export const HCAPTCHA_SITEKEY = process.env.NEXT_PUBLIC_HCAPTCHA_SITEKEY!
+
 export const TOAST_AUTO_CLOSE = 3000

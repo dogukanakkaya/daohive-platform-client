@@ -1,21 +1,27 @@
 'use client'
 import Image from 'next/image'
 import Button, { Variant } from '@/components/Button'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { toast } from 'react-toastify'
 import LoadingOverlay from '@/components/LoadingOverlay'
 import { withLoading } from '@/utils/hof'
-import { MetamaskProvider, useFormValidation } from '@/hooks'
+import { MetamaskProvider, useFormValidation, useColorScheme } from '@/hooks'
 import { CredentialsSchema } from '@/modules/auth'
 import ConnectMetamask from '@/components/ConnectMetamask'
+import { Database } from '@/supabase.types'
+import HCaptcha from '@hcaptcha/react-hcaptcha'
+import { HCAPTCHA_SITEKEY, NODE_ENV } from '@/config'
 
 export default function Login() {
-  const supabase = createClientComponentClient()
+  const supabase = createClientComponentClient<Database>()
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState('')
+  const captcha = useRef<HCaptcha>(null)
   const router = useRouter()
+  const colorScheme = useColorScheme()
   const { state: { email, password }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ email: '', password: '' }, CredentialsSchema)
 
   useEffect(() => {
@@ -44,9 +50,11 @@ export default function Login() {
       email,
       password,
       options: {
-        emailRedirectTo: `${location.origin}/auth/callback`
+        emailRedirectTo: `${location.origin}/auth/callback`,
+        captchaToken
       }
     })
+    captcha.current?.resetCaptcha()
 
     if (error) toast.error(error.message)
     else if (data.user?.identities?.length === 0) await handleSignIn() // if there is no identites means user already signed up, try to sign in
@@ -54,7 +62,14 @@ export default function Login() {
   }, setLoading)
 
   const handleSignIn = withLoading(async () => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+      options: {
+        captchaToken
+      }
+    })
+    captcha.current?.resetCaptcha()
 
     if (error) toast.error(error.message)
   }, setLoading)
@@ -101,10 +116,15 @@ export default function Login() {
                 <label className="form-label"><i className="bi bi-key"></i> Password</label>
                 <div className="relative">
                   <input value={password} onChange={handleChange} onBlur={validateForm} className="form-input" type={showPassword ? 'text' : 'password'} name="password" placeholder="********" autoComplete="current-password" />
-                  <span className="w-20 text-sm flex-center gap-2 absolute z-10 right-0 top-0 block p-2 h-full cursor-pointer hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500" onClick={() => setShowPassword(!showPassword)}>{showPassword ? 'Hide' : 'Show'} <i className={`bi bi-${showPassword ? 'eye-slash' : 'eye'}`}></i></span>
+                  <span className="w-20 text-sm flex-center gap-2 absolute z-10 right-0 top-0 block p-2 h-full cursor-pointer rounded-tr-lg rounded-br-lg hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500" onClick={() => setShowPassword(!showPassword)}>{showPassword ? 'Hide' : 'Show'} <i className={`bi bi-${showPassword ? 'eye-slash' : 'eye'}`}></i></span>
                 </div>
                 <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.password}</small>
               </div>
+              {NODE_ENV !== 'development' && (
+                <div className="mb-4 flex justify-end">
+                  <HCaptcha theme={colorScheme} ref={captcha} sitekey={HCAPTCHA_SITEKEY} onVerify={token => setCaptchaToken(token)} />
+                </div>
+              )}
               <div className="flex justify-between items-center">
                 <a href="#" className="text-blue-400 hover:text-blue-500">Forgot password?</a>
                 <div className="flex items-center gap-2">
