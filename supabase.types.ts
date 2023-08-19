@@ -65,7 +65,7 @@ export interface Database {
           name: string
           request_count?: number
           secret?: string
-          user_id?: string
+          user_id: string
         }
         Update: {
           created_at?: string | null
@@ -172,20 +172,7 @@ export interface Database {
           type?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "contracts_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "contracts_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "v_users"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
       proposals: {
         Row: {
@@ -282,7 +269,7 @@ export interface Database {
           created_at?: string
           id?: string
           name: string
-          user_id?: string
+          user_id: string
         }
         Update: {
           created_at?: string
@@ -312,7 +299,7 @@ export interface Database {
           email: string | null
           id: string
           name: string | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           address: string
@@ -320,7 +307,7 @@ export interface Database {
           email?: string | null
           id?: string
           name?: string | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           address?: string
@@ -328,7 +315,7 @@ export interface Database {
           email?: string | null
           id?: string
           name?: string | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
@@ -416,6 +403,17 @@ export interface Database {
       }
     }
     Functions: {
+      delete_user:
+        | {
+            Args: {
+              current_password: string
+            }
+            Returns: undefined
+          }
+        | {
+            Args: Record<PropertyKey, never>
+            Returns: undefined
+          }
       increment_request_count: {
         Args: {
           _user_id: string

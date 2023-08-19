@@ -1,15 +1,14 @@
 'use client'
 import { useFormValidation } from '@/hooks'
-import { User } from '@supabase/supabase-js'
 import Button from '../Button'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/supabase.types'
 import { useState } from 'react'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
 import LoadingOverlay from '../LoadingOverlay'
-import { PersonalInformationSchema, UserResponse } from '@/modules/auth'
+import { PersonalInformationSchema, UserMerged } from '@/modules/auth'
 
-export default function PersonalInformation({ user }: { user: User & UserResponse<'balance'> }) {
+export default function PersonalInformation({ user }: { user: UserMerged }) {
   const supabase = createClientComponentClient<Database>()
   const [loading, setLoading] = useState(false)
   const {

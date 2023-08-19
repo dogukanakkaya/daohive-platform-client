@@ -1,6 +1,7 @@
+import { UserMerged } from '@/modules/auth'
 import SectionDivider from '../SectionDivider'
 
-export default function Balance({ user }: { user: any }) {
+export default function Balance({ user }: { user: UserMerged }) {
   return (
     <div>
       <h2 className="text-lg -mt-0.5">Your balance is <span className="badge text-base">{user.balance}$</span> <a href="#" className="text-indigo-500">click here to add more!</a></h2>
