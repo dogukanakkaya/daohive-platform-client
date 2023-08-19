@@ -3,10 +3,11 @@ import { useEffect, useMemo, useState } from 'react'
 type ColorScheme = 'dark' | 'light'
 
 export default function useColorScheme(): ColorScheme {
-  const mediaQuery = useMemo(() => window.matchMedia('(prefers-color-scheme: dark)'), [])
-  const [state, setState] = useState<ColorScheme>(mediaQuery.matches ? 'dark' : 'light')
+  const [state, setState] = useState<ColorScheme>('light')
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    setState(mediaQuery.matches ? 'dark' : 'light')
     const handleChange = (event: MediaQueryListEvent) => setState(event.matches ? 'dark' : 'light')
     mediaQuery.addEventListener('change', handleChange)
 
