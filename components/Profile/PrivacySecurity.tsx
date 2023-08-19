@@ -8,7 +8,6 @@ import { Database } from '@/supabase.types'
 
 export default function PrivacySecurity() {
   const supabase = createClientComponentClient<Database>()
-
   const [deleteAccount, setDeleteAccount] = useState(false)
   const [confirmType, setConfirmType] = useState('')
 
