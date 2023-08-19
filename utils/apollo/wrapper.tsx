@@ -4,6 +4,7 @@ import { ApolloLink, HttpLink } from '@apollo/client'
 import { RetryLink } from '@apollo/client/link/retry'
 import { ErrorLink } from '@apollo/client/link/error'
 import { ApolloNextAppProvider, NextSSRApolloClient, NextSSRInMemoryCache, SSRMultipartLink } from '@apollo/experimental-nextjs-app-support/ssr'
+import { toast } from 'react-toastify'
 
 function makeClient() {
   const httpLink = new HttpLink({
@@ -11,8 +12,10 @@ function makeClient() {
     credentials: 'include'
   })
 
-  const errorLink = new ErrorLink(({ networkError }) => {
-    if (networkError && 'statusCode' in networkError) {
+  const errorLink = new ErrorLink(({ networkError, graphQLErrors }) => {
+    if (graphQLErrors) {
+      toast.error(graphQLErrors[0].message)
+    } else if (networkError && 'statusCode' in networkError) {
       if (networkError.statusCode === 429) {
         // @todo: show error page with too many requests
       }
