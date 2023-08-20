@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { z } from 'zod'
 
-type FormErrors<T> = Record<keyof T extends string ? keyof T : string, string> | { [key: string]: string }
+type FormErrors<T> = Record<keyof T, string> | { [key: string]: string }
 
 const INITIAL_ERROR_STATE = Object.freeze({})
 

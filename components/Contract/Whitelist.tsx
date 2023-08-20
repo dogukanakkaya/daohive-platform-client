@@ -33,13 +33,13 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
   const [transactionFee, setTransactionFee] = useState<TransactionFee>()
   const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false)
 
-  const [addToWhitelistMutation] = useMutation(gql(`
+  const [addMutation] = useMutation(gql(`
     mutation AddToWhitelist ($input: WhitelistInput!) {
       addToWhitelist(input: $input)
     }
   `))
 
-  const [removeFromWhitelistMutation] = useMutation(gql(`
+  const [removeMutation] = useMutation(gql(`
     mutation RemoveFromWhitelist ($input: WhitelistInput!) {
       removeFromWhitelist(input: $input)
     }
@@ -77,7 +77,7 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
   }, setLoading)
 
   const handleRemove = withLoading(withLoadingToastr(async () => {
-    await removeFromWhitelistMutation({
+    await removeMutation({
       variables: { input: { address: contractAddress, voterAddresses: remove } }
     })
 
@@ -97,7 +97,7 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
   }, setLoading)
 
   const handleSubmit = withLoading(withLoadingToastr(async () => {
-    await addToWhitelistMutation({
+    await addMutation({
       variables: { input: { address: contractAddress, voterAddresses: addresses } }
     })
 

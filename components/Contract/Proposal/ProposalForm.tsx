@@ -6,18 +6,23 @@ import LoadingOverlay from '@/components/LoadingOverlay'
 import { DateTime } from 'luxon'
 import { useDropzone } from 'react-dropzone'
 import Image from 'next/image'
-import { toast } from 'react-toastify'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
 import { useParams } from 'next/navigation'
 import { ProposalSchema } from '@/modules/proposal'
 import Editor from '@/components/Editor/Editor'
 import { useRouter } from 'next/navigation'
 import { legacyApi } from '@/utils/api'
+import { useMutation } from '@apollo/client'
+import { gql } from '@/__generated__/graphql'
+import { generateFileHash } from '@/utils/file'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { Database } from '@/supabase.types'
 
 const DEFAULT_START_TIME = DateTime.now().plus({ minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
 const DEFAULT_END_TIME = DateTime.now().plus({ days: 7, minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
 
 export default function ProposalForm() {
+  const supabase = createClientComponentClient<Database>()
   const [loading, setLoading] = useState(false)
   const [file, setFile] = useState<File>()
   const {
@@ -36,26 +41,40 @@ export default function ProposalForm() {
   }, [])
   const { getRootProps, getInputProps } = useDropzone({ onDrop, maxFiles: 1, accept: { 'image/*': [] } })
 
-  const handleSubmit = withLoading(withLoadingToastr(async () => {
-    if (!file) {
-      toast.error('Please upload a banner image and try again.')
-      return
-    }
-
-    const formData = new FormData()
-    formData.set('address', params.address as string)
-    formData.set('name', name)
-    formData.set('description', description)
-    formData.set('content', content)
-    formData.set('startAt', startAt)
-    formData.set('endAt', endAt)
-    formData.set('banner', file)
-
-    await legacyApi.post('/proposals', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
+  const [addMutation] = useMutation(gql(`
+    mutation AddProposal ($input: AddProposalInput!) {
+      addProposal(input: $input) {
+        id
       }
+    }
+  `))
+
+  const handleSubmit = withLoading(withLoadingToastr(async () => {
+    if (!file) throw new Error('Please upload a banner image and try again.')
+    const fileHash = await generateFileHash(file)
+    const banner = `${fileHash}.${file.name.split('.').pop()}`
+    const { data: { user } } = await supabase.auth.getUser()
+    const { data: uploadedFile } = await supabase.storage.from('platform').upload(`${user?.id}/${banner}`, file)
+    if (!uploadedFile) throw new Error('An error occured while uploading the file.')
+
+    await addMutation({
+      variables: { input: { address: params.address as string, name, description, content, startAt, endAt, banner } }
     })
+
+    // const formData = new FormData()
+    // formData.set('address', params.address as string)
+    // formData.set('name', name)
+    // formData.set('description', description)
+    // formData.set('content', content)
+    // formData.set('startAt', startAt)
+    // formData.set('endAt', endAt)
+    // formData.set('banner', file)
+
+    // await legacyApi.post('/proposals', formData, {
+    //   headers: {
+    //     'Content-Type': 'multipart/form-data'
+    //   }
+    // })
 
     router.refresh(); router.replace(`/contracts/${params.address}`)
   }), setLoading)
