@@ -11,7 +11,6 @@ import { useParams } from 'next/navigation'
 import { ProposalSchema } from '@/modules/proposal'
 import Editor from '@/components/Editor/Editor'
 import { useRouter } from 'next/navigation'
-import { legacyApi } from '@/utils/api'
 import { useMutation } from '@apollo/client'
 import { gql } from '@/__generated__/graphql'
 import { generateFileHash } from '@/utils/file'
@@ -52,29 +51,14 @@ export default function ProposalForm() {
   const handleSubmit = withLoading(withLoadingToastr(async () => {
     if (!file) throw new Error('Please upload a banner image and try again.')
     const fileHash = await generateFileHash(file)
-    const banner = `${fileHash}.${file.name.split('.').pop()}`
+    const image = `${fileHash}.${file.name.split('.').pop()}`
     const { data: { user } } = await supabase.auth.getUser()
-    const { data: uploadedFile } = await supabase.storage.from('platform').upload(`${user?.id}/${banner}`, file)
-    if (!uploadedFile) throw new Error('An error occured while uploading the file.')
+    const { error } = await supabase.storage.from('platform').upload(`${user?.id}/${image}`, file)
+    if (error && 'statusCode' in error && error.statusCode !== '409') throw new Error('An error occured while uploading the file.')
 
     await addMutation({
-      variables: { input: { address: params.address as string, name, description, content, startAt, endAt, banner } }
+      variables: { input: { address: params.address as string, name, description, content, startAt, endAt, image } }
     })
-
-    // const formData = new FormData()
-    // formData.set('address', params.address as string)
-    // formData.set('name', name)
-    // formData.set('description', description)
-    // formData.set('content', content)
-    // formData.set('startAt', startAt)
-    // formData.set('endAt', endAt)
-    // formData.set('banner', file)
-
-    // await legacyApi.post('/proposals', formData, {
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data'
-    //   }
-    // })
 
     router.refresh(); router.replace(`/contracts/${params.address}`)
   }), setLoading)

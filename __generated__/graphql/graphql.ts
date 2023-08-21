@@ -20,10 +20,10 @@ export type Scalars = {
 
 export type AddProposalInput = {
   address: Scalars['String']['input'];
-  banner: Scalars['String']['input'];
   content: Scalars['String']['input'];
   description: Scalars['String']['input'];
   endAt: Scalars['String']['input'];
+  image: Scalars['String']['input'];
   name: Scalars['String']['input'];
   startAt: Scalars['String']['input'];
 };
