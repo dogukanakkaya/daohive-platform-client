@@ -37,8 +37,8 @@ export default function ProposalCard({ id }: Props) {
   const proposal = data?.proposal
 
   const renderStatusComponent = (proposal: ProposalQuery['proposal']) => {
-    const startAt = proposal.startAt || 0
-    const endAt = proposal.endAt || 0
+    const startAt = (proposal.startAt * 1000) || 0
+    const endAt = (proposal.endAt * 1000) || 0
 
     if (Date.now() > endAt) {
       return (

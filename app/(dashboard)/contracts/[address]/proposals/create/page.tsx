@@ -28,8 +28,7 @@ export default async function Create({ params }: Props) {
         <Breadcrumb items={[
           { name: 'Contracts', href: '/contracts' },
           { name: contract.name, href: `/contracts/${params.address}` },
-          { name: 'Proposals', href: `/contracts/${params.address}/proposals` },
-          { name: 'Create', href: `/contracts/${params.address}/proposals/create` }
+          { name: 'Create Proposal', href: `/contracts/${params.address}/proposals/create` }
         ]} />
       </div>
       <InfoCard messages={[

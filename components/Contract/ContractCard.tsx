@@ -19,7 +19,9 @@ export default function ContractCard({ contract: _contract }: Props) {
         contract(address: $address) {
           name
           description
-          totalVoters
+          voterCount
+          proposalCount
+          activeProposalCount
         }
       }
     `), {
@@ -72,17 +74,15 @@ export default function ContractCard({ contract: _contract }: Props) {
                   </div>
                   <div className="w-1/2 xl:w-1/4 mb-2 xl:mb-0">
                     <h2>Total Proposals</h2>
-                    <p className="text-sm bg-gray-300 dark:bg-gray-700 rounded-xl py-1 px-2 inline-block">
-                      <span className="font-medium">17</span> / <span className="text-green-500">12</span> / <span className="text-red-500">5</span>
-                    </p>
+                    <p className="text-sm bg-gray-300 dark:bg-gray-700 rounded-xl py-1 px-2 inline-block">{contract.proposalCount}</p>
                   </div>
                   <div className="w-1/2 xl:w-1/4 mb-2 xl:mb-0">
                     <h2>Active Proposals</h2>
-                    <p className="text-sm bg-gray-300 dark:bg-gray-700 rounded-xl py-1 px-2 inline-block">1</p>
+                    <p className="text-sm bg-gray-300 dark:bg-gray-700 rounded-xl py-1 px-2 inline-block">{contract.activeProposalCount}</p>
                   </div>
                   <div className="w-1/2 xl:w-1/4 mb-2 xl:mb-0">
                     <h2>Total Voters</h2>
-                    <p className="text-sm bg-gray-300 dark:bg-gray-700 rounded-xl py-1 px-2 inline-block">{contract.totalVoters}</p>
+                    <p className="text-sm bg-gray-300 dark:bg-gray-700 rounded-xl py-1 px-2 inline-block">{contract.voterCount}</p>
                   </div>
                 </div>
               </>
@@ -115,7 +115,7 @@ function PlaceholderContent({ contract }: Props) {
         </div>
         <div className="w-1/2 xl:w-1/4 mb-2 xl:mb-0">
           <h2>Total Proposals</h2>
-          <div className="w-20 h-6 bg-slate-500 dark:bg-slate-700 rounded-xl py-1 px-2"></div>
+          <div className="w-12 h-6 bg-slate-500 dark:bg-slate-700 rounded-xl py-1 px-2"></div>
         </div>
         <div className="w-1/2 xl:w-1/4 mb-2 xl:mb-0">
           <h2>Active Proposals</h2>
