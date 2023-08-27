@@ -49,11 +49,11 @@ export default function ApiCredentialCard({ credential, permissions }: Props) {
     navigator.clipboard.writeText(_secret)
   }
 
-  const handleRemove = () => remove === credential.id ? withLoading(withLoadingToastr(async () => {
+  const handleRemove = remove === credential.id ? withLoading(withLoadingToastr(async () => {
     setRemove('')
     await deleteApiCredential(credential.id)
     router.refresh()
-  }), setLoading)() : setRemove(credential.id)
+  }), setLoading) : () => setRemove(credential.id)
 
   return (
     <div key={credential.id} className="p-5 relative bg-white dark:bg-gray-900 shadow-lg rounded-lg space-y-4">
@@ -68,8 +68,8 @@ export default function ApiCredentialCard({ credential, permissions }: Props) {
           </span>
           {
             remove === credential.id
-              ? <Button onClick={handleRemove} className="bg-red-600">Confirm <i className="bi bi-check-lg text-lg"></i></Button>
-              : <Button onClick={handleRemove} className="bg-red-600">Delete <i className="bi bi-trash3 text-lg"></i></Button>
+              ? <Button onClick={handleRemove} className="bg-red-600 flex items-center gap-1">Confirm <i className="bi bi-check-lg text-lg"></i></Button>
+              : <Button onClick={handleRemove} className="bg-red-600 flex items-center gap-1">Delete <i className="bi bi-trash3 text-lg"></i></Button>
           }
         </div>
       </div>
