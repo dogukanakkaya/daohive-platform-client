@@ -1,4 +1,4 @@
-name: daohive-platform-client
+name: Check
 
 on:
   push:
