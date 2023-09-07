@@ -17,6 +17,8 @@ export function useMetamask() {
   return useContext(MetamaskContext)
 }
 
+const chainId = ethers.toBeHex(CHAIN_ID)
+
 export function MetamaskProvider({ children }: { children: ReactNode }) {
   const [isMetamaskLoading, setIsMetamaskLoading] = useState(false)
   const [isMetamaskInstalled, setIsMetamaskInstalled] = useState(false)
@@ -49,7 +51,7 @@ export function MetamaskProvider({ children }: { children: ReactNode }) {
     try {
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: CHAIN_ID }]
+        params: [{ chainId }]
       })
     } catch (error: any) {
       if (error.code === 4902) {
@@ -60,7 +62,7 @@ export function MetamaskProvider({ children }: { children: ReactNode }) {
               chainName: NODE_ENV === 'development' ? 'Polygon Mumbai' : 'Polygon Mainnet',
               nativeCurrency: { name: 'MATIC', decimals: 18, symbol: 'MATIC' },
               rpcUrls: NODE_ENV === 'development' ? ['https://rpc-mumbai.maticvigil.com/'] : ['https://polygon-rpc.com/'],
-              chainId: CHAIN_ID
+              chainId
             }
           ]
         })
@@ -79,7 +81,7 @@ export function MetamaskProvider({ children }: { children: ReactNode }) {
       try {
         if (window.ethereum.networkVersion !== CHAIN_ID) await switchNetwork()
 
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts', params: [{ chainId: CHAIN_ID }] })
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts', params: [{ chainId }] })
         setAccounts(accounts)
         setIsMetamaskConnected(true)
       } catch (error) {
