@@ -74,6 +74,7 @@ export type Mutation = {
   deleteVoterGroup: Scalars['Boolean']['output'];
   deployContract: Contract;
   removeFromWhitelist: Scalars['Boolean']['output'];
+  setWeights: Scalars['Boolean']['output'];
   updateVoter: Voter;
   updateVoterGroup: VoterGroup;
 };
@@ -119,6 +120,11 @@ export type MutationRemoveFromWhitelistArgs = {
 };
 
 
+export type MutationSetWeightsArgs = {
+  input: SetWeightsInput;
+};
+
+
 export type MutationUpdateVoterArgs = {
   id: Scalars['ID']['input'];
   input: UpdateVoterInput;
@@ -155,6 +161,7 @@ export type Query = {
   preAddToWhitelist: PreCalculation;
   preDeployContract: PreCalculation;
   preRemoveFromWhitelist: PreCalculation;
+  preSetWeights: PreCalculation;
   proposal: Proposal;
   voter: Voter;
   voterGroup: VoterGroup;
@@ -183,6 +190,11 @@ export type QueryPreRemoveFromWhitelistArgs = {
 };
 
 
+export type QueryPreSetWeightsArgs = {
+  input: SetWeightsInput;
+};
+
+
 export type QueryProposalArgs = {
   id: Scalars['ID']['input'];
 };
@@ -195,6 +207,12 @@ export type QueryVoterArgs = {
 
 export type QueryVoterGroupArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type SetWeightsInput = {
+  address: Scalars['String']['input'];
+  voters: Array<Scalars['String']['input']>;
+  weights: Array<Scalars['Int']['input']>;
 };
 
 export type TransactionFee = {
@@ -233,7 +251,7 @@ export type VoterGroupInput = {
 
 export type WhitelistInput = {
   address: Scalars['String']['input'];
-  voterAddresses: Array<Scalars['String']['input']>;
+  voters: Array<Scalars['String']['input']>;
 };
 
 export type GetContractDetailQueryVariables = Exact<{

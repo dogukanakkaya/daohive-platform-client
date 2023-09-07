@@ -69,7 +69,7 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
 
   const handlePreRemove = withLoading(async () => {
     const { data: preRemove } = await execPreRemove({
-      variables: { input: { address: contractAddress, voterAddresses: remove } }
+      variables: { input: { address: contractAddress, voters: remove } }
     })
 
     setTransactionFee(preRemove?.preRemoveFromWhitelist.transactionFee)
@@ -78,7 +78,7 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
 
   const handleRemove = withLoading(withLoadingToastr(async () => {
     await removeMutation({
-      variables: { input: { address: contractAddress, voterAddresses: remove } }
+      variables: { input: { address: contractAddress, voters: remove } }
     })
 
     setRemove([])
@@ -88,7 +88,7 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
 
   const handlePreSubmit = withLoading(async () => {
     const { data: preAdd } = await execPreAdd({
-      variables: { input: { address: contractAddress, voterAddresses: addresses } }
+      variables: { input: { address: contractAddress, voters: addresses } }
     })
 
     setRemove([])
@@ -98,7 +98,7 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
 
   const handleSubmit = withLoading(withLoadingToastr(async () => {
     await addMutation({
-      variables: { input: { address: contractAddress, voterAddresses: addresses } }
+      variables: { input: { address: contractAddress, voters: addresses } }
     })
 
     setData([...data, ...addresses])

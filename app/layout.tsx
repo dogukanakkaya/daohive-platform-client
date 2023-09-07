@@ -7,7 +7,7 @@ import { TOAST_AUTO_CLOSE } from '@/config'
 const inter = Inter({ weight: ['400', '500', '700'], subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Dao Hive',
+  title: 'Daohive',
   description: 'A DAO for the people, by the people.'
 }
 

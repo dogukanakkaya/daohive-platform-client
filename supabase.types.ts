@@ -300,6 +300,7 @@ export interface Database {
           id: string
           name: string | null
           user_id: string
+          weight: number
         }
         Insert: {
           address: string
@@ -308,6 +309,7 @@ export interface Database {
           id?: string
           name?: string | null
           user_id: string
+          weight?: number
         }
         Update: {
           address?: string
@@ -316,6 +318,7 @@ export interface Database {
           id?: string
           name?: string | null
           user_id?: string
+          weight?: number
         }
         Relationships: [
           {
