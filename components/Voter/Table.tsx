@@ -27,7 +27,7 @@ declare module '@tanstack/react-table' {
   }
 }
 
-type VoterResponse = VoterResponseGeneric<'id' | 'address' | 'name' | 'email'>
+type VoterResponse = VoterResponseGeneric<'id' | 'address' | 'name' | 'email' | 'weight'>
 
 interface Props {
   data: VoterResponse[]
@@ -80,7 +80,8 @@ const columns = [
     ) : null
   }),
   columnHelper.accessor('name', {}),
-  columnHelper.accessor('email', {})
+  columnHelper.accessor('email', {}),
+  columnHelper.accessor('weight', {})
 ]
 
 export default function Table({ data: voters }: Props) {
@@ -107,8 +108,10 @@ export default function Table({ data: voters }: Props) {
     getPaginationRowModel: getPaginationRowModel(),
     meta: {
       updateData: async (rowIndex: number, columnId: string, value: unknown) => {
+        const input = await VoterSchema.pick({ [columnId]: true }).parseAsync({ [columnId]: value })
+
         await updateMutation({
-          variables: { id: data[rowIndex].id, input: { [columnId]: value } }
+          variables: { id: data[rowIndex].id, input }
         })
       }
     }

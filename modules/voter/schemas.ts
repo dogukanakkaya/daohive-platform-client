@@ -16,7 +16,10 @@ export const VoterSchema = z.object({
     .min(5, 'Email must contain at least 5 character(s)')
     .max(75, 'Email must contain at most 75 character(s)')
     .optional()
-    .or(z.literal(''))
+    .or(z.literal('')),
+  weight: z.coerce
+    .number()
+    .min(1, 'Weight must be at least 1')
 })
 
 export const AddToWhitelistSchema = z.object({

@@ -9,7 +9,13 @@ import { useMutation } from '@apollo/client'
 import { gql } from '@/__generated__/graphql'
 
 export default function VoterForm() {
-  const { state: { address, name, email }, errors, handleChange, validateForm, isFormValid } = useFormValidation({ address: '', name: '', email: '' }, VoterSchema)
+  const {
+    state: { address, name, email, weight },
+    errors,
+    handleChange,
+    validateForm,
+    isFormValid
+  } = useFormValidation({ address: '', name: '', email: '', weight: 1 }, VoterSchema)
   const router = useRouter()
 
   const [createMutation] = useMutation(gql(`
@@ -22,7 +28,7 @@ export default function VoterForm() {
 
   const handleSubmit = withLoadingToastr(async () => {
     await createMutation({
-      variables: { input: { address, name: nullifyEmpty(name), email: nullifyEmpty(email) } }
+      variables: { input: { name: nullifyEmpty(name), email: nullifyEmpty(email), weight: Number(weight), address } }
     })
     router.refresh(); router.replace('/voters')
   })
@@ -43,6 +49,11 @@ export default function VoterForm() {
         <label className="form-label">Voter Email</label>
         <input value={email} onChange={handleChange} onBlur={validateForm} className="form-input" type="text" name="email" placeholder="Enter voter email" />
         <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.email}</small>
+      </div>
+      <div className="mb-4">
+        <label className="form-label">Voter Weight</label>
+        <input value={weight} onChange={handleChange} onBlur={validateForm} className="form-input" type="number" name="weight" placeholder="Enter voter weight" min={1} />
+        <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.weight}</small>
       </div>
       <div className="flex justify-end items-center">
         <Button onClick={handleSubmit} isEnabled={isFormValid} className="flex items-center gap-2">Add Voter <i className="bi bi-person-plus text-lg"></i></Button>

@@ -16,6 +16,7 @@ export default async function Voters() {
           address
           name
           email
+          weight
         }
       }
     `)
