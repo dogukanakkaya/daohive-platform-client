@@ -17,7 +17,7 @@ export function useMetamask() {
   return useContext(MetamaskContext)
 }
 
-const chainId = ethers.toBeHex(CHAIN_ID)
+const chainId = ethers.toQuantity(CHAIN_ID)
 
 export function MetamaskProvider({ children }: { children: ReactNode }) {
   const [isMetamaskLoading, setIsMetamaskLoading] = useState(false)
