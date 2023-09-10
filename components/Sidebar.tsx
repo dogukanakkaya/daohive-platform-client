@@ -1,3 +1,4 @@
+import { WEB_URL } from '@/config'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -37,13 +38,13 @@ export default function Sidebar() {
               <h2 className="uppercase text-gray-800 dark:text-gray-400 ml-4 my-4 text-sm">Developer</h2>
               <ul className="flex flex-col">
                 <li>
-                  <Link href="#" className="sidebar-link"><i className="bi bi-file-text"></i> Docs</Link>
+                  <Link href={`${WEB_URL}/docs/introduction`} target="_blank" className="sidebar-link"><i className="bi bi-file-text"></i> Docs</Link>
                 </li>
                 <li>
                   <Link href="/developer/api" className="sidebar-link"><i className="bi bi-code"></i> API Settings</Link>
                 </li>
                 <li>
-                  <Link href="#" className="sidebar-link"><i className="bi bi-globe2"></i> Webhooks <span className="badge">Soon</span></Link>
+                  <Link href="#" className="sidebar-link cursor-not-allowed"><i className="bi bi-globe2"></i> Webhooks <span className="badge">Soon</span></Link>
                 </li>
               </ul>
             </div>
@@ -51,7 +52,7 @@ export default function Sidebar() {
               <h2 className="uppercase text-gray-800 dark:text-gray-400 ml-4 my-4 text-sm">Other</h2>
               <ul className="flex flex-col">
                 <li>
-                  <Link href="#" className="sidebar-link"><i className="bi bi-journal-bookmark"></i> Usage Plan</Link>
+                  <Link href="#" className="sidebar-link cursor-not-allowed"><i className="bi bi-journal-bookmark"></i> Usage Plan <span className="badge">Soon</span></Link>
                 </li>
               </ul>
             </div>

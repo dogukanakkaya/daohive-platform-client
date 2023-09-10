@@ -45,9 +45,6 @@ export default async function Header() {
             <Link href="/profile" className="profile-link rounded-t-xl"><i className="bi bi-person-gear"></i> Profile</Link>
           </li>
           <li>
-            <Link href="#" className="profile-link"><i className="bi bi-gear"></i> Settings</Link>
-          </li>
-          <li>
             <Link href="/auth/logout" prefetch={false} replace className="profile-link rounded-b-xl border-t dark:border-gray-700"><i className="bi bi-box-arrow-right text-red-500"></i> Sign Out</Link>
           </li>
         </ul>

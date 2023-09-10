@@ -91,7 +91,7 @@ export default function Table({ data: voters }: Props) {
   const [data, setData] = useEffectState(voters)
 
   const [updateMutation] = useMutation(gql(`
-    mutation UpdateMutation ($id: ID!, $input: UpdateVoterInput!) {
+    mutation UpdateVoter ($id: ID!, $input: UpdateVoterInput!) {
       updateVoter(id: $id, input: $input) {
         id
       }

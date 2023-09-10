@@ -30,7 +30,7 @@ const documents = {
     "\n    mutation CreateVoterGroup ($input: VoterGroupInput!) {\n      createVoterGroup(input: $input) {\n        id\n      }\n    }\n  ": types.CreateVoterGroupDocument,
     "\n    mutation DeleteVoterGroup ($id: ID!) {\n      deleteVoterGroup(id: $id)\n    }\n  ": types.DeleteVoterGroupDocument,
     "\n    mutation UpdateVoterGroup ($id: ID!, $input: VoterGroupInput!) {\n      updateVoterGroup(id: $id, input: $input) {\n        id\n      }\n    }\n  ": types.UpdateVoterGroupDocument,
-    "\n    mutation UpdateMutation ($id: ID!, $input: UpdateVoterInput!) {\n      updateVoter(id: $id, input: $input) {\n        id\n      }\n    }\n  ": types.UpdateMutationDocument,
+    "\n    mutation UpdateVoter ($id: ID!, $input: UpdateVoterInput!) {\n      updateVoter(id: $id, input: $input) {\n        id\n      }\n    }\n  ": types.UpdateVoterDocument,
     "\n    mutation DeleteVoter ($id: [ID!]!) {\n      deleteVoter(id: $id)\n    }\n  ": types.DeleteVoterDocument,
     "\n    mutation CreateVoter ($input: CreateVoterInput!) {\n      createVoter(input: $input) {\n        id\n      }\n    }\n  ": types.CreateVoterDocument,
 };
@@ -120,7 +120,7 @@ export function gql(source: "\n    mutation UpdateVoterGroup ($id: ID!, $input: 
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n    mutation UpdateMutation ($id: ID!, $input: UpdateVoterInput!) {\n      updateVoter(id: $id, input: $input) {\n        id\n      }\n    }\n  "): (typeof documents)["\n    mutation UpdateMutation ($id: ID!, $input: UpdateVoterInput!) {\n      updateVoter(id: $id, input: $input) {\n        id\n      }\n    }\n  "];
+export function gql(source: "\n    mutation UpdateVoter ($id: ID!, $input: UpdateVoterInput!) {\n      updateVoter(id: $id, input: $input) {\n        id\n      }\n    }\n  "): (typeof documents)["\n    mutation UpdateVoter ($id: ID!, $input: UpdateVoterInput!) {\n      updateVoter(id: $id, input: $input) {\n        id\n      }\n    }\n  "];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

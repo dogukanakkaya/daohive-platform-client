@@ -9,7 +9,7 @@ export default function ProfileSection({ user }: { user: UserMerged }) {
   return (
     <div className="relative bg-white dark:bg-gray-900 py-5 rounded-xl shadow">
       <Tabs>
-        <div className="flex">
+        <div className="flex flex-col md:flex-row">
           <TabList>
             <Tab><i className="bi bi-person-circle"></i> Personal Information</Tab>
             <Tab><i className="bi bi-wallet2"></i> My Balance</Tab>
