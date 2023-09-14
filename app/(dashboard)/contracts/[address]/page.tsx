@@ -18,14 +18,14 @@ interface Props {
 }
 
 export default async function Contract({ params }: Props) {
-  const { data: { contract: { name, type, voters, pairs, proposals } } } = await getApolloClient().query({
+  const { data: { contract: { name, type, voters, weights, proposals } } } = await getApolloClient().query({
     query: gql(`
       query GetContractDetail($address: String!) {
         contract(address: $address) {
           name
           type
           voters
-          pairs
+          weights
           proposals {
             id
           }
@@ -69,7 +69,7 @@ export default async function Contract({ params }: Props) {
           ))}
         </div>
       </div>
-      {type === ContractType.VotingPrivate && <Whitelist whitelist={voters} pairs={pairs} contractAddress={params.address} />}
+      {type === ContractType.VotingPrivate && <Whitelist whitelist={voters} weights={weights} contractAddress={params.address} />}
     </div>
   )
 }

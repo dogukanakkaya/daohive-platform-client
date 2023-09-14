@@ -13,7 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n      query GetContractDetail($address: String!) {\n        contract(address: $address) {\n          name\n          type\n          voters\n          pairs\n          proposals {\n            id\n          }\n        }\n      }\n    ": types.GetContractDetailDocument,
+    "\n      query GetContractDetail($address: String!) {\n        contract(address: $address) {\n          name\n          type\n          voters\n          weights\n          proposals {\n            id\n          }\n        }\n      }\n    ": types.GetContractDetailDocument,
     "\n      query GetContractName($address: String!) {\n        contract(address: $address) {\n          name\n        }\n      }\n    ": types.GetContractNameDocument,
     "\n      query GetVoterGroupList {\n        voterGroups {\n          id\n          name\n        }\n      }\n    ": types.GetVoterGroupListDocument,
     "\n      query GetVotersList {\n        voters {\n          id\n          address\n          name\n          email\n          weight\n        }\n      }\n    ": types.GetVotersListDocument,
@@ -52,7 +52,7 @@ export function gql(source: string): unknown;
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n      query GetContractDetail($address: String!) {\n        contract(address: $address) {\n          name\n          type\n          voters\n          pairs\n          proposals {\n            id\n          }\n        }\n      }\n    "): (typeof documents)["\n      query GetContractDetail($address: String!) {\n        contract(address: $address) {\n          name\n          type\n          voters\n          pairs\n          proposals {\n            id\n          }\n        }\n      }\n    "];
+export function gql(source: "\n      query GetContractDetail($address: String!) {\n        contract(address: $address) {\n          name\n          type\n          voters\n          weights\n          proposals {\n            id\n          }\n        }\n      }\n    "): (typeof documents)["\n      query GetContractDetail($address: String!) {\n        contract(address: $address) {\n          name\n          type\n          voters\n          weights\n          proposals {\n            id\n          }\n        }\n      }\n    "];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

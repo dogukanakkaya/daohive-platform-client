@@ -1,5 +1,4 @@
 'use client'
-import { AddToWhitelistSchema } from '@/modules/voter'
 import { useState } from 'react'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
 import Button, { Variant } from '../Button'
@@ -8,25 +7,17 @@ import { useEffectState, useFormValidation } from '@/hooks'
 import LoadingOverlay from '../LoadingOverlay'
 import { useLazyQuery, useMutation } from '@apollo/client'
 import { gql } from '@/__generated__/graphql'
-import TagInput from '../TagInput'
 import { TransactionFee } from '@/__generated__/graphql/graphql'
 import SectionDivider from '../SectionDivider'
 
 interface Props {
   whitelist: string[]
-  pairs: Record<string, number>
+  weights: Record<string, number>
   contractAddress: string
 }
 
-export default function Whitelist({ whitelist, pairs, contractAddress }: Props) {
-  const {
-    state: { addresses },
-    setState: setAddToWhitelistState,
-    errors,
-    validateForm,
-    isFormValid,
-    reset
-  } = useFormValidation({ addresses: [] as string[] }, AddToWhitelistSchema)
+export default function Whitelist({ whitelist, weights, contractAddress }: Props) {
+  const [voters, setVoters] = useState([''])
   const [data, setData] = useEffectState(whitelist)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [remove, setRemove] = useState<string[]>([])
@@ -89,7 +80,7 @@ export default function Whitelist({ whitelist, pairs, contractAddress }: Props) 
 
   const handlePreSubmit = withLoading(async () => {
     const { data: preAdd } = await execPreAdd({
-      variables: { input: { address: contractAddress, voters: addresses } }
+      variables: { input: { address: contractAddress, voters } }
     })
 
     setRemove([])
@@ -99,14 +90,20 @@ export default function Whitelist({ whitelist, pairs, contractAddress }: Props) 
 
   const handleSubmit = withLoading(withLoadingToastr(async () => {
     await addMutation({
-      variables: { input: { address: contractAddress, voters: addresses } }
+      variables: { input: { address: contractAddress, voters } }
     })
 
-    setData([...data, ...addresses])
+    setData([...data, ...voters])
     setIsDialogOpen(false)
     setIsConfirmationDialogOpen(false)
-    reset()
+    setVoters([''])
   }), setLoading)
+
+  const handleVoterFormAddressChange = (i: number, value: string) => {
+    const newVoterForms = [...voters]
+    newVoterForms[i] = value
+    setVoters(newVoterForms)
+  }
 
   return (
     <div>
@@ -119,7 +116,7 @@ export default function Whitelist({ whitelist, pairs, contractAddress }: Props) 
         {loading && <LoadingOverlay />}
         {data.map(voter => (
           <li key={voter} className="bg-gray-300 dark:bg-gray-700 text-sm px-2 py-1 rounded-full">
-            <span className="mr-2">{voter} - {pairs[voter] ?? 1}</span>
+            <span className="mr-2">{voter} - {weights[voter] ?? 1}</span>
             <span onClick={() => setRemove(remove.includes(voter) ? remove.filter(r => r !== voter) : [...remove, voter])} className="text-red-500 hover:text-red-600 cursor-pointer">
               {remove.includes(voter) ? <i className="bi bi-check-lg"></i> : <i className="bi bi-trash3"></i>}
             </span>
@@ -128,14 +125,22 @@ export default function Whitelist({ whitelist, pairs, contractAddress }: Props) 
       </ul>
       <Dialog title="Add new voter" isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} className="relative">
         {loading && <LoadingOverlay />}
-        <div className="mb-4">
-          <label className="form-label">Voter Address <span className="text-xs text-red-500">*</span></label>
-          <TagInput tags={addresses} setTags={tags => setAddToWhitelistState({ addresses: tags })} onBlur={validateForm} name="addresses" placeholder="Type and press 'enter', 'tab' or ',' to add multiple" autoFocus />
-          <small className="mt-2 text-xs text-red-600 dark:text-red-500">{errors.addresses}</small>
+        <div className="max-h-[400px] overflow-y-scroll">
+          {voters.map((voter, i) => (
+            <div className="mb-4 flex gap-2" key={i}>
+              <input value={voter} onChange={e => handleVoterFormAddressChange(i, e.target.value)} className="form-input flex-grow" type="text" name="name" placeholder="Address" />
+              {i === voters.length - 1 && (
+                <>
+                  <Button onClick={() => setVoters(voters.slice(0, -1))} variant={Variant.Tertiary} className="py-3 w-20"><i className="bi bi-dash-lg"></i></Button>
+                  <Button onClick={() => setVoters([...voters, ''])} variant={Variant.Tertiary} className="py-3 w-20"><i className="bi bi-plus-lg"></i></Button>
+                </>
+              )}
+            </div>
+          ))}
         </div>
         <div className="flex items-center justify-end gap-4">
           <Button onClick={() => setIsDialogOpen(false)} variant={Variant.Secondary}>Cancel</Button>
-          <Button onClick={handlePreSubmit} isEnabled={isFormValid}>Add</Button>
+          <Button onClick={handlePreSubmit}>Add</Button>
         </div>
       </Dialog>
       {transactionFee && (
