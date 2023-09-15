@@ -11,34 +11,30 @@ import { TransactionFee } from '@/__generated__/graphql/graphql'
 import SectionDivider from '../SectionDivider'
 
 interface Props {
-  whitelist: string[]
+  weights: Record<string, number>
   contractAddress: string
 }
 
-export default function Whitelist({ whitelist, contractAddress }: Props) {
-  const [voters, setVoters] = useState([''])
-  const [data, setData] = useEffectState(whitelist)
+const INITIAL_FORM = Object.freeze({ address: '', weight: 1 })
+
+export default function Weights({ weights, contractAddress }: Props) {
+  const [forms, setForms] = useState([{ ...INITIAL_FORM }])
+  const [data, setData] = useEffectState(weights)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [remove, setRemove] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
   const [transactionFee, setTransactionFee] = useState<TransactionFee>()
   const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false)
 
-  const [addMutation] = useMutation(gql(`
-    mutation AddToWhitelist ($input: WhitelistInput!) {
-      addToWhitelist(input: $input)
+  const [setWeightsMutation] = useMutation(gql(`
+    mutation SetWeights ($input: SetWeightsInput!) {
+      setWeights(input: $input)
     }
   `))
 
-  const [removeMutation] = useMutation(gql(`
-    mutation RemoveFromWhitelist ($input: WhitelistInput!) {
-      removeFromWhitelist(input: $input)
-    }
-  `))
-
-  const [execPreAdd] = useLazyQuery(gql(`
-    query PreAddToWhitelist ($input: WhitelistInput!) {
-      preAddToWhitelist(input: $input) {
+  const [execPreSetWeights] = useLazyQuery(gql(`
+    query PreSetWeights ($input: SetWeightsInput!) {
+      preSetWeights(input: $input) {
         transactionFee {
           usd
           matic
@@ -47,77 +43,58 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
     }
   `))
 
-  const [execPreRemove] = useLazyQuery(gql(`
-    query PreRemoveFromWhitelist ($input: WhitelistInput!) {
-      preRemoveFromWhitelist(input: $input) {
-        transactionFee {
-          usd
-          matic
-        }
-      }
-    }
-  `))
+  const handlePreRemove = () => { }
 
-  const handlePreRemove = withLoading(async () => {
-    const { data: preRemove } = await execPreRemove({
-      variables: { input: { address: contractAddress, voters: remove } }
-    })
-
-    setTransactionFee(preRemove?.preRemoveFromWhitelist.transactionFee)
-    setIsConfirmationDialogOpen(true)
-  }, setLoading)
-
-  const handleRemove = withLoading(withLoadingToastr(async () => {
-    await removeMutation({
-      variables: { input: { address: contractAddress, voters: remove } }
-    })
-
-    setRemove([])
-    setData(data.filter(voter => !remove.includes(voter)))
-    setIsConfirmationDialogOpen(false)
-  }), setLoading)
+  const handleRemove = () => { }
 
   const handlePreSubmit = withLoading(async () => {
-    const { data: preAdd } = await execPreAdd({
-      variables: { input: { address: contractAddress, voters } }
+    const voters = forms.map(({ address }) => address)
+    const weights = forms.map(({ weight }) => weight)
+
+    const { data: preSetWeights } = await execPreSetWeights({
+      variables: { input: { address: contractAddress, voters, weights } }
     })
 
     setRemove([])
-    setTransactionFee(preAdd?.preAddToWhitelist.transactionFee)
+    setTransactionFee(preSetWeights?.preSetWeights.transactionFee)
     setIsConfirmationDialogOpen(true)
   }, setLoading)
 
   const handleSubmit = withLoading(withLoadingToastr(async () => {
-    await addMutation({
-      variables: { input: { address: contractAddress, voters } }
+    const voters = forms.map(({ address }) => address)
+    const weights = forms.map(({ weight }) => weight)
+
+    await setWeightsMutation({
+      variables: { input: { address: contractAddress, voters, weights } }
     })
 
-    setData([...data, ...voters])
+    setData({ ...data, ...forms.reduce((prev, curr) => ({ ...prev, [curr.address]: curr.weight }), {}) })
     setIsDialogOpen(false)
     setIsConfirmationDialogOpen(false)
-    setVoters([''])
+    setForms([INITIAL_FORM])
   }), setLoading)
 
-  const handleVoterFormAddressChange = (e: React.ChangeEvent<HTMLInputElement>, i: number) => {
-    const newVoterForms = [...voters]
-    newVoterForms[i] = e.target.value
-    setVoters(newVoterForms)
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>, i: number) => {
+    const _forms = [...forms]
+    const { name, value } = e.target;
+    (_forms[i] as Record<string, string | number>)[name] = name === 'weight' ? parseInt(value) : value
+    setForms(_forms)
   }
 
   return (
     <div>
       <SectionDivider>
-        <h1 className="section-text">Whitelist</h1>
+        <h1 className="section-text">Weights</h1>
         <Button onClick={() => setIsDialogOpen(true)} variant={Variant.Secondary} className="!py-1 !px-2"><i className="bi bi-plus text-lg"></i></Button>
         {remove.length > 0 && <Button onClick={handlePreRemove} className="!py-1 !px-2 bg-red-600"><i className="bi bi-trash3"></i></Button>}
       </SectionDivider>
       <ul className="flex flex-wrap gap-4 relative">
         {loading && <LoadingOverlay />}
-        {data.map(voter => (
-          <li key={voter} className="bg-gray-300 dark:bg-gray-700 text-sm px-2 py-1 rounded-full">
-            <span className="mr-2">{voter}</span>
-            <span onClick={() => setRemove(remove.includes(voter) ? remove.filter(r => r !== voter) : [...remove, voter])} className="text-red-500 hover:text-red-600 cursor-pointer">
-              {remove.includes(voter) ? <i className="bi bi-check-lg"></i> : <i className="bi bi-trash3"></i>}
+        {Object.entries(data).map(([address, weight]) => (
+          <li key={address} className="bg-gray-300 dark:bg-gray-700 text-sm px-2 py-1 rounded-full">
+            <span className="mr-2">{address} - {weight ?? 1}</span>
+            <span onClick={() => setRemove(remove.includes(address) ? remove.filter(r => r !== address) : [...remove, address])} className="text-red-500 hover:text-red-600 cursor-pointer">
+              {remove.includes(address) ? <i className="bi bi-check-lg"></i> : <i className="bi bi-trash3"></i>}
             </span>
           </li>
         ))}
@@ -125,13 +102,14 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
       <Dialog title="Add new voter" isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} className="relative">
         {loading && <LoadingOverlay />}
         <div className="p-2 -m-2 max-h-[400px] overflow-y-scroll">
-          {voters.map((voter, i) => (
+          {forms.map(({ address, weight }, i) => (
             <div className="mb-4 flex gap-2" key={i}>
-              <input value={voter} onChange={e => handleVoterFormAddressChange(e, i)} className="form-input" type="text" name="name" placeholder="Address" />
-              {i === voters.length - 1 && (
+              <input value={address} onChange={e => handleFormChange(e, i)} className="form-input" type="text" name="address" placeholder="Address" />
+              <input value={weight} onChange={e => handleFormChange(e, i)} className="form-input w-20" type="number" name="weight" placeholder="Weight" />
+              {i === forms.length - 1 && (
                 <>
-                  <Button onClick={() => setVoters(voters.slice(0, -1))} variant={Variant.Tertiary} className="py-3 w-20"><i className="bi bi-dash-lg"></i></Button>
-                  <Button onClick={() => setVoters([...voters, ''])} variant={Variant.Tertiary} className="py-3 w-20"><i className="bi bi-plus-lg"></i></Button>
+                  <Button onClick={() => setForms(forms.slice(0, -1))} variant={Variant.Tertiary} className="py-3 w-20"><i className="bi bi-dash-lg"></i></Button>
+                  <Button onClick={() => setForms([...forms, { ...INITIAL_FORM }])} variant={Variant.Tertiary} className="py-3 w-20"><i className="bi bi-plus-lg"></i></Button>
                 </>
               )}
             </div>

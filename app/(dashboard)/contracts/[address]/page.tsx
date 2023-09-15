@@ -10,6 +10,7 @@ import { getApolloClient } from '@/utils/apollo/client'
 import { gql } from '@/__generated__/graphql'
 import { ContractType } from '@/modules/contract'
 import SectionDivider from '@/components/SectionDivider'
+import Weights from '@/components/Contract/Weights'
 
 interface Props {
   params: {
@@ -69,7 +70,8 @@ export default async function Contract({ params }: Props) {
           ))}
         </div>
       </div>
-      {type === ContractType.VotingPrivate && <Whitelist whitelist={voters} weights={weights} contractAddress={params.address} />}
+      {type === ContractType.VotingPrivate && <Whitelist whitelist={voters} contractAddress={params.address} />}
+      <Weights weights={weights} contractAddress={params.address} />
     </div>
   )
 }
