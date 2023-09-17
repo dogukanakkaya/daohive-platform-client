@@ -22,12 +22,14 @@ const documents = {
     "\n    query PreDeployContract ($input: DeployContractInput!) {\n      preDeployContract(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  ": types.PreDeployContractDocument,
     "\n    query Proposal($id: ID!){\n      proposal(id: $id) {\n        approvalCount\n        disapprovalCount\n        neutralCount\n        startAt\n        endAt\n        metadata {\n          name\n          description\n          image\n        }\n      }\n    }\n  ": types.ProposalDocument,
     "\n    mutation AddProposal ($input: AddProposalInput!) {\n      addProposal(input: $input) {\n        id\n      }\n    }\n  ": types.AddProposalDocument,
+    "\n    mutation SetWeights ($input: SetWeightsInput!) {\n      setWeights(input: $input)\n    }\n  ": types.SetWeightsDocument,
+    "\n    mutation DeleteWeights ($input: DeleteWeightsInput!) {\n      deleteWeights(input: $input)\n    }\n  ": types.DeleteWeightsDocument,
+    "\n    query PreSetWeights ($input: SetWeightsInput!) {\n      preSetWeights(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  ": types.PreSetWeightsDocument,
+    "\n    query PreDeleteWeights ($input: DeleteWeightsInput!) {\n      preDeleteWeights(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  ": types.PreDeleteWeightsDocument,
     "\n    mutation AddToWhitelist ($input: WhitelistInput!) {\n      addToWhitelist(input: $input)\n    }\n  ": types.AddToWhitelistDocument,
     "\n    mutation RemoveFromWhitelist ($input: WhitelistInput!) {\n      removeFromWhitelist(input: $input)\n    }\n  ": types.RemoveFromWhitelistDocument,
-    "\n    mutation SetWeights ($input: SetWeightsInput!) {\n      setWeights(input: $input)\n    }\n  ": types.SetWeightsDocument,
     "\n    query PreAddToWhitelist ($input: WhitelistInput!) {\n      preAddToWhitelist(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  ": types.PreAddToWhitelistDocument,
     "\n    query PreRemoveFromWhitelist ($input: WhitelistInput!) {\n      preRemoveFromWhitelist(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  ": types.PreRemoveFromWhitelistDocument,
-    "\n    query PreSetWeights ($input: SetWeightsInput!) {\n      preSetWeights(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  ": types.PreSetWeightsDocument,
     "\n    query GetVoterGroup ($id: ID!) {\n      voterGroup(id: $id) {\n        name,\n        voters {\n          id\n        }\n      }\n    }\n  ": types.GetVoterGroupDocument,
     "\n    mutation CreateVoterGroup ($input: VoterGroupInput!) {\n      createVoterGroup(input: $input) {\n        id\n      }\n    }\n  ": types.CreateVoterGroupDocument,
     "\n    mutation DeleteVoterGroup ($id: ID!) {\n      deleteVoterGroup(id: $id)\n    }\n  ": types.DeleteVoterGroupDocument,
@@ -90,6 +92,22 @@ export function gql(source: "\n    mutation AddProposal ($input: AddProposalInpu
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function gql(source: "\n    mutation SetWeights ($input: SetWeightsInput!) {\n      setWeights(input: $input)\n    }\n  "): (typeof documents)["\n    mutation SetWeights ($input: SetWeightsInput!) {\n      setWeights(input: $input)\n    }\n  "];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n    mutation DeleteWeights ($input: DeleteWeightsInput!) {\n      deleteWeights(input: $input)\n    }\n  "): (typeof documents)["\n    mutation DeleteWeights ($input: DeleteWeightsInput!) {\n      deleteWeights(input: $input)\n    }\n  "];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n    query PreSetWeights ($input: SetWeightsInput!) {\n      preSetWeights(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  "): (typeof documents)["\n    query PreSetWeights ($input: SetWeightsInput!) {\n      preSetWeights(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  "];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n    query PreDeleteWeights ($input: DeleteWeightsInput!) {\n      preDeleteWeights(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  "): (typeof documents)["\n    query PreDeleteWeights ($input: DeleteWeightsInput!) {\n      preDeleteWeights(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  "];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function gql(source: "\n    mutation AddToWhitelist ($input: WhitelistInput!) {\n      addToWhitelist(input: $input)\n    }\n  "): (typeof documents)["\n    mutation AddToWhitelist ($input: WhitelistInput!) {\n      addToWhitelist(input: $input)\n    }\n  "];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -98,19 +116,11 @@ export function gql(source: "\n    mutation RemoveFromWhitelist ($input: Whiteli
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n    mutation SetWeights ($input: SetWeightsInput!) {\n      setWeights(input: $input)\n    }\n  "): (typeof documents)["\n    mutation SetWeights ($input: SetWeightsInput!) {\n      setWeights(input: $input)\n    }\n  "];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
 export function gql(source: "\n    query PreAddToWhitelist ($input: WhitelistInput!) {\n      preAddToWhitelist(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  "): (typeof documents)["\n    query PreAddToWhitelist ($input: WhitelistInput!) {\n      preAddToWhitelist(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  "];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n    query PreRemoveFromWhitelist ($input: WhitelistInput!) {\n      preRemoveFromWhitelist(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  "): (typeof documents)["\n    query PreRemoveFromWhitelist ($input: WhitelistInput!) {\n      preRemoveFromWhitelist(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  "];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n    query PreSetWeights ($input: SetWeightsInput!) {\n      preSetWeights(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  "): (typeof documents)["\n    query PreSetWeights ($input: SetWeightsInput!) {\n      preSetWeights(input: $input) {\n        transactionFee {\n          usd\n          matic\n        }\n      }\n    }\n  "];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

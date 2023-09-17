@@ -32,6 +32,12 @@ export default function Weights({ weights, contractAddress }: Props) {
     }
   `))
 
+  const [deleteWeightsMutation] = useMutation(gql(`
+    mutation DeleteWeights ($input: DeleteWeightsInput!) {
+      deleteWeights(input: $input)
+    }
+  `))
+
   const [execPreSetWeights] = useLazyQuery(gql(`
     query PreSetWeights ($input: SetWeightsInput!) {
       preSetWeights(input: $input) {
@@ -43,9 +49,40 @@ export default function Weights({ weights, contractAddress }: Props) {
     }
   `))
 
-  const handlePreRemove = () => { }
+  const [execPreDeleteWeights] = useLazyQuery(gql(`
+    query PreDeleteWeights ($input: DeleteWeightsInput!) {
+      preDeleteWeights(input: $input) {
+        transactionFee {
+          usd
+          matic
+        }
+      }
+    }
+  `))
 
-  const handleRemove = () => { }
+  const handlePreRemove = withLoading(async () => {
+    const { data: preSetWeights } = await execPreDeleteWeights({
+      variables: { input: { address: contractAddress, voters: remove } }
+    })
+
+    setTransactionFee(preSetWeights?.preDeleteWeights.transactionFee)
+    setIsConfirmationDialogOpen(true)
+  }, setLoading)
+
+  const handleRemove = withLoading(withLoadingToastr(async () => {
+    await deleteWeightsMutation({
+      variables: { input: { address: contractAddress, voters: remove } }
+    })
+
+    const _data = remove.reduce((prev, curr) => {
+      delete prev[curr]; return prev
+    }, { ...data })
+
+    setRemove([])
+    setData(_data)
+    setIsDialogOpen(false)
+    setIsConfirmationDialogOpen(false)
+  }), setLoading)
 
   const handlePreSubmit = withLoading(async () => {
     const voters = forms.map(({ address }) => address)
@@ -99,7 +136,7 @@ export default function Weights({ weights, contractAddress }: Props) {
           </li>
         ))}
       </ul>
-      <Dialog title="Add new voter" isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} className="relative">
+      <Dialog title="Set weights for voters" isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} className="relative">
         {loading && <LoadingOverlay />}
         <div className="p-2 -m-2 max-h-[400px] overflow-y-scroll">
           {forms.map(({ address, weight }, i) => (
