@@ -91,7 +91,7 @@ export default function Login() {
               />
               <div className="flex flex-col space-y-2 mt-5">
                 <MetamaskProvider>
-                  <ConnectMetamask setLoading={setLoading} />
+                  <ConnectMetamask setLoading={setLoading} captchaToken={captchaToken} />
                 </MetamaskProvider>
                 <Button onClick={signInWithGoogle} variant={Variant.Tertiary} className="shadow-md flex items-center gap-4 rounded">
                   <Image

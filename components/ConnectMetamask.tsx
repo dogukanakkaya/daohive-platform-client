@@ -8,9 +8,10 @@ import { withLoading } from '@/utils/hof'
 
 interface Props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  captchaToken: string
 }
 
-export default function ConnectMetamask({ setLoading }: Props) {
+export default function ConnectMetamask({ setLoading, captchaToken }: Props) {
   const supabase = createClientComponentClient()
   const { isMetamaskConnected, connectToMetamask } = useMetamask()
 
@@ -26,7 +27,13 @@ export default function ConnectMetamask({ setLoading }: Props) {
     })
 
     const { data: { email, password } } = await api.post(`/auth/metamask/login?address=${selectedAddress}`, { signature })
-    await supabase.auth.signInWithPassword({ email, password })
+    await supabase.auth.signInWithPassword({
+      email,
+      password,
+      options: {
+        captchaToken
+      }
+    })
   }, setLoading)
 
   return (
