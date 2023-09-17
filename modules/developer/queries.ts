@@ -6,7 +6,11 @@ export function developerQuery(supabaseClient?: SupabaseClient<Database>) {
   const supabase = supabaseClient ?? createClientComponentClient<Database>()
 
   const getApiCredentials = <T extends string = '*'>(select: T = '*' as T) => {
-    return supabase.from('api_credentials').select(select).order('created_at', { ascending: false }).is('deleted_at', null).throwOnError()
+    return supabase.from('decrypted_api_credentials')
+      .select(select)
+      .order('created_at', { ascending: false })
+      .is('deleted_at', null)
+      .throwOnError()
   }
 
   const createApiCredential = async ({ name, expires_at, permissionIds }: ApiCredentialPayload) => {
@@ -20,15 +24,6 @@ export function developerQuery(supabaseClient?: SupabaseClient<Database>) {
     await supabase.from('api_credential_api_permissions').insert(apiPermissions).throwOnError()
   }
 
-  const getDecryptedApiCredentialSecret = async (id: string) => {
-    const { data, error } = await supabase.from('decrypted_api_credentials').select('decrypted_secret').eq('id', id).single().throwOnError()
-
-    // @todo(1)
-    if (error) throw error
-
-    return data.decrypted_secret as string
-  }
-
   const deleteApiCredential = (id: string) => {
     return supabase.from('api_credentials').update({ deleted_at: new Date().toISOString() }).eq('id', id).throwOnError()
   }
@@ -37,5 +32,5 @@ export function developerQuery(supabaseClient?: SupabaseClient<Database>) {
     return supabase.from('api_permissions').select(select).order('created_at', { ascending: false }).throwOnError()
   }
 
-  return { getApiCredentials, getDecryptedApiCredentialSecret, createApiCredential, deleteApiCredential, getApiPermissions }
+  return { getApiCredentials, createApiCredential, deleteApiCredential, getApiPermissions }
 }

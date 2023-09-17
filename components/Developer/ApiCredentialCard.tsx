@@ -1,5 +1,5 @@
 'use client'
-import { ApiCredentialResponse, ApiPermissionResponse, developerQuery } from '@/modules/developer'
+import { ApiCredentialApiPermissions, ApiCredentialResponse, ApiPermissionResponse, DecryptedSecret, developerQuery } from '@/modules/developer'
 import Button from '../Button'
 import Tooltip from '../Tooltip'
 import { useState } from 'react'
@@ -8,45 +8,24 @@ import { useRouter } from 'next/navigation'
 import LoadingOverlay from '../LoadingOverlay'
 import { DateTime } from 'luxon'
 
-interface ApiCredentialApiPermissions {
-  api_credential_api_permissions: {
-    api_permissions: ApiPermissionResponse<'name' | 'description'> | null
-  }[]
-}
-
-interface Props {
-  credential: ApiCredentialResponse<'id' | 'name' | 'expires_at' | 'created_at'> & ApiCredentialApiPermissions
+export interface Props {
+  credential: ApiCredentialResponse<'id' | 'name' | 'expires_at' | 'created_at'> & { decrypted_secret: DecryptedSecret } & ApiCredentialApiPermissions<'name' | 'description'>
   permissions: ApiPermissionResponse<'name' | 'description'>[]
 }
 
 export default function ApiCredentialCard({ credential, permissions }: Props) {
   const [showSecret, setShowSecret] = useState(false)
-  const [secret, setSecret] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [remove, setRemove] = useState('')
   const router = useRouter()
-  const { getDecryptedApiCredentialSecret, deleteApiCredential } = developerQuery()
+  const { deleteApiCredential } = developerQuery()
 
-  const handleFetchSecret = async () => {
-    const _secret = await getDecryptedApiCredentialSecret(credential.id)
-    setSecret(_secret)
-
-    return _secret
-  }
-
-  const handleShowSecret = async () => {
-    if (!secret) await handleFetchSecret()
-
+  const handleShowSecret = () => {
     setShowSecret(true)
 
     setTimeout(() => {
       setShowSecret(false)
     }, 5000)
-  }
-
-  const handleCopySecret = async () => {
-    let _secret = secret ?? await handleFetchSecret()
-    navigator.clipboard.writeText(_secret)
   }
 
   const handleRemove = remove === credential.id ? withLoading(withLoadingToastr(async () => {
@@ -77,8 +56,8 @@ export default function ApiCredentialCard({ credential, permissions }: Props) {
         <h3 className="flex items-center gap-2">
           API Key:
           <Tooltip text="Copy Address" textAfterClick={<>Copied <i className="bi bi-check"></i></>}>
-            <span onClick={handleCopySecret} className={`cursor-pointer text-sm font-semibold block max-w-[400px] break-words ${!showSecret ? 'mt-1 tracking-wider' : 'mt-0.5'}`}>
-              {!showSecret ? '********************************' : secret}
+            <span onClick={() => navigator.clipboard.writeText(credential.decrypted_secret)} className={`cursor-pointer text-sm font-semibold block max-w-[400px] break-words ${!showSecret ? 'mt-1 tracking-wider' : 'mt-0.5'}`}>
+              {!showSecret ? '********************************' : credential.decrypted_secret}
             </span>
           </Tooltip>
           {!showSecret && <i onClick={handleShowSecret} className="bi bi-eye text-lg cursor-pointer"></i>}

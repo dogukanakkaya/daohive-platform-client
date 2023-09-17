@@ -16,7 +16,7 @@ export default async function Api() {
 
   const [{ data: credentials }, { data: permissions }] = await Promise.all([
     getApiCredentials(`
-      id,name,expires_at,created_at,
+      id,name,expires_at,created_at,decrypted_secret,
       api_credential_api_permissions (
         api_permissions (name,description)
       )
@@ -46,7 +46,8 @@ export default async function Api() {
         {credentials && permissions && credentials.map(credential => (
           <ApiCredentialCard
             key={credential.id}
-            credential={credential}
+            // view types are always generated as nullable https://github.com/orgs/supabase/discussions/13279
+            credential={credential as NonNullableProps<typeof credential, 'id' | 'name' | 'decrypted_secret'>}
             permissions={permissions}
           />
         ))}
