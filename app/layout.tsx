@@ -4,6 +4,9 @@ import { ToastContainer, Zoom } from 'react-toastify'
 import { Inter } from 'next/font/google'
 import { TOAST_AUTO_CLOSE } from '@/config'
 
+// @todo: dynamic server error solution
+export const revalidate = 0
+
 const inter = Inter({ weight: ['400', '500', '700'], subsets: ['latin'] })
 
 export const metadata = {
