@@ -28,7 +28,7 @@ export default function Login() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(event => {
       if (event === 'SIGNED_IN') {
         setLoading(false)
-        router.push('/')
+        router.push('/contracts')
       }
     })
 

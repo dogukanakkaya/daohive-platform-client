@@ -24,7 +24,7 @@ export default function Sidebar() {
               <h2 className="uppercase text-gray-800 dark:text-gray-400 ml-4 my-4 text-sm">Menu</h2>
               <ul className="flex flex-col">
                 <li>
-                  <Link href="/" className="sidebar-link"><i className="bi bi-grid"></i> Dashboard</Link>
+                  <Link href="#" className="sidebar-link cursor-not-allowed"><i className="bi bi-grid"></i> Dashboard <span className="badge">Soon</span></Link>
                 </li>
                 <li>
                   <Link href="/contracts" className="sidebar-link"><i className="bi bi-newspaper"></i> Contracts</Link>
