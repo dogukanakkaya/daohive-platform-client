@@ -81,14 +81,17 @@ export default function Login() {
           {loading && <LoadingOverlay />}
           <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg w-full">
             <div className="p-5 flex flex-col items-center justify-center">
-              <Image
-                src="/images/logo.png"
-                alt="Logo"
-                className="w-[50px] h-14 dark:invert"
-                width={100}
-                height={100}
-                priority
-              />
+              <div className="flex h-16 items-center gap-4">
+                <Image
+                  src="/images/logo.svg"
+                  alt="Logo"
+                  className="w-[50px] h-12"
+                  width={100}
+                  height={100}
+                  priority
+                />
+                <h1 className="text-3xl font-semibold">daohive</h1>
+              </div>
               <div className="flex flex-col space-y-2 mt-5">
                 <MetamaskProvider>
                   <ConnectMetamask setLoading={setLoading} captchaToken={captchaToken} />

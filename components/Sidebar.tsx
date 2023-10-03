@@ -8,16 +8,16 @@ export default function Sidebar() {
       <input className="peer hidden" type="checkbox" id="menu" />
       <div className="hidden peer-checked:block md:block fixed z-20 md:sticky left-0 top-0 shadow-lg w-full h-screen bg-white dark:bg-gray-900 bg-opacity-25 dark:bg-opacity-25">
         <div className="h-full overflow-y-auto overflow-hidden bg-white dark:bg-gray-900 mr-48 md:mr-0">
-          <div className="hidden md:flex h-16 pl-8 items-center border-b dark:border-gray-700 gap-4">
+          <div className="hidden md:flex h-16 pl-6 items-center border-b dark:border-gray-700 gap-4">
             <Image
-              src="/images/logo.png"
+              src="/images/logo.svg"
               alt="Logo"
-              className="w-[50px] h-14 object-cover dark:invert"
+              className="w-[50px] h-12 object-cover"
               width={100}
               height={100}
               priority
             />
-            <h1 className="text-2xl font-semibold">DaoV</h1>
+            <h1 className="text-3xl font-semibold">daohive</h1>
           </div>
           <div className="mt-16 md:mt-0">
             <div className="p-4">
