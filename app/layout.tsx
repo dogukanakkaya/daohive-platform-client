@@ -10,8 +10,8 @@ export const revalidate = 0
 const inter = Inter({ weight: ['400', '500', '700'], subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Daohive',
-  description: 'A DAO for the people, by the people.'
+  title: 'Daohive - Platform',
+  description: 'Management platform for Daohive. A DAO for the people, by the people.'
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
