@@ -79,7 +79,7 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
 
   const handlePreSubmit = withLoading(async () => {
     const { data: preAdd } = await execPreAdd({
-      variables: { input: { address: contractAddress, voters } }
+      variables: { input: { address: contractAddress, voters: voters.filter(v => !!v) } }
     })
 
     setRemove([])
@@ -88,11 +88,12 @@ export default function Whitelist({ whitelist, contractAddress }: Props) {
   }, setLoading)
 
   const handleSubmit = withLoading(withLoadingToastr(async () => {
+    const validVoters = voters.filter(v => !!v)
     await addMutation({
-      variables: { input: { address: contractAddress, voters } }
+      variables: { input: { address: contractAddress, voters: validVoters } }
     })
 
-    setData([...data, ...voters])
+    setData([...data, ...validVoters])
     setIsDialogOpen(false)
     setIsConfirmationDialogOpen(false)
     setVoters([''])
