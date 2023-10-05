@@ -11,7 +11,7 @@ export async function middleware(req: NextRequest) {
   const { data } = await supabase.auth.getSession()
 
   if (data.session && UNAUTHENTICATED_ROUTES.includes(req.nextUrl.pathname)) {
-    return NextResponse.redirect(new URL('/', req.url))
+    return NextResponse.redirect(new URL('/contracts', req.url))
   }
 
   if (!data.session && !UNAUTHENTICATED_ROUTES.includes(req.nextUrl.pathname)) {
