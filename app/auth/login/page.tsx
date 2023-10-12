@@ -13,9 +13,10 @@ import ConnectMetamask from '@/components/ConnectMetamask'
 import { Database } from '@/supabase.types'
 import HCaptcha from '@hcaptcha/react-hcaptcha'
 import { HCAPTCHA_SITEKEY, NODE_ENV } from '@/config'
+import { cookieOptions } from '@/config'
 
 export default function Login() {
-  const supabase = createClientComponentClient<Database>()
+  const supabase = createClientComponentClient<Database>({ cookieOptions })
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [captchaToken, setCaptchaToken] = useState('')
