@@ -16,11 +16,14 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL('/contracts', req.url))
     }
 
+    console.log(process.env.NODE_ENV);
+
+
     // supabase sets domain to the current domain, but api lives on a subdomain so we need reset it
     res.cookies.set({
       name: SUPABASE_COOKIE_NAME,
       value: req.cookies.get(SUPABASE_COOKIE_NAME)?.value as string,
-      domain: process.env.NODE_ENV === 'development' ? 'localhost' : '.vercel.app',
+      domain: process.env.NODE_ENV === 'development' ? 'localhost' : '.vercel.com',
       path: '/',
       maxAge: data.session.expires_at
     })
@@ -32,7 +35,7 @@ export async function middleware(req: NextRequest) {
     res.cookies.set({
       name: SUPABASE_COOKIE_NAME,
       value: '',
-      domain: process.env.NODE_ENV === 'development' ? 'localhost' : '.vercel.app',
+      domain: process.env.NODE_ENV === 'development' ? 'localhost' : '.vercel.com',
       path: '/',
       maxAge: 0
     })
