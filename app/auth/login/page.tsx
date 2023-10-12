@@ -12,10 +12,18 @@ import { CredentialsSchema } from '@/modules/auth'
 import ConnectMetamask from '@/components/ConnectMetamask'
 import { Database } from '@/supabase.types'
 import HCaptcha from '@hcaptcha/react-hcaptcha'
-import { HCAPTCHA_SITEKEY, NODE_ENV } from '@/config'
+import { HCAPTCHA_SITEKEY, NODE_ENV, SUPABASE_COOKIE_NAME } from '@/config'
 
 export default function Login() {
-  const supabase = createClientComponentClient<Database>()
+  const supabase = createClientComponentClient<Database>({
+    cookieOptions: {
+      name: SUPABASE_COOKIE_NAME,
+      domain: process.env.NODE_ENV === 'development' ? 'localhost' : '.daohive.io',
+      path: '/',
+      secure: process.env.NODE_ENV !== 'development',
+      sameSite: 'lax'
+    }
+  })
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [captchaToken, setCaptchaToken] = useState('')
