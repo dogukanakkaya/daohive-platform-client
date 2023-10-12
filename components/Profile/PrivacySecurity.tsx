@@ -5,17 +5,18 @@ import Dialog from '../Dialog'
 import LoadingOverlay from '../LoadingOverlay'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/supabase.types'
+import { useRouter } from 'next/navigation'
 
 export default function PrivacySecurity() {
   const supabase = createClientComponentClient<Database>()
   const [deleteAccount, setDeleteAccount] = useState(false)
   const [confirmType, setConfirmType] = useState('')
+  const router = useRouter()
 
   const handleDeleteAccount = async () => {
     const { status } = await supabase.rpc('delete_user')
     if (status === 204) {
-      await supabase.auth.signOut()
-      location.reload()
+      router.push('/auth/logout')
     }
   }
 
