@@ -5,8 +5,10 @@ import { RetryLink } from '@apollo/client/link/retry'
 import { ErrorLink } from '@apollo/client/link/error'
 import { ApolloNextAppProvider, NextSSRApolloClient, NextSSRInMemoryCache, SSRMultipartLink } from '@apollo/experimental-nextjs-app-support/ssr'
 import { toast } from 'react-toastify'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 function makeClient() {
+  const supabase = createClientComponentClient()
   const httpLink = new HttpLink({
     uri: `${API_URL}/graphql`,
     credentials: 'include'
@@ -18,6 +20,8 @@ function makeClient() {
     } else if (networkError && 'statusCode' in networkError) {
       if (networkError.statusCode === 429) {
         // @todo: show error page with too many requests
+      } else if (networkError.statusCode === 401) {
+        supabase.auth.signOut().then(() => location.replace('/auth/login'))
       }
     }
   })

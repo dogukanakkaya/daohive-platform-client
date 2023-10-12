@@ -8,4 +8,6 @@ export const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID!
 
 export const HCAPTCHA_SITEKEY = process.env.NEXT_PUBLIC_HCAPTCHA_SITEKEY!
 
+export const SUPABASE_COOKIE_NAME = process.env.NEXT_PUBLIC_SUPABASE_COOKIE_NAME!
+
 export const TOAST_AUTO_CLOSE = 3000
