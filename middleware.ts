@@ -7,31 +7,33 @@ const UNAUTHENTICATED_ROUTES = ['/auth/login', '/auth/callback']
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
 
-  const supabase = createMiddlewareClient({ req, res }, {
-    cookieOptions: {
-      name: SUPABASE_COOKIE_NAME,
-      domain: process.env.NODE_ENV === 'development' ? 'localhost' : '.daohive.io',
-      path: '/',
-      secure: process.env.NODE_ENV !== 'development',
-      sameSite: 'lax'
+  const supabase = createMiddlewareClient({ req, res })
+
+  // supabase sets domain to the current domain, but api lives on a subdomain so we need reset it
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN') {
+      res.cookies.set({
+        name: SUPABASE_COOKIE_NAME,
+        value: req.cookies.get(SUPABASE_COOKIE_NAME)?.value as string,
+        domain: process.env.NODE_ENV === 'development' ? 'localhost' : '.daohive.io',
+        path: '/',
+        maxAge: session?.expires_at
+      })
+    } else if (event === 'SIGNED_OUT') {
+      res.cookies.set({
+        name: SUPABASE_COOKIE_NAME,
+        value: '',
+        domain: process.env.NODE_ENV === 'development' ? 'localhost' : '.daohive.io',
+        path: '/',
+        maxAge: 0
+      })
     }
   })
 
   const { data } = await supabase.auth.getSession()
 
-  if (data.session) {
-    if (UNAUTHENTICATED_ROUTES.includes(req.nextUrl.pathname)) {
-      return NextResponse.redirect(new URL('/contracts', req.url))
-    }
-
-    // supabase sets domain to the current domain, but api lives on a subdomain so we need reset it
-    res.cookies.set({
-      name: SUPABASE_COOKIE_NAME,
-      value: req.cookies.get(SUPABASE_COOKIE_NAME)?.value as string,
-      domain: process.env.NODE_ENV === 'development' ? 'localhost' : '.daohive.io',
-      path: '/',
-      maxAge: data.session.expires_at
-    })
+  if (data.session && UNAUTHENTICATED_ROUTES.includes(req.nextUrl.pathname)) {
+    return NextResponse.redirect(new URL('/contracts', req.url))
   }
 
   if (!data.session && !UNAUTHENTICATED_ROUTES.includes(req.nextUrl.pathname)) {
