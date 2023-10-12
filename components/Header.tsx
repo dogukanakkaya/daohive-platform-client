@@ -42,10 +42,10 @@ export default async function Header() {
         </div>
         <ul className="absolute right-0 top-16 w-full rounded-xl shadow bg-white dark:bg-gray-900 hidden group-focus-within/profile:block">
           <li>
-            <Link href="/profile" className="profile-link rounded-t-xl"><i className="bi bi-person-gear"></i> Profile</Link>
+            <Link href="/profile" className="profile-link justify-center sm:justify-start gap-0 sm:gap-2 rounded-t-xl"><i className="bi bi-person-gear"></i> <span className="text-[0px] sm:text-base">Profile</span></Link>
           </li>
           <li>
-            <Link href="/auth/logout" prefetch={false} replace className="profile-link rounded-b-xl border-t dark:border-gray-700"><i className="bi bi-box-arrow-right text-red-500"></i> Sign Out</Link>
+            <Link href="/auth/logout" prefetch={false} replace className="profile-link justify-center sm:justify-start gap-0 sm:gap-2 rounded-b-xl border-t dark:border-gray-700"><i className="bi bi-box-arrow-right text-red-500"></i> <span className="text-[0px] sm:text-base">Sign Out</span></Link>
           </li>
         </ul>
       </div>
