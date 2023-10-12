@@ -16,6 +16,12 @@ const nextConfig = {
         hostname: 'arweave.net',
         port: '',
         pathname: '/*'
+      },
+      {
+        protocol: 'https',
+        hostname: 'megepnblulncqjdcwrnd.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/**'
       }
     ]
   },
