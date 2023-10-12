@@ -7,7 +7,15 @@ const UNAUTHENTICATED_ROUTES = ['/auth/login', '/auth/callback']
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
 
-  const supabase = createMiddlewareClient({ req, res })
+  const supabase = createMiddlewareClient({ req, res }, {
+    cookieOptions: {
+      name: SUPABASE_COOKIE_NAME,
+      domain: process.env.NODE_ENV === 'development' ? 'localhost' : '.daohive.io',
+      path: '/',
+      secure: process.env.NODE_ENV !== 'development',
+      sameSite: 'lax'
+    }
+  })
 
   const { data } = await supabase.auth.getSession()
 
