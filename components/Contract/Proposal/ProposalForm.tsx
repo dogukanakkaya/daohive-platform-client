@@ -1,7 +1,7 @@
 'use client'
-import Button from '@/components/Button'
+import Button, { Variant } from '@/components/Button'
 import { useFormValidation } from '@/hooks'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import LoadingOverlay from '@/components/LoadingOverlay'
 import { DateTime } from 'luxon'
 import { useDropzone } from 'react-dropzone'
@@ -11,11 +11,12 @@ import { useParams } from 'next/navigation'
 import { ProposalSchema } from '@/modules/proposal'
 import Editor from '@/components/Editor/Editor'
 import { useRouter } from 'next/navigation'
-import { useMutation } from '@apollo/client'
+import { useLazyQuery, useMutation } from '@apollo/client'
 import { gql } from '@/__generated__/graphql'
 import { generateFileHash } from '@/utils/file'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/supabase.types'
+import Dialog from '@/components/Dialog'
 
 const DEFAULT_START_TIME = DateTime.now().plus({ minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
 const DEFAULT_END_TIME = DateTime.now().plus({ days: 7, minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
@@ -23,7 +24,9 @@ const DEFAULT_END_TIME = DateTime.now().plus({ days: 7, minutes: 5 }).toFormat('
 export default function ProposalForm() {
   const supabase = createClientComponentClient<Database>()
   const [loading, setLoading] = useState(false)
+  const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false)
   const [file, setFile] = useState<File>()
+  const imageSrc = useMemo(() => file ? URL.createObjectURL(file) : null, [file])
   const {
     state: { name, description, content, startAt, endAt },
     setState: setProposalState,
@@ -40,6 +43,18 @@ export default function ProposalForm() {
   }, [])
   const { getRootProps, getInputProps } = useDropzone({ onDrop, maxFiles: 1, accept: { 'image/*': [] } })
 
+  const [execPreAdd, { data: preAdd }] = useLazyQuery(gql(`
+    query PreAddProposal ($input: AddProposalInput!) {
+      preAddProposal(input: $input) {
+        transactionFee {
+          usd
+          matic
+        }
+      }
+    }
+  `))
+  const transactionFee = preAdd?.preAddProposal.transactionFee
+
   const [addMutation] = useMutation(gql(`
     mutation AddProposal ($input: AddProposalInput!) {
       addProposal(input: $input) {
@@ -48,12 +63,25 @@ export default function ProposalForm() {
     }
   `))
 
-  const handleSubmit = withLoading(withLoadingToastr(async () => {
+  const getImageName = async () => {
     if (!file) throw new Error('Please upload a banner image and try again.')
     const fileHash = await generateFileHash(file)
-    const image = `${fileHash}.${file.name.split('.').pop()}`
+    return `${fileHash}.${file.name.split('.').pop()}`
+  }
+
+  const handlePreSubmit = withLoading(async () => {
+    const image = await getImageName()
+
+    await execPreAdd({
+      variables: { input: { address: params.address as string, name, description, content, startAt, endAt, image } }
+    })
+    setIsConfirmationDialogOpen(true)
+  }, setLoading)
+
+  const handleSubmit = withLoading(withLoadingToastr(async () => {
+    const image = await getImageName()
     const { data: { user } } = await supabase.auth.getUser()
-    const { error } = await supabase.storage.from('platform').upload(`${user?.id}/${image}`, file)
+    const { error } = await supabase.storage.from('platform').upload(`${user?.id}/${image}`, file as File)
     if (error && 'statusCode' in error && error.statusCode !== '409') throw new Error('An error occured while uploading the file.')
 
     await addMutation({
@@ -74,7 +102,7 @@ export default function ProposalForm() {
         >
           <input {...getInputProps()} />
           {
-            file ? <Image src={URL.createObjectURL(file)} width={720} height={720} className="max-h-full object-contain" alt="" /> : <p>Drag and drop some files here, or click to select files</p>
+            imageSrc ? <Image src={imageSrc} width={720} height={720} className="max-h-full object-contain" alt="" /> : <p>Drag and drop some files here, or click to select files</p>
           }
         </div>
       </div>
@@ -117,8 +145,18 @@ export default function ProposalForm() {
         </div>
       </div>
       <div className="flex justify-end items-center">
-        <Button onClick={handleSubmit} isEnabled={isFormValid} className="flex items-center gap-2">Propose <i className="bi bi-journal-arrow-up text-lg"></i></Button>
+        <Button onClick={handlePreSubmit} isEnabled={isFormValid} className="flex items-center gap-2">Propose <i className="bi bi-journal-arrow-up text-lg"></i></Button>
       </div>
+      {transactionFee && (
+        <Dialog title="Confirm Transaction" isOpen={isConfirmationDialogOpen} setIsOpen={setIsConfirmationDialogOpen} className="relative">
+          {loading && <LoadingOverlay />}
+          <p>The transaction will cost <b>{transactionFee?.usd.toFixed(6)}$ ({transactionFee?.matic.toFixed(6)} MATIC)</b> approximately. Remember that the cost may vary a bit at the time of deployment depending on the network traffic.</p>
+          <div className="flex items-center justify-end gap-4 mt-4">
+            <Button onClick={() => setIsConfirmationDialogOpen(false)} variant={Variant.Secondary}>Cancel</Button>
+            <Button onClick={handleSubmit}>Confirm <i className="bi bi-check-lg text-lg"></i></Button>
+          </div>
+        </Dialog>
+      )}
     </div>
   )
 }
