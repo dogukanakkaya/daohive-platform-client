@@ -3,7 +3,7 @@
 }
 
 .w-md-editor-toolbar li > button {
-  @apply h-full;
+  @apply !h-full;
 }
 
 .w-md-editor-toolbar-divider {
