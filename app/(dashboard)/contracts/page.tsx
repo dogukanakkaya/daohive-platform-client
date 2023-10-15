@@ -8,9 +8,10 @@ import { Database } from '@/supabase.types'
 import Refresh from '@/components/Refresh'
 import { contractQuery } from '@/modules/contract'
 import ZeroRecord from '@/components/ZeroRecord'
+import { cookieOptions } from '@/config'
 
 export default async function Contracts() {
-  const supabase = createServerComponentClient<Database>({ cookies })
+  const supabase = createServerComponentClient<Database>({ cookies }, { cookieOptions })
 
   const { data: contracts } = await contractQuery(supabase).getContracts('address,type') // proposals(count)
 

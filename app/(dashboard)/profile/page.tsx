@@ -2,9 +2,10 @@ import { cookies } from 'next/headers'
 import Breadcrumb from '@/components/Breadcrumb'
 import ProfileSection from '@/components/Profile/ProfileSection'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { cookieOptions } from '@/config'
 
 export default async function Profile() {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = createServerComponentClient({ cookies }, { cookieOptions })
 
   const { data: { user } } = await supabase.auth.getUser()
   const { data: userExtended } = await supabase.from('users').select('balance').eq('id', user?.id).single()

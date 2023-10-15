@@ -7,9 +7,10 @@ import { useState } from 'react'
 import { withLoading, withLoadingToastr } from '@/utils/hof'
 import LoadingOverlay from '../LoadingOverlay'
 import { PersonalInformationSchema, UserMerged } from '@/modules/auth'
+import { cookieOptions } from '@/config'
 
 export default function PersonalInformation({ user }: { user: UserMerged }) {
-  const supabase = createClientComponentClient<Database>()
+  const supabase = createClientComponentClient<Database>({ cookieOptions })
   const [loading, setLoading] = useState(false)
   const {
     state: { name, email },

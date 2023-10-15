@@ -6,9 +6,10 @@ import LoadingOverlay from '../LoadingOverlay'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/supabase.types'
 import { useRouter } from 'next/navigation'
+import { cookieOptions } from '@/config'
 
 export default function PrivacySecurity() {
-  const supabase = createClientComponentClient<Database>()
+  const supabase = createClientComponentClient<Database>({ cookieOptions })
   const [deleteAccount, setDeleteAccount] = useState(false)
   const [confirmType, setConfirmType] = useState('')
   const router = useRouter()

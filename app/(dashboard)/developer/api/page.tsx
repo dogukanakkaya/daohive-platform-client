@@ -8,9 +8,10 @@ import Button, { Variant } from '@/components/Button'
 import Link from 'next/link'
 import { developerQuery } from '@/modules/developer'
 import ZeroRecord from '@/components/ZeroRecord'
+import { cookieOptions } from '@/config'
 
 export default async function Api() {
-  const supabase = createServerComponentClient<Database>({ cookies })
+  const supabase = createServerComponentClient<Database>({ cookies }, { cookieOptions })
 
   const { getApiCredentials, getApiPermissions } = developerQuery(supabase)
 

@@ -11,7 +11,6 @@ import {
 } from '@tanstack/react-table'
 import Tooltip from '../Tooltip'
 import { useDeferredValue, useState } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { toast } from 'react-toastify'
 import { z } from 'zod'
 import { useEffectState } from '@/hooks'

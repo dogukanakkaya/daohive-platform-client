@@ -1,9 +1,10 @@
 import { SupabaseClient, createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/supabase.types'
 import { ApiCredentialPayload } from './types'
+import { cookieOptions } from '@/config'
 
 export function developerQuery(supabaseClient?: SupabaseClient<Database>) {
-  const supabase = supabaseClient ?? createClientComponentClient<Database>()
+  const supabase = supabaseClient ?? createClientComponentClient<Database>({ cookieOptions })
 
   const getApiCredentials = <T extends string = '*'>(select: T = '*' as T) => {
     return supabase.from('decrypted_api_credentials')

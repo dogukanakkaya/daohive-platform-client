@@ -4,9 +4,10 @@ import { DeveloperForm } from '@/components/Developer'
 import { developerQuery } from '@/modules/developer'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/supabase.types'
+import { cookieOptions } from '@/config'
 
 export default async function Create() {
-  const supabase = createServerComponentClient<Database>({ cookies })
+  const supabase = createServerComponentClient<Database>({ cookies }, { cookieOptions })
 
   const { data: permissions } = await developerQuery(supabase).getApiPermissions('id,name,description')
 

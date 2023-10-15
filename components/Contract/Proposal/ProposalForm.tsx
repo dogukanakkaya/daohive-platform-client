@@ -17,12 +17,13 @@ import { generateFileHash } from '@/utils/file'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/supabase.types'
 import Dialog from '@/components/Dialog'
+import { cookieOptions } from '@/config'
 
 const DEFAULT_START_TIME = DateTime.now().plus({ minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
 const DEFAULT_END_TIME = DateTime.now().plus({ days: 7, minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
 
 export default function ProposalForm() {
-  const supabase = createClientComponentClient<Database>()
+  const supabase = createClientComponentClient<Database>({ cookieOptions })
   const [loading, setLoading] = useState(false)
   const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false)
   const [file, setFile] = useState<File>()
