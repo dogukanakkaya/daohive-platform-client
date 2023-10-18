@@ -1,18 +1,18 @@
 'use client'
 import '@uiw/react-md-editor/markdown-editor.css'
 import '@uiw/react-markdown-preview/markdown.css'
-import './styles.css'
 import React from 'react'
 import dynamic from 'next/dynamic'
 import rehypeSanitize from 'rehype-sanitize'
 import * as commands from '@uiw/react-md-editor/lib/commands'
 import { MDEditorProps } from '@uiw/react-md-editor'
+import './styles.css'
 import LoadingOverlay from '../LoadingOverlay'
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), {
   ssr: false,
   loading: () => (
-    <div className="h-[400px] relative rounded-lg dark:bg-gray-800">
+    <div className="h-[500px] relative rounded-lg dark:bg-gray-800">
       <LoadingOverlay className="rounded-lg" />
     </div>
   )
@@ -54,9 +54,6 @@ export default function Editor({ ...props }: MDEditorProps) {
         {
           ...commands.hr,
           icon: <i className="bi bi-hr text-xl"></i>
-        },
-        {
-
         },
         commands.divider,
         {

@@ -50,7 +50,7 @@ export default async function Contract({ params }: Props) {
         </div>
       </div>
       <InfoCard messages={[
-        <span key="delete-warning">Deleting any whitelisted voter from this page <span className="text-red-500">won&apos;t</span> be mirrored in voters or voter groups. It will also <span className="text-red-500">not</span> affect any other contract.</span>
+        <span key="delete-warning">Deleting any whitelisted voter (if contract is private) or changing the weights from this page <span className="text-red-500">won&apos;t</span> be mirrored in voters or voter groups. It will also <span className="text-red-500">not</span> affect any other contract.</span>
       ]} />
       <div>
         <SectionDivider>

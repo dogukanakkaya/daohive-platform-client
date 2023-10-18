@@ -19,8 +19,8 @@ import { Database } from '@/supabase.types'
 import Dialog from '@/components/Dialog'
 import { cookieOptions } from '@/config'
 
-const DEFAULT_START_TIME = DateTime.now().plus({ minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
-const DEFAULT_END_TIME = DateTime.now().plus({ days: 7, minutes: 5 }).toFormat('yyyy-MM-dd\'T\'T')
+const DEFAULT_START_TIME = DateTime.now().plus({ hours: 1 }).toFormat('yyyy-MM-dd\'T\'T')
+const DEFAULT_END_TIME = DateTime.now().plus({ days: 7, hours: 1 }).toFormat('yyyy-MM-dd\'T\'T')
 
 export default function ProposalForm() {
   const supabase = createClientComponentClient<Database>({ cookieOptions })
@@ -123,7 +123,7 @@ export default function ProposalForm() {
           <span className="text-xs text-gray-400">(<a href="https://www.markdownguide.org/basic-syntax/" target="_blank">Markdown</a> syntax is allowed)</span>
         </label>
         <Editor
-          height={400}
+          height={500}
           value={content}
           onChange={value => setProposalState(prevState => ({ ...prevState, content: value ?? '' }))}
           onBlur={() => validateForm({ target: { name: 'content' } } as React.ChangeEvent<any>)}
