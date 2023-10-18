@@ -60,11 +60,11 @@ export default function Editor({ ...props }: MDEditorProps) {
         },
         commands.divider,
         {
-          ...commands.hr,
+          ...commands.link,
           icon: <i className="bi bi-link text-xl"></i>
         },
         {
-          ...commands.hr,
+          ...commands.quote,
           icon: <i className="bi bi-quote text-xl"></i>
         },
         commands.divider,
