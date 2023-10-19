@@ -1,12 +1,12 @@
 'use client'
 import '@uiw/react-md-editor/markdown-editor.css'
 import '@uiw/react-markdown-preview/markdown.css'
+import './styles.css'
 import React from 'react'
 import dynamic from 'next/dynamic'
 import rehypeSanitize from 'rehype-sanitize'
 import * as commands from '@uiw/react-md-editor/lib/commands'
 import { MDEditorProps } from '@uiw/react-md-editor'
-import './styles.css'
 import LoadingOverlay from '../LoadingOverlay'
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), {
@@ -22,6 +22,7 @@ export default function Editor({ ...props }: MDEditorProps) {
   return (
     <MDEditor
       {...props}
+      className="daohive-editor"
       previewOptions={{
         rehypePlugins: [[rehypeSanitize]]
       }}
