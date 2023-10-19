@@ -54,7 +54,7 @@ export default function DeveloperForm({ permissions }: Props) {
       </div>
       <div className="mb-4">
         <h3 className="section-text text-xl mb-2">Permissions</h3>
-        <div className="md:flex items-center flex-wrap">
+        <div className="md:flex items-center flex-wrap space-y-4">
           {permissions.map(permission => (
             <div key={permission.name} className="w-1/2 xl:w-1/4">
               <label className="flex items-center gap-2" htmlFor={`checkbox-${permission.name}`}>

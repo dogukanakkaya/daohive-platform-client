@@ -65,7 +65,7 @@ export default function ApiCredentialCard({ credential, permissions }: Props) {
       </div>
       <div className="border-t dark:border-gray-700">
         <h3 className="section-text mb-2">Permissions</h3>
-        <div className="md:flex items-center justify-between flex-wrap">
+        <div className="md:flex items-center justify-between flex-wrap space-y-4">
           {permissions.map(permission => {
             const hasPermission = credential.api_credential_api_permissions.findIndex(credentialPermission => credentialPermission.api_permissions?.name === permission.name)
 
