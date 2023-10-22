@@ -15,11 +15,11 @@
 }
 
 .daohive-editor {
-  @apply dark:bg-gray-700 rounded-lg;
+  @apply dark:!bg-gray-700 rounded-lg;
 }
 
 .daohive-editor .wmde-markdown {
-  @apply dark:bg-gray-700;
+  @apply dark:!bg-gray-700;
 }
 
 .daohive-editor .w-md-editor-text-pre>code,
